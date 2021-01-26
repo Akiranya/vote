@@ -1,12 +1,12 @@
 gui:
   work-listing:
     title: "上古时代 建筑比赛投票"
-    done: "&a&l已完成"
-    undone: "&4&l未完成"
+    done: "&a已完成"
+    undone: "&4未完成"
     valid:
       name: "&b&l点击 完成评分"
       lore1: ""
-      lore2: " &8&l> &7当前状态 : &a&l你已给所有作品投票"
+      lore2: " &8&l> &7当前状态 : &a&l你已完成评分"
       lore3: ""
       lore4: "&b你的投票结果将作为参赛选手晋级的标准之一"
       lore5: "&b感谢参与上古时代建筑比赛的评分,辛苦你了~"
@@ -15,12 +15,12 @@ gui:
     invalid:
       name: "&b&l点击 完成评分"
       lore1: ""
-      lore2: " &8&l> &7当前状态 : &4&l你还没有给所有作品投票"
+      lore2: " &8&l> &7当前状态 : &4&l你还没有完成评分"
       lore3: ""
-      lore4: "&c这将导致你的投票结果被系统完全忽略!"
-      lore5: "&c请给余下的参赛作品投票以防止被忽略!"
+      lore4: "&c这将导致你的所有评分结果被系统忽略!"
+      lore5: "&c要完成评分,请给&a所有的已完工&c作品投票."
       lore6: ""
-      lore7: "&6点击此按钮来过滤掉已投票作品"
+      lore7: " &8&l> &6点击此按钮来过滤掉已投票作品"
     menu-tips:
       name: "&b第九届&8·&e建筑比赛&8·&a主题未定"
       lore1: ""
@@ -35,10 +35,12 @@ gui:
       lore1: ""
       lore2: "&7当前页 &b{current-page} &7/&b {total-page}"
     work-entry:
-      name: "&b&l{player} &8&l| &6&l{done}"
+      name: "&b&l{player}"
       lore1: ""
-      lore2: " &8&l> &7点击进行投票"
-      lore3: ""
+      lore2: " &8&l> &7是否已完工 &8: {done}"
+      lore3: " &8&l> &7是否已评分 &8: {done}"
+      lore4: ""
+      lore5: " &8&l> &6点击进行评分"
   vote-options:
     title: "请选择一项操作"
     teleport-to-plot:
@@ -48,32 +50,36 @@ gui:
     vote-work:
       name: "&a&l为Ta投票"
       lore1: ""
-      lore2: " &8&l> &7给此作品投出你的一票"
+      lore2: " &8&l> &7你欣赏这个作品,并投出你的赞成票"
     vote-work-absent:
       name: "&4&l放弃投票"
       lore1: ""
-      lore2: " &8&l> &7放弃给此作品投票"
+      lore2: " &8&l> &7你对此不做评价,放弃给此作品评分"
     back:
       name: "&f&l返回"
       lore1: ""
       lore2: " &8&l> &7返回上级菜单"
 gui-message:
   vote-work: "&7你已为参赛选手 &6{player} &7的作品投出 &a赞成票"
-  vote-work-absent: "&7你已 &c放弃 &7为参赛选手 &6{player} &7的作品投票"
+  vote-work-absent: "&7你已为参赛选手 &6{player} &7的作品投出 &c弃权票"
   teleport-to-plot: "&7已传送到参赛选手 &6{player} &7的作品附近"
-  valid-filtered: "&7已过滤掉你投过票的作品."
+  valid-filtered: "&7已为你显示必须要评分的作品."
 chat-message:
   cannot-vote-for-work-undone: "&c未完成的作品不能参与投票."
   cannot-vote-for-game-not-ended: "&c比赛还未结束时不能投票."
   vote-system-not-available: "&c投票系统当前不可用, 请联系管理员."
   world-no-plots: "&c世界 {world} 里没有已声明的地皮."
   mark-vote-system: "&6你已设置投票系统就绪状态为 [{state}]"
-  plugin-reloaded: "&6已重载配置文件."
+  plugin-reloaded: "&6已重载配置和语言文件."
   plot-information-pulled: "&6已载入世界地皮信息,现在可以使用菜单了!"
-  work-information-line: "&b%-20s &8--------&r &a%2d &8/ &c%2d &8/ &6%2d &8(&d%2.2f&8)"
+  work-information-line: "&a%2d &8/ &c%2d &8/ &6%2d  &8=  &d%3.0f&7%%  &8----------&r  &b%s"
   invalid-rater-list: "&4无效 &r评分人列表 &7(&b{count}&7)&r &7:&r {list}"
   valid-rater-list: "&2有效 &r评分人列表 &7(&b{count}&7)&r &7:&r {list}"
   green-rater-list: "&2有效 &a绿票 &r评分人列表 &7(&b{count}&7)&r &7:&r {list}"
   red-rater-list: "&2有效 &c红票 &r评分人列表 &7(&b{count}&7)&r &7:&r {list}"
   green-work-list: "&a绿票 &r作品列表 &7(&b{count}&7)&r &7:&r {list}"
   red-work-list: "&c红票 &r作品列表 &7(&b{count}&7)&r &7:&r {list}"
+title-message:
+  vote-finished:
+    title: "&6辛苦了,你已完成所有评分!"
+    subtitle: "&b你的评分将作为比赛作品晋级的依据之一"

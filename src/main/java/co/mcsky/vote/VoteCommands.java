@@ -103,7 +103,7 @@ public class VoteCommands extends BaseCommand {
     @Conditions("ready")
     public class Stats extends BaseCommand {
         // Portable way to get the line separator
-        final String TITLE = ChatColor.translateAlternateColorCodes('&', "&8=-=-=-=-=-=-= &6比赛投票统计数据&8 =-=-=-=-=-=-=");
+        final String TITLE = ChatColor.translateAlternateColorCodes('&', "&8=-=-=-=-=-=-= &6比赛评分统计概览&8 =-=-=-=-=-=-=");
         final String LIST_SEPARATOR = ChatColor.translateAlternateColorCodes('&', " &8-&r ");
         final String LINE_SEPARATOR = System.lineSeparator();
 
@@ -127,9 +127,8 @@ public class VoteCommands extends BaseCommand {
 
                 sb.append(TITLE).append(LINE_SEPARATOR);
                 votes.getWorks().stream().map(Work::getOwner).forEach(uuid -> {
-                    float greenVoteProportion = (float) calc.greenVotes(uuid).size() / calc.validVotes(uuid).count();
-                    sb.append(String.format(ChatColor.translateAlternateColorCodes('&', plugin.getMessage(sender, "chat-message.work-information-line")),
-                            MiscUtil.getPlayerName(uuid), calc.greenVotes(uuid).size(), calc.redVotes(uuid).size(), calc.validVotes(uuid).count(), greenVoteProportion));
+                    float greenVoteProportion = 100F * calc.greenVotes(uuid).size() / calc.validVotes(uuid).count();
+                    sb.append(String.format(plugin.getMessage(sender, "chat-message.work-information-line"), calc.greenVotes(uuid).size(), calc.redVotes(uuid).size(), calc.validVotes(uuid).count(), greenVoteProportion, MiscUtil.getPlayerName(uuid)));
                     sb.append(LINE_SEPARATOR);
                 });
 

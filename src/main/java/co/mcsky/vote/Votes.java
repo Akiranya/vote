@@ -83,8 +83,8 @@ public class Votes implements Terminable, TerminableConsumer {
      * @param workOwner the owner of the work you want to get
      * @return the work of the owner
      */
-    public Work getWork(UUID workOwner) {
-        return workMap.get(workOwner);
+    public Optional<Work> getWork(UUID workOwner) {
+        return Optional.ofNullable(workMap.get(workOwner));
     }
 
     /**
@@ -136,6 +136,19 @@ public class Votes implements Terminable, TerminableConsumer {
 
     public VoteMain getPlugin() {
         return VoteMain.plugin;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Votes votes = (Votes) o;
+        return worldName.equals(votes.worldName);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(worldName);
     }
 
     @Nonnull

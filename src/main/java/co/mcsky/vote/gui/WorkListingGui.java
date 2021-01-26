@@ -3,6 +3,7 @@ package co.mcsky.vote.gui;
 import co.mcsky.vote.Votes;
 import co.mcsky.vote.helper.MiscUtil;
 import co.mcsky.vote.type.Work;
+import com.destroystokyo.paper.Title;
 import com.google.common.collect.Lists;
 import me.lucko.helper.item.ItemStackBuilder;
 import me.lucko.helper.menu.Gui;
@@ -12,7 +13,9 @@ import me.lucko.helper.menu.paginated.PageInfo;
 import me.lucko.helper.menu.scheme.MenuScheme;
 import me.lucko.helper.menu.scheme.StandardSchemeMappings;
 import me.lucko.helper.utils.Players;
+import org.bukkit.EntityEffect;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
@@ -28,7 +31,6 @@ import static co.mcsky.vote.VoteMain.plugin;
 @SuppressWarnings("ConstantConditions")
 public class WorkListingGui extends Gui {
 
-    // TODO add sounds
     // TODO support offline skull skin display
 
     private final MenuScheme background = new MenuScheme(StandardSchemeMappings.STAINED_GLASS)
@@ -79,6 +81,9 @@ public class WorkListingGui extends Gui {
 
     // The vote manager.
     private final Votes votes;
+
+    // Default false, whether the player finished the vote for the first time
+    private boolean firstFinished;
 
     public WorkListingGui(Player player, Votes votes) {
         super(player, 6, plugin.getMessage(player, "gui.work-listing.title"));
@@ -138,6 +143,7 @@ public class WorkListingGui extends Gui {
         } else {
             setItem(this.previousPageSlot, ItemStackBuilder.of(this.previousPageItem.apply(PageInfo.create(this.page, pages.size())))
                     .build(() -> {
+                        playSound(Sound.UI_BUTTON_CLICK);
                         this.page = this.page - 1;
                         redraw();
                     }));
@@ -154,6 +160,7 @@ public class WorkListingGui extends Gui {
         } else {
             setItem(this.nextPageSlot, ItemStackBuilder.of(this.nextPageItem.apply(PageInfo.create(this.page, pages.size())))
                     .build(() -> {
+                        playSound(Sound.UI_BUTTON_CLICK);
                         this.page = this.page + 1;
                         redraw();
                     }));
@@ -170,6 +177,11 @@ public class WorkListingGui extends Gui {
             setItem(index, item);
         }
 
+        // play initial sound for the first drawn
+        if (isFirstDraw()) {
+            playSound(Sound.ENTITY_EXPERIENCE_ORB_PICKUP);
+        }
+
         // place the done button
         boolean valid = this.votes.getCalculator().valid(getPlayer().getUniqueId());
         setItem(doneSlot, ItemStackBuilder.of(valid ? Material.ENCHANTED_GOLDEN_APPLE : Material.APPLE)
@@ -183,12 +195,25 @@ public class WorkListingGui extends Gui {
                 .lore(plugin.getMessage(getPlayer(), valid ? "gui.work-listing.valid.lore7" : "gui.work-listing.invalid.lore7"))
                 .hideAttributes()
                 .build(() -> {
+                    playSound(Sound.UI_BUTTON_CLICK);
                     if (!valid) {
                         getPlayer().sendMessage(plugin.getMessage(getPlayer(), "gui-message.valid-filtered"));
-                        updateContent(work -> work.invoted(getPlayer().getUniqueId()));
+                        updateContent(work -> work.done() && work.invoted(getPlayer().getUniqueId()));
                         redraw();
                     }
                 }));
+
+        // play totem resurrect effect when vote is finished
+        if (valid) {
+            getPlayer().playEffect(EntityEffect.TOTEM_RESURRECT);
+            getPlayer().sendTitle(Title.builder()
+                    .title(plugin.getMessage(getPlayer(), "title-message.vote-finished.title"))
+                    .subtitle(plugin.getMessage(getPlayer(), "title-message.vote-finished.subtitle"))
+                    .fadeIn(20)
+                    .fadeOut(20)
+                    .stay(120)
+                    .build());
+        }
     }
 
     /**
@@ -198,18 +223,29 @@ public class WorkListingGui extends Gui {
         this.content = this.votes.getWorks().parallelStream()
                 .filter(filter)
                 .map(work -> ItemStackBuilder.of(Material.PLAYER_HEAD)
-                        .name(plugin.getMessage(getPlayer(), "gui.work-listing.work-entry.name",
-                                "player", MiscUtil.getPlayerName(work.getOwner()),
-                                "done", work.done() ? plugin.getMessage(getPlayer(), "gui.work-listing.done") : plugin.getMessage(getPlayer(), "gui.work-listing.undone")))
+                        .name(plugin.getMessage(getPlayer(), "gui.work-listing.work-entry.name", "player", MiscUtil.getPlayerName(work.getOwner())))
                         .lore(plugin.getMessage(getPlayer(), "gui.work-listing.work-entry.lore1"))
-                        .lore(plugin.getMessage(getPlayer(), "gui.work-listing.work-entry.lore2"))
-                        .lore(plugin.getMessage(getPlayer(), "gui.work-listing.work-entry.lore3"))
+                        .lore(plugin.getMessage(getPlayer(), "gui.work-listing.work-entry.lore2", "done", selectDoneString(work.done())))
+                        .lore(plugin.getMessage(getPlayer(), "gui.work-listing.work-entry.lore3", "done", selectDoneString(work.voted(getPlayer().getUniqueId()))))
+                        .lore(plugin.getMessage(getPlayer(), "gui.work-listing.work-entry.lore4"))
+                        .lore(plugin.getMessage(getPlayer(), "gui.work-listing.work-entry.lore5"))
                         .transformMeta(itemMeta -> {
                             SkullMeta skullMeta = (SkullMeta) itemMeta;
                             Players.get(work.getOwner()).ifPresent(p -> skullMeta.setPlayerProfile(p.getPlayerProfile()));
                         })
-                        .build(() -> new VoteOptionGui(getPlayer(), this, this.votes, work).open()))
+                        .build(() -> {
+                            playSound(Sound.UI_BUTTON_CLICK);
+                            new VoteOptionGui(getPlayer(), this, this.votes, work).open();
+                        }))
                 .collect(Collectors.toUnmodifiableList());
+    }
+
+    private void playSound(Sound sound) {
+        getPlayer().playSound(getPlayer().getLocation(), sound, 1F, 1F);
+    }
+
+    private String selectDoneString(boolean state) {
+        return state ? plugin.getMessage(getPlayer(), "gui.work-listing.done") : plugin.getMessage(getPlayer(), "gui.work-listing.undone");
     }
 
 }

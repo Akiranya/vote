@@ -9,8 +9,6 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-// TODO 有效投票只在已完成的作品里算
-
 /**
  * Provides useful methods to get the statistics from the instance of {@link Votes}.
  */
@@ -29,10 +27,18 @@ public class VoteCalculator {
      * @return a stream of UUID of players who have participated the vote.
      */
     public Stream<UUID> rawRaters() {
-        return votes.getWorks().stream()
+        return this.votes.getWorks().stream()
                 .flatMap(w -> w.getVotes().stream())
                 .map(Vote::getRater)
                 .distinct();
+    }
+
+    /**
+     * @return stream of works which are done
+     */
+    public Stream<Work> done() {
+        return this.votes.getWorks().stream()
+                .filter(Work::done);
     }
 
     /**
@@ -40,20 +46,24 @@ public class VoteCalculator {
      * @return set of works which have not been voted by the specified vote owner
      */
     public Stream<Work> missed(UUID rater) {
-        return votes.getWorks().parallelStream().filter(work -> work.invoted(rater));
+        return this.votes.getWorks().parallelStream()
+                .filter(work -> work.invoted(rater));
     }
 
     /**
      * @param rater the owner of a vote
-     * @return true, if the owner has voted all works, otherwise false
+     * @return true, if the owner has voted all works which are done, otherwise false
      */
     public boolean valid(UUID rater) {
-        return missed(rater).findAny().isEmpty();
+        return missed(rater)
+                .filter(Work::done)
+                .findAny()
+                .isEmpty();
     }
 
     /**
      * @param rater the owner of a vote
-     * @return true, if the owner has NOT voted all works, otherwise false
+     * @return true, if the owner has NOT voted all works which are done, otherwise false
      */
     public boolean invalid(UUID rater) {
         return !valid(rater);
@@ -78,7 +88,9 @@ public class VoteCalculator {
      * @return set of votes of the work, regardless of the vote is valid
      */
     public Set<Vote> rawVotes(UUID workOwner) {
-        return votes.getWork(workOwner).getVotes();
+        return this.votes.getWork(workOwner)
+                .map(Work::getVotes)
+                .orElse(Set.of());
     }
 
     /**
@@ -86,7 +98,10 @@ public class VoteCalculator {
      * @return stream of all valid votes of the given work
      */
     public Stream<Vote> validVotes(UUID workOwner) {
-        return votes.getWork(workOwner).getVotes().stream().filter(vote -> valid(vote.getRater()));
+        return this.votes.getWork(workOwner)
+                .map(Work::getVotes)
+                .orElse(Set.of()).stream()
+                .filter(vote -> valid(vote.getRater()));
     }
 
     /**

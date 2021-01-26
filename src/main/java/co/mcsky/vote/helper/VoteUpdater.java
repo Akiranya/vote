@@ -2,10 +2,8 @@ package co.mcsky.vote.helper;
 
 import co.mcsky.vote.Votes;
 import com.google.common.eventbus.Subscribe;
-import com.plotsquared.core.events.PlayerAutoPlotEvent;
 import com.plotsquared.core.events.PlayerClaimPlotEvent;
 import com.plotsquared.core.events.PlotDeleteEvent;
-import com.plotsquared.core.events.PlotEvent;
 import com.plotsquared.core.plot.Plot;
 import me.lucko.helper.terminable.Terminable;
 
@@ -27,31 +25,37 @@ public class VoteUpdater implements Terminable {
 
     @Subscribe
     public void onPlayerClaimPlot(PlayerClaimPlotEvent event) {
-        if (validateWorld(event)) {
+        if (validateWorld(event.getPlot().getWorldName())) {
             UUID workOwner = event.getPlotPlayer().getUUID();
             Plot plot = event.getPlot();
             this.votes.createEntry(workOwner, plot);
+            this.votes.getPlugin().getLogger().info("[VoteUpdater] New entry created : " + event.getPlotPlayer().getName());
         }
     }
 
-    @Subscribe
-    public void onPlayerAutoPlot(PlayerAutoPlotEvent event) {
-        if (validateWorld(event)) {
-            UUID workOwner = event.getPlayer().getUUID();
-            Plot plot = event.getPlot();
-            this.votes.createEntry(workOwner, plot);
-        }
-    }
+    // This event is too buggy...
+//    @Subscribe
+//    public void onPlayerAutoPlot(PlayerAutoPlotEvent event) {
+//        if (validateWorld(event.getPlotArea().getWorldName())) {
+//            UUID workOwner = event.getPlayer().getUUID();
+//            Plot plot = event.getPlot();
+//            this.votes.createEntry(workOwner, plot);
+//            this.votes.getPlugin().getLogger().info("[VoteUpdater] New entry created : " + event.getPlayer().getName());
+//        }
+//    }
 
     @Subscribe
     public void onPlotDelete(PlotDeleteEvent event) {
-        if (validateWorld(event)) {
-            Optional.ofNullable(event.getPlot().getOwnerAbs()).ifPresent(votes::deleteEntry);
+        if (validateWorld(event.getWorld())) {
+            Optional.ofNullable(event.getPlot().getOwnerAbs()).ifPresent(workOwner -> {
+                this.votes.deleteEntry(workOwner);
+                this.votes.getPlugin().getLogger().info("[VoteUpdater] Entry removed : " + event.getPlotId().toString());
+            });
         }
     }
 
-    private boolean validateWorld(PlotEvent event) {
-        return votes.getWorldName().equalsIgnoreCase(event.getPlot().getWorldName());
+    private boolean validateWorld(String plotWorld) {
+        return this.votes.getWorldName().equalsIgnoreCase(plotWorld);
     }
 
     @Override

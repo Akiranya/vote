@@ -11,6 +11,7 @@ import me.lucko.helper.menu.scheme.MenuPopulator;
 import me.lucko.helper.menu.scheme.MenuScheme;
 import me.lucko.helper.menu.scheme.StandardSchemeMappings;
 import org.bukkit.Material;
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
 import java.util.UUID;
@@ -63,6 +64,7 @@ public class VoteOptionGui extends Gui {
                             .lore(plugin.getMessage(getPlayer(), "gui.vote-options.teleport-to-plot.lore1"))
                             .lore(plugin.getMessage(getPlayer(), "gui.vote-options.teleport-to-plot.lore2"))
                             .build(() -> {
+                                playSound(Sound.UI_BUTTON_CLICK);
                                 getPlayer().sendMessage(plugin.getMessage(getPlayer(), "gui-message.teleport-to-plot", "player", MiscUtil.getPlayerName(this.work.getOwner())));
                                 this.work.teleport(getPlayer());
                             }));
@@ -80,9 +82,12 @@ public class VoteOptionGui extends Gui {
                                 PlayerVoteEvent event = new PlayerVoteEvent(getPlayer(), this.work, vote);
                                 plugin.getServer().getPluginManager().callEvent(event);
                                 if (!event.isCancelled()) {
+                                    playSound(Sound.ENTITY_PLAYER_LEVELUP);
                                     getPlayer().sendMessage(plugin.getMessage(getPlayer(), "gui-message.vote-work", "player", MiscUtil.getPlayerName(this.work.getOwner())));
                                     this.votes.vote(workOwner, vote);
                                     close();
+                                } else {
+                                    playSound(Sound.ENTITY_BLAZE_HURT);
                                 }
                             }));
             optionPopulator.accept(
@@ -95,9 +100,12 @@ public class VoteOptionGui extends Gui {
                                 PlayerVoteEvent event = new PlayerVoteEvent(getPlayer(), this.work, vote);
                                 plugin.getServer().getPluginManager().callEvent(event);
                                 if (!event.isCancelled()) {
+                                    playSound(Sound.ENTITY_PLAYER_LEVELUP);
                                     getPlayer().sendMessage(plugin.getMessage(getPlayer(), "gui-message.vote-work-absent", "player", MiscUtil.getPlayerName(this.work.getOwner())));
                                     this.votes.vote(workOwner, Vote.builder(voteOwner).absent(true).build());
                                     close();
+                                } else {
+                                    playSound(Sound.ENTITY_BLAZE_HURT);
                                 }
                             }));
 
@@ -106,7 +114,15 @@ public class VoteOptionGui extends Gui {
                     .name(plugin.getMessage(getPlayer(), "gui.vote-options.back.name"))
                     .lore(plugin.getMessage(getPlayer(), "gui.vote-options.back.lore1"))
                     .lore(plugin.getMessage(getPlayer(), "gui.vote-options.back.lore2"))
-                    .build(this::close));
+                    .build(() -> {
+                        playSound(Sound.UI_BUTTON_CLICK);
+                        close();
+                    }));
         }
     }
+
+    private void playSound(Sound sound) {
+        getPlayer().playSound(getPlayer().getLocation(), sound, 1F, 1F);
+    }
+
 }
