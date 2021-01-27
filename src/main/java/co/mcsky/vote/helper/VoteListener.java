@@ -1,7 +1,7 @@
 package co.mcsky.vote.helper;
 
 import co.mcsky.vote.VoteMain;
-import co.mcsky.vote.Votes;
+import co.mcsky.vote.type.Votes;
 import co.mcsky.vote.events.PlayerVoteEvent;
 import me.lucko.helper.Events;
 import me.lucko.helper.event.filter.EventFilters;

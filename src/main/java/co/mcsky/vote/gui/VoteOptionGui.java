@@ -1,6 +1,6 @@
 package co.mcsky.vote.gui;
 
-import co.mcsky.vote.Votes;
+import co.mcsky.vote.type.Votes;
 import co.mcsky.vote.events.PlayerVoteEvent;
 import co.mcsky.vote.helper.MiscUtil;
 import co.mcsky.vote.type.Vote;

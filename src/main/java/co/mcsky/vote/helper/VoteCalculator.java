@@ -1,6 +1,6 @@
 package co.mcsky.vote.helper;
 
-import co.mcsky.vote.Votes;
+import co.mcsky.vote.type.Votes;
 import co.mcsky.vote.type.Vote;
 import co.mcsky.vote.type.Work;
 

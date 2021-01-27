@@ -1,10 +1,9 @@
-package co.mcsky.vote;
+package co.mcsky.vote.type;
 
+import co.mcsky.vote.VoteMain;
 import co.mcsky.vote.helper.VoteCalculator;
 import co.mcsky.vote.helper.VoteListener;
 import co.mcsky.vote.helper.VoteUpdater;
-import co.mcsky.vote.type.Vote;
-import co.mcsky.vote.type.Work;
 import com.google.common.base.Preconditions;
 import com.plotsquared.core.api.PlotAPI;
 import com.plotsquared.core.plot.Plot;
@@ -14,8 +13,8 @@ import me.lucko.helper.terminable.composite.CompositeTerminable;
 import java.util.*;
 
 /**
- * Represents an entire vote. The design is that each instance of this class manages a distinct plot world. That is,
- * there is a one-to-one relationship between a instance of this class and a plot world.
+ * Represents an entire vote for the building game. The design is that each instance of this class manages a distinct
+ * plot world. That is, there is a one-to-one relationship between a instance of this class and a plot world.
  */
 public class Votes implements Terminable {
 
@@ -33,7 +32,12 @@ public class Votes implements Terminable {
     // The backing terminable registry
     private final CompositeTerminable terminableRegistry;
 
-    public Votes(String plotWorld) {
+    /**
+     * Direct initialization is not allowed, instead use {@link VotesPool} to get an instance.
+     *
+     * @param plotWorld the plot world this instance manages
+     */
+    protected Votes(String plotWorld) {
         this.plotWorld = plotWorld;
         this.api = new PlotAPI();
         this.workMap = new LinkedHashMap<>();

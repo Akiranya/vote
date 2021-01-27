@@ -1,6 +1,6 @@
 package co.mcsky.vote.helper;
 
-import co.mcsky.vote.Votes;
+import co.mcsky.vote.type.Votes;
 import com.google.common.eventbus.Subscribe;
 import com.plotsquared.core.events.PlayerClaimPlotEvent;
 import com.plotsquared.core.events.PlotDeleteEvent;

@@ -8,6 +8,7 @@ import co.mcsky.vote.gui.WorkListingGui;
 import co.mcsky.vote.helper.MiscUtil;
 import co.mcsky.vote.helper.VoteCalculator;
 import co.mcsky.vote.type.Vote;
+import co.mcsky.vote.type.VotesPool;
 import co.mcsky.vote.type.Work;
 import com.plotsquared.core.api.PlotAPI;
 import com.plotsquared.core.plot.Plot;
