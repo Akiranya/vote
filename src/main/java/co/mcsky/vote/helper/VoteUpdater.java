@@ -55,7 +55,7 @@ public class VoteUpdater implements Terminable {
     }
 
     private boolean validateWorld(String plotWorld) {
-        return this.votes.getWorldName().equalsIgnoreCase(plotWorld);
+        return this.votes.getPlotWorld().equalsIgnoreCase(plotWorld);
     }
 
     @Override

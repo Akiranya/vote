@@ -5,6 +5,7 @@ import co.mcsky.vote.events.PlayerVoteEvent;
 import co.mcsky.vote.helper.MiscUtil;
 import co.mcsky.vote.type.Vote;
 import co.mcsky.vote.type.Work;
+import me.lucko.helper.Events;
 import me.lucko.helper.item.ItemStackBuilder;
 import me.lucko.helper.menu.Gui;
 import me.lucko.helper.menu.scheme.MenuPopulator;
@@ -65,12 +66,11 @@ public class VoteOptionGui extends Gui {
                             .lore(plugin.getMessage(getPlayer(), "gui.vote-options.teleport-to-plot.lore2"))
                             .build(() -> {
                                 playSound(Sound.UI_BUTTON_CLICK);
-                                getPlayer().sendMessage(plugin.getMessage(getPlayer(), "gui-message.teleport-to-plot", "player", MiscUtil.getPlayerName(this.work.getOwner())));
-                                this.work.teleport(getPlayer());
+                                work.teleport(getPlayer());
                             }));
 
             // Populate the vote options
-            UUID workOwner = this.work.getOwner();
+            UUID workOwner = work.getOwner();
             UUID voteOwner = getPlayer().getUniqueId();
             optionPopulator.accept(
                     ItemStackBuilder.of(Material.GREEN_WOOL)
@@ -79,12 +79,10 @@ public class VoteOptionGui extends Gui {
                             .lore(plugin.getMessage(getPlayer(), "gui.vote-options.vote-work.lore2"))
                             .build(() -> {
                                 Vote vote = Vote.builder(voteOwner).absent(false).build();
-                                PlayerVoteEvent event = new PlayerVoteEvent(getPlayer(), this.work, vote);
-                                plugin.getServer().getPluginManager().callEvent(event);
-                                if (!event.isCancelled()) {
+                                if (!Events.callAndReturn(new PlayerVoteEvent(getPlayer(), work, vote, votes)).isCancelled()) {
                                     playSound(Sound.ENTITY_PLAYER_LEVELUP);
-                                    getPlayer().sendMessage(plugin.getMessage(getPlayer(), "gui-message.vote-work", "player", MiscUtil.getPlayerName(this.work.getOwner())));
-                                    this.votes.vote(workOwner, vote);
+                                    getPlayer().sendMessage(plugin.getMessage(getPlayer(), "gui-message.vote-work", "player", MiscUtil.getPlayerName(work.getOwner())));
+                                    votes.vote(workOwner, vote);
                                     close();
                                 } else {
                                     playSound(Sound.ENTITY_BLAZE_HURT);
@@ -97,12 +95,10 @@ public class VoteOptionGui extends Gui {
                             .lore(plugin.getMessage(getPlayer(), "gui.vote-options.vote-work-absent.lore2"))
                             .build(() -> {
                                 Vote vote = Vote.builder(voteOwner).absent(true).build();
-                                PlayerVoteEvent event = new PlayerVoteEvent(getPlayer(), this.work, vote);
-                                plugin.getServer().getPluginManager().callEvent(event);
-                                if (!event.isCancelled()) {
+                                if (!Events.callAndReturn(new PlayerVoteEvent(getPlayer(), work, vote, votes)).isCancelled()) {
                                     playSound(Sound.ENTITY_PLAYER_LEVELUP);
-                                    getPlayer().sendMessage(plugin.getMessage(getPlayer(), "gui-message.vote-work-absent", "player", MiscUtil.getPlayerName(this.work.getOwner())));
-                                    this.votes.vote(workOwner, Vote.builder(voteOwner).absent(true).build());
+                                    getPlayer().sendMessage(plugin.getMessage(getPlayer(), "gui-message.vote-work-absent", "player", MiscUtil.getPlayerName(work.getOwner())));
+                                    votes.vote(workOwner, Vote.builder(voteOwner).absent(true).build());
                                     close();
                                 } else {
                                     playSound(Sound.ENTITY_BLAZE_HURT);

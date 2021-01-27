@@ -39,12 +39,10 @@ public class WorkListingGui extends Gui {
             .mask("110000011")
             .mask("110000011")
             .mask("111111111")
-            .mask("111111111")
             .scheme(3, 3, 3, 3, 3, 3, 3, 3)
             .scheme(3, 3, 3, 3, 3, 3, 3, 3, 3)
             .scheme(3, 3, 3, 3)
             .scheme(3, 3, 3, 3)
-            .scheme(3, 3, 3, 3, 3, 3, 3, 3, 3)
             .scheme(3, 3, 3, 3, 3, 3, 3, 3, 3);
 
     private final MenuScheme menuTips = new MenuScheme()
@@ -57,17 +55,17 @@ public class WorkListingGui extends Gui {
             .getMaskedIndexesImmutable();
 
     private final int doneSlot = new MenuScheme()
-            .maskEmpty(5)
+            .maskEmpty(4)
             .mask("000010000")
             .getMaskedIndexesImmutable().get(0);
 
     private final int nextPageSlot = new MenuScheme()
-            .maskEmpty(5)
+            .maskEmpty(4)
             .mask("000000100")
             .getMaskedIndexesImmutable().get(0);
 
     private final int previousPageSlot = new MenuScheme()
-            .maskEmpty(5)
+            .maskEmpty(4)
             .mask("001000000")
             .getMaskedIndexesImmutable().get(0);
 
@@ -82,11 +80,8 @@ public class WorkListingGui extends Gui {
     // The vote manager.
     private final Votes votes;
 
-    // Default false, whether the player finished the vote for the first time
-    private boolean firstFinished;
-
     public WorkListingGui(Player player, Votes votes) {
-        super(player, 6, plugin.getMessage(player, "gui.work-listing.title"));
+        super(player, 5, plugin.getMessage(player, "gui.work-listing.title"));
 
         // Next page item
         this.nextPageItem = pageInfo -> ItemStackBuilder.of(Material.PAPER)
@@ -198,7 +193,7 @@ public class WorkListingGui extends Gui {
                     playSound(Sound.UI_BUTTON_CLICK);
                     if (!valid) {
                         getPlayer().sendMessage(plugin.getMessage(getPlayer(), "gui-message.valid-filtered"));
-                        updateContent(work -> work.done() && work.invoted(getPlayer().getUniqueId()));
+                        updateContent(work -> work.isDone() && work.invoted(getPlayer().getUniqueId()));
                         redraw();
                     }
                 }));
@@ -225,7 +220,7 @@ public class WorkListingGui extends Gui {
                 .map(work -> ItemStackBuilder.of(Material.PLAYER_HEAD)
                         .name(plugin.getMessage(getPlayer(), "gui.work-listing.work-entry.name", "player", MiscUtil.getPlayerName(work.getOwner())))
                         .lore(plugin.getMessage(getPlayer(), "gui.work-listing.work-entry.lore1"))
-                        .lore(plugin.getMessage(getPlayer(), "gui.work-listing.work-entry.lore2", "done", selectDoneString(work.done())))
+                        .lore(plugin.getMessage(getPlayer(), "gui.work-listing.work-entry.lore2", "done", selectDoneString(work.isDone())))
                         .lore(plugin.getMessage(getPlayer(), "gui.work-listing.work-entry.lore3", "done", selectDoneString(work.voted(getPlayer().getUniqueId()))))
                         .lore(plugin.getMessage(getPlayer(), "gui.work-listing.work-entry.lore4"))
                         .lore(plugin.getMessage(getPlayer(), "gui.work-listing.work-entry.lore5"))

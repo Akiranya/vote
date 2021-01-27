@@ -25,18 +25,21 @@ public class VoteListener implements TerminableModule {
     public void setup(@Nonnull TerminableConsumer consumer) {
         // Don't allow to vote if the vote system is not ready yet
         Events.subscribe(PlayerVoteEvent.class)
-                .filter(e -> !this.votes.getPlugin().config.allowVoteWhenNotEnded)
-                .filter(e -> !this.votes.ready())
+                .filter(e -> votes.getPlotWorld().equalsIgnoreCase(e.getVotes().getPlotWorld()))
+                .filter(e -> !votes.getPlugin().config.allowVoteWhenNotEnded)
+                .filter(e -> !votes.isReady())
                 .handler(e -> {
                     e.setCancelled(true);
                     e.getPlayer().sendMessage(VoteMain.plugin.getMessage(e.getPlayer(), "chat-message.cannot-vote-for-game-not-ended"));
                 })
                 .bindWith(consumer);
+
         // Don't allow to vote if the work is undone yet
         Events.subscribe(PlayerVoteEvent.class)
                 .filter(EventFilters.ignoreCancelled())
-                .filter(e -> !this.votes.getPlugin().config.allowVoteWhenUndone)
-                .filter(e -> !e.getWork().done())
+                .filter(e -> votes.getPlotWorld().equalsIgnoreCase(e.getVotes().getPlotWorld()))
+                .filter(e -> !votes.getPlugin().config.allowVoteWhenUndone)
+                .filter(e -> !e.getWork().isDone())
                 .handler(e -> {
                     e.setCancelled(true);
                     e.getPlayer().sendMessage(VoteMain.plugin.getMessage(e.getPlayer(), "chat-message.cannot-vote-for-work-undone"));

@@ -38,7 +38,7 @@ public class VoteCalculator {
      */
     public Stream<Work> done() {
         return this.votes.getWorks().stream()
-                .filter(Work::done);
+                .filter(Work::isDone);
     }
 
     /**
@@ -56,7 +56,7 @@ public class VoteCalculator {
      */
     public boolean valid(UUID rater) {
         return missed(rater)
-                .filter(Work::done)
+                .filter(Work::isDone)
                 .findAny()
                 .isEmpty();
     }

@@ -42,6 +42,8 @@ repositories {
     maven { url = 'https://repo.aikar.co/content/groups/aikar/' }
     // WorldEdit
     maven { url = 'https://maven.enginehub.org/repo/' }
+    // helper
+    maven { url = 'https://repo.lucko.me' }
     // PlotSquared
     maven { url = 'https://mvn.intellectualsites.com/content/groups/public/' }
 }

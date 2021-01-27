@@ -1,5 +1,6 @@
 package co.mcsky.vote.type;
 
+import co.mcsky.vote.helper.MiscUtil;
 import com.plotsquared.core.events.TeleportCause;
 import com.plotsquared.core.player.PlotPlayer;
 import com.plotsquared.core.plot.Plot;
@@ -10,17 +11,19 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
+import static co.mcsky.vote.VoteMain.plugin;
+
 /**
  * Represents an architecture work.
  */
 public class Work {
-    // The UUID of the owner of this work.
+    // The UUID of the owner of this work
     private final UUID owner;
 
-    // All the votes this work has (can include the owner)
+    // All the votes this work got (can include the owner)
     private final Set<Vote> votes;
 
-    // The plot related to this work.
+    // The plot related to this work
     private final Plot plot;
 
     private Work(UUID owner, Set<Vote> votes, Plot plot) {
@@ -34,6 +37,17 @@ public class Work {
     }
 
     /**
+     * @param player the player to be teleported to this work
+     */
+    public void teleport(Player player) {
+        this.plot.teleportPlayer(
+                PlotPlayer.wrap(player),
+                TeleportCause.PLUGIN,
+                b -> player.sendMessage(plugin.getMessage(player, "gui-message.teleport-to-plot", "player", MiscUtil.getPlayerName(getOwner())))
+        );
+    }
+
+    /**
      * @return all votes of this work
      */
     public Set<Vote> getVotes() {
@@ -43,7 +57,7 @@ public class Work {
     /**
      * @return true, if this work is marked as done, otherwise false
      */
-    public boolean done() {
+    public boolean isDone() {
         return DoneFlag.isDone(this.plot);
     }
 
@@ -96,14 +110,6 @@ public class Work {
         return this.votes.stream()
                 .filter(vote -> vote.getRater().equals(rater))
                 .anyMatch(Vote::isAbsent);
-    }
-
-    /**
-     * @param player the player to be teleported to this work
-     */
-    public void teleport(Player player) {
-        this.plot.teleportPlayer(PlotPlayer.wrap(player), TeleportCause.PLUGIN, b -> {
-        });
     }
 
     public static WorkBuilder builder(UUID workOwner, Plot plot) {

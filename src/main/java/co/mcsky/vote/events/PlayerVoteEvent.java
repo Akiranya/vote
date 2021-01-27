@@ -1,5 +1,6 @@
 package co.mcsky.vote.events;
 
+import co.mcsky.vote.Votes;
 import co.mcsky.vote.type.Vote;
 import co.mcsky.vote.type.Work;
 import org.bukkit.entity.Player;
@@ -14,10 +15,13 @@ public class PlayerVoteEvent extends PlayerEvent implements Cancellable {
     private final Work work;
     private final Vote vote;
 
-    public PlayerVoteEvent(Player who, Work work, Vote vote) {
+    private final Votes votes;
+
+    public PlayerVoteEvent(Player who, Work work, Vote vote, Votes votes) {
         super(who);
         this.work = work;
         this.vote = vote;
+        this.votes = votes;
     }
 
     public Work getWork() {
@@ -26,6 +30,10 @@ public class PlayerVoteEvent extends PlayerEvent implements Cancellable {
 
     public Vote getVote() {
         return vote;
+    }
+
+    public Votes getVotes() {
+        return votes;
     }
 
     public static HandlerList getHandlerList() {

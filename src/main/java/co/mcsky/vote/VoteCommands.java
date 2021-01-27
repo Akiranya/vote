@@ -28,50 +28,33 @@ import java.util.stream.Collectors;
 public class VoteCommands extends BaseCommand {
 
     private final PlotAPI api;
+    private final VotesPool votesPool;
+    private final PaperCommandManager commands;
 
     @Dependency
     private VoteMain plugin;
-    private Votes votes;
 
     public VoteCommands(PaperCommandManager commands) {
         this.api = new PlotAPI();
-
-        // Command completions
-        commands.getCommandCompletions().registerCompletion("world", c -> Bukkit.getWorlds().stream()
-                .map(World::getName)
-                .collect(Collectors.toUnmodifiableList()));
-        commands.getCommandCompletions().registerCompletion("rate", c -> this.votes == null ? List.of("none") : this.votes.getCalculator().rawRaters()
-                .map(MiscUtil::getPlayerName)
-                .collect(Collectors.toUnmodifiableList()));
-        commands.getCommandCompletions().registerCompletion("work", c -> this.votes == null ? List.of("none") : this.votes.getWorks().stream()
-                .map(Work::getOwner)
-                .map(MiscUtil::getPlayerName)
-                .collect(Collectors.toUnmodifiableList()));
-
-        // Command conditions
-        commands.getCommandConditions().addCondition("ready", c -> {
-            if (this.votes == null) {
-                throw new ConditionFailedException(plugin.getMessage(c.getIssuer().getIssuer(), "chat-message.vote-system-not-available"));
-            }
-        });
-        commands.getCommandConditions().addCondition(World.class, "plotworld", (context, execContext, value) -> this.api.getPlotSquared().getPlotAreas(value.getName()).parallelStream()
-                .flatMap(plotArea -> plotArea.getPlots().stream())
-                .map(Plot::hasOwner) // Only count owned plots
-                .findAny().orElseThrow(() -> new ConditionFailedException(plugin.getMessage(execContext.getSender(), "chat-message.world-no-plots", "world", value.getName()))));
+        this.votesPool = VotesPool.create();
+        this.commands = commands;
+        registerCompletions();
+        registerConditions();
     }
 
     @Default
     @Conditions("ready")
     public void open(Player player) {
-        new WorkListingGui(player, this.votes).open();
+        new WorkListingGui(player, votesPool.get()).open();
     }
 
+    @SuppressWarnings("ConstantConditions")
     @Subcommand("ready")
     @Conditions("ready")
     @CommandPermission("votes.admin")
     public void ready(CommandSender sender) {
-        this.votes.ready(!this.votes.ready());
-        sender.sendMessage(plugin.getMessage(sender, "chat-message.mark-vote-system", "state", this.votes.ready()));
+        votesPool.get().setReady(!votesPool.get().isReady());
+        sender.sendMessage(plugin.getMessage(sender, "chat-message.mark-vote-system", "state", votesPool.get().isReady()));
     }
 
     @Subcommand("reload")
@@ -86,19 +69,19 @@ public class VoteCommands extends BaseCommand {
     @CommandCompletion("@world")
     @CommandPermission("votes.admin")
     public void pull(CommandSender sender, @Conditions("plotworld") World world) {
-        if (this.votes != null) {
-            // Cleanup existing vote system
-            try {
-                this.votes.close();
-            } catch (Exception e) {
-                this.plugin.getLogger().severe(e.getMessage());
-            }
-        }
-        this.votes = new Votes(world.getName());
+        votesPool.register(world.getName());
         sender.sendMessage(plugin.getMessage(sender, "chat-message.plot-information-pulled"));
     }
 
-    @SuppressWarnings("StringBufferReplaceableByString")
+    @Subcommand("purge")
+    @CommandCompletion("@world")
+    @CommandPermission("votes.admin")
+    public void purge(CommandSender sender, @Conditions("plotworld") World world) {
+        votesPool.unregister(world.getName());
+        sender.sendMessage(plugin.getMessage(sender, "chat-message.plot-information-deleted"));
+    }
+
+    @SuppressWarnings("StringBufferReplaceableByString ConstantConditions")
     @Subcommand("stats")
     @Conditions("ready")
     public class Stats extends BaseCommand {
@@ -112,7 +95,7 @@ public class VoteCommands extends BaseCommand {
         @Default
         public void overview(CommandSender sender) {
             Schedulers.builder().async().now().run(() -> {
-                VoteCalculator calc = votes.getCalculator();
+                VoteCalculator calc = votesPool.get().getCalculator();
 
                 int validRatersCount = calc.validRaters().size();
                 long invalidRatersCount = calc.invalidRaters().size();
@@ -126,7 +109,7 @@ public class VoteCommands extends BaseCommand {
                         .append(plugin.getMessage(sender, "chat-message.valid-rater-list", "count", validRatersCount, "list", validRaters)).append(LINE_SEPARATOR);
 
                 sb.append(TITLE).append(LINE_SEPARATOR);
-                votes.getWorks().stream().map(Work::getOwner).forEach(uuid -> {
+                votesPool.get().getWorks().stream().map(Work::getOwner).forEach(uuid -> {
                     float greenVoteProportion = 100F * calc.greenVotes(uuid).size() / calc.validVotes(uuid).count();
                     sb.append(String.format(plugin.getMessage(sender, "chat-message.work-information-line"), calc.greenVotes(uuid).size(), calc.redVotes(uuid).size(), calc.validVotes(uuid).count(), greenVoteProportion, MiscUtil.getPlayerName(uuid)));
                     sb.append(LINE_SEPARATOR);
@@ -140,7 +123,7 @@ public class VoteCommands extends BaseCommand {
         @CommandCompletion("@work")
         public void work(CommandSender sender, OfflinePlayer work) {
             Schedulers.builder().async().now().run(() -> {
-                VoteCalculator calc = votes.getCalculator();
+                VoteCalculator calc = votesPool.get().getCalculator();
 
                 UUID workOwner = work.getUniqueId();
                 long greenRatersCount = calc.greenVotes(workOwner).size();
@@ -168,7 +151,7 @@ public class VoteCommands extends BaseCommand {
         @CommandCompletion("@rate")
         public void rater(CommandSender sender, OfflinePlayer rater) {
             Schedulers.builder().async().now().run(() -> {
-                VoteCalculator calc = votes.getCalculator();
+                VoteCalculator calc = votesPool.get().getCalculator();
 
                 UUID raterUuid = rater.getUniqueId();
                 long greenWorksCount = calc.greenWorks(raterUuid).size();
@@ -191,6 +174,35 @@ public class VoteCommands extends BaseCommand {
                 sender.sendMessage(sb.toString());
             });
         }
+    }
+
+    private void registerCompletions() {
+        commands.getCommandCompletions().registerCompletion("world", c -> Bukkit.getWorlds().stream()
+                .map(World::getName)
+                .collect(Collectors.toUnmodifiableList()));
+        commands.getCommandCompletions().registerCompletion("rate", c -> votesPool.acquire()
+                .map(votes -> votes.getCalculator().rawRaters()
+                        .map(MiscUtil::getPlayerName)
+                        .collect(Collectors.toUnmodifiableList()))
+                .orElse(List.of("none")));
+        commands.getCommandCompletions().registerCompletion("work", c -> votesPool.acquire()
+                .map(votes -> votes.getWorks().stream()
+                        .map(Work::getOwner)
+                        .map(MiscUtil::getPlayerName)
+                        .collect(Collectors.toUnmodifiableList()))
+                .orElse(List.of("none")));
+    }
+
+    private void registerConditions() {
+        commands.getCommandConditions().addCondition("ready", c -> {
+            if (!votesPool.containsAny()) {
+                throw new ConditionFailedException(plugin.getMessage(c.getIssuer().getIssuer(), "chat-message.vote-system-not-available"));
+            }
+        });
+        commands.getCommandConditions().addCondition(World.class, "plotworld", (context, execContext, value) -> api.getPlotSquared().getPlotAreas(value.getName()).parallelStream()
+                .flatMap(plotArea -> plotArea.getPlots().stream())
+                .map(Plot::hasOwner) // Only count owned plots
+                .findAny().orElseThrow(() -> new ConditionFailedException(plugin.getMessage(execContext.getSender(), "chat-message.world-no-plots", "world", value.getName()))));
     }
 
 }
