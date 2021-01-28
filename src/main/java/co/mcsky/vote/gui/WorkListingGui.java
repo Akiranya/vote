@@ -1,7 +1,6 @@
 package co.mcsky.vote.gui;
 
 import co.mcsky.vote.type.Votes;
-import co.mcsky.vote.helper.MiscUtil;
 import co.mcsky.vote.type.Work;
 import com.destroystokyo.paper.Title;
 import com.google.common.collect.Lists;
@@ -35,7 +34,7 @@ public class WorkListingGui extends Gui {
 
     private final MenuScheme background = new MenuScheme(StandardSchemeMappings.STAINED_GLASS)
             .mask("111101111")
-            .mask("111111111")
+            .mask("110000011")
             .mask("110000011")
             .mask("110000011")
             .mask("111111111")
@@ -49,7 +48,8 @@ public class WorkListingGui extends Gui {
             .mask("000010000");
 
     private final List<Integer> itemSlots = new MenuScheme()
-            .maskEmpty(2)
+            .maskEmpty(1)
+            .mask("001111100")
             .mask("001111100")
             .mask("001111100")
             .getMaskedIndexesImmutable();
@@ -218,7 +218,7 @@ public class WorkListingGui extends Gui {
         this.content = this.votes.getWorks().parallelStream()
                 .filter(filter)
                 .map(work -> ItemStackBuilder.of(Material.PLAYER_HEAD)
-                        .name(plugin.getMessage(getPlayer(), "gui.work-listing.work-entry.name", "player", MiscUtil.getPlayerName(work.getOwner())))
+                        .name(plugin.getMessage(getPlayer(), "gui.work-listing.work-entry.name", "player", work.getOwnerName()))
                         .lore(plugin.getMessage(getPlayer(), "gui.work-listing.work-entry.lore1"))
                         .lore(plugin.getMessage(getPlayer(), "gui.work-listing.work-entry.lore2", "done", selectDoneString(work.isDone())))
                         .lore(plugin.getMessage(getPlayer(), "gui.work-listing.work-entry.lore3", "done", selectDoneString(work.voted(getPlayer().getUniqueId()))))

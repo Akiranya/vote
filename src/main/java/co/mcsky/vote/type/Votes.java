@@ -1,11 +1,11 @@
 package co.mcsky.vote.type;
 
 import co.mcsky.vote.VoteMain;
+import co.mcsky.vote.file.VoteStorage;
 import co.mcsky.vote.helper.VoteCalculator;
 import co.mcsky.vote.helper.VoteListener;
 import co.mcsky.vote.helper.VoteUpdater;
 import com.google.common.base.Preconditions;
-import com.plotsquared.core.api.PlotAPI;
 import com.plotsquared.core.plot.Plot;
 import me.lucko.helper.terminable.Terminable;
 import me.lucko.helper.terminable.composite.CompositeTerminable;
@@ -18,43 +18,37 @@ import java.util.*;
  */
 public class Votes implements Terminable {
 
-    // PlotAPI
-    private final PlotAPI api;
     // The game world where this instance manages
     private final String plotWorld;
-    // All vote stats, key is the UUID of owner of work
-    private final LinkedHashMap<UUID, Work> workMap;
-    // A calculator to get statistics about this votes
-    private final VoteCalculator voteCalculator;
+    // All works in this entire vote, where key is the UUID of owner of work
+    private final LinkedHashMap<UUID, Work> works;
     // True, if the vote system is ready (available), otherwise false
     private boolean ready;
 
     // The backing terminable registry
     private final CompositeTerminable terminableRegistry;
 
+    // A calculator to get statistics about this votes
+    private final VoteCalculator voteCalculator;
+
     /**
-     * Direct initialization is not allowed, instead use {@link VotesPool} to get an instance.
+     * Direct initialization is discouraged, instead use {@link VotesPool} to get an instance.
      *
      * @param plotWorld the plot world this instance manages
      */
-    protected Votes(String plotWorld) {
+    public Votes(String plotWorld) {
         this.plotWorld = plotWorld;
-        this.api = new PlotAPI();
-        this.workMap = new LinkedHashMap<>();
+        this.works = new LinkedHashMap<>();
         this.ready = false;
-
-        this.voteCalculator = new VoteCalculator(this);
 
         this.terminableRegistry = CompositeTerminable.create();
         this.terminableRegistry.bind(new VoteUpdater(this));
         this.terminableRegistry.bindModule(new VoteListener(this));
 
+        this.voteCalculator = new VoteCalculator(this);
+
         // Pull plot information when initiated
         pull();
-    }
-
-    public PlotAPI getApi() {
-        return api;
     }
 
     public String getPlotWorld() {
@@ -84,14 +78,14 @@ public class Votes implements Terminable {
      * @return the work of the owner
      */
     public Optional<Work> getWork(UUID owner) {
-        return Optional.ofNullable(workMap.get(owner));
+        return Optional.ofNullable(works.get(owner));
     }
 
     /**
      * @return all works
      */
     public Collection<Work> getWorks() {
-        return workMap.values();
+        return works.values();
     }
 
     /**
@@ -101,8 +95,8 @@ public class Votes implements Terminable {
      * @param vote  the vote for this work
      */
     public void vote(UUID owner, Vote vote) {
-        Preconditions.checkArgument(workMap.containsKey(owner), "Null work entry");
-        workMap.get(owner).vote(vote);
+        Preconditions.checkArgument(works.containsKey(owner), "Null work entry");
+        works.get(owner).vote(vote);
     }
 
     /**
@@ -113,21 +107,21 @@ public class Votes implements Terminable {
      * @param plot  the plot in which the work is located
      */
     public void createEntry(UUID owner, Plot plot) {
-        workMap.put(owner, Work.builder(owner, plot).build());
+        works.put(owner, Work.create(owner, plot).build());
     }
 
     /**
      * @param owner the owner of the work to be deleted
      */
     public void deleteEntry(UUID owner) {
-        workMap.remove(owner);
+        works.remove(owner);
     }
 
     /**
      * Updates work entries from all legal plots.
      */
     public void pull() {
-        getApi().getAllPlots().parallelStream()
+        VoteMain.plotApi.getAllPlots().parallelStream()
                 .filter(p -> p.hasOwner() && p.getWorldName().equalsIgnoreCase(plotWorld))
                 .forEach(p -> createEntry(p.getOwner(), p));
     }

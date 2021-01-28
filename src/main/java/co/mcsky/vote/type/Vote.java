@@ -1,15 +1,19 @@
 package co.mcsky.vote.type;
 
+import me.lucko.helper.utils.Players;
+import org.bukkit.OfflinePlayer;
+
 import java.util.UUID;
 
 /**
  * Represents a single vote.
  */
 public class Vote {
-    // The UUID of the owner of this vote.
+    // The UUID of the owner of this vote
     private final UUID rater;
-    // Whether this vote is marked as absent or not.
-    private boolean absent;
+
+    // Whether this vote is marked as absent or not
+    private final boolean absent;
 
     /**
      * Vote can be only constructed with {@link VoteBuilder}.
@@ -27,6 +31,13 @@ public class Vote {
     }
 
     /**
+     * @return the name of this vote owner
+     */
+    public String getRaterName() {
+        return Players.getOffline(rater).map(OfflinePlayer::getName).orElse("Not Cached");
+    }
+
+    /**
      * @return true, if the vote is marked as absent, otherwise false
      */
     public boolean isAbsent() {
@@ -38,13 +49,6 @@ public class Vote {
      */
     public boolean isPresent() {
         return !this.absent;
-    }
-
-    /**
-     * @param absent true, to set the vote to absent, otherwise false
-     */
-    public void setAbsent(boolean absent) {
-        this.absent = absent;
     }
 
     @Override
@@ -60,8 +64,8 @@ public class Vote {
         return rater.equals(vote.rater);
     }
 
-    public static VoteBuilder builder(UUID voter) {
-        return new VoteBuilder(voter);
+    public static VoteBuilder create(UUID rater) {
+        return new VoteBuilder(rater);
     }
 
     /**
@@ -76,13 +80,13 @@ public class Vote {
             this.absent = false;
         }
 
-        public VoteBuilder absent(boolean abs) {
-            this.absent = abs;
+        public VoteBuilder absent(boolean absent) {
+            this.absent = absent;
             return this;
         }
 
         public Vote build() {
-            return new Vote(this.owner, this.absent);
+            return new Vote(owner, absent);
         }
     }
 }

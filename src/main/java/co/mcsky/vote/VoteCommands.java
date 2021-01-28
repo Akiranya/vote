@@ -4,13 +4,13 @@ import co.aikar.commands.BaseCommand;
 import co.aikar.commands.ConditionFailedException;
 import co.aikar.commands.PaperCommandManager;
 import co.aikar.commands.annotation.*;
+import co.mcsky.vote.file.VoteStoragePool;
 import co.mcsky.vote.gui.WorkListingGui;
-import co.mcsky.vote.helper.MiscUtil;
+import co.mcsky.vote.util.PlayerUtil;
 import co.mcsky.vote.helper.VoteCalculator;
 import co.mcsky.vote.type.Vote;
 import co.mcsky.vote.type.VotesPool;
 import co.mcsky.vote.type.Work;
-import com.plotsquared.core.api.PlotAPI;
 import com.plotsquared.core.plot.Plot;
 import me.lucko.helper.Schedulers;
 import org.bukkit.Bukkit;
@@ -28,19 +28,50 @@ import java.util.stream.Collectors;
 @CommandAlias("votes")
 public class VoteCommands extends BaseCommand {
 
-    private final PlotAPI api;
-    private final VotesPool votesPool;
+    // Dependency injection does not work for this instance
     private final PaperCommandManager commands;
 
     @Dependency
     private VoteMain plugin;
+    @Dependency
+    private VotesPool votesPool;
+    @Dependency
+    private VoteStoragePool voteStoragePool;
 
     public VoteCommands(PaperCommandManager commands) {
-        this.api = new PlotAPI();
-        this.votesPool = VotesPool.create();
         this.commands = commands;
-        registerCompletions();
         registerConditions();
+        registerCompletions();
+    }
+
+    private void registerCompletions() {
+        commands.getCommandCompletions().registerCompletion("world", c -> Bukkit.getWorlds().stream()
+                .map(World::getName)
+                .collect(Collectors.toUnmodifiableList()));
+        commands.getCommandCompletions().registerCompletion("rate", c -> votesPool.peek()
+                .map(votes -> votes.getCalculator().rawRaters()
+                        .map(PlayerUtil::getName)
+                        .collect(Collectors.toUnmodifiableList()))
+                .orElse(List.of("none")));
+        commands.getCommandCompletions().registerCompletion("work", c -> votesPool.peek()
+                .map(votes -> votes.getWorks().stream()
+                        .map(Work::getOwner)
+                        .map(PlayerUtil::getName)
+                        .collect(Collectors.toUnmodifiableList()))
+                .orElse(List.of("none")));
+    }
+
+    private void registerConditions() {
+        commands.getCommandConditions().addCondition("ready", c -> {
+            if (!votesPool.containsAny()) {
+                throw new ConditionFailedException(plugin.getMessage(c.getIssuer().getIssuer(), "chat-message.vote-system-not-available"));
+            }
+        });
+        commands.getCommandConditions().addCondition(World.class, "plotworld", (context, execContext, value) -> VoteMain.plotApi.getPlotSquared().getPlotAreas(value.getName()).parallelStream()
+                .flatMap(plotArea -> plotArea.getPlots().stream())
+                .map(Plot::hasOwner) // Only count owned plots
+                .findAny()
+                .orElseThrow(() -> new ConditionFailedException(plugin.getMessage(execContext.getSender(), "chat-message.world-no-plots", "world", value.getName()))));
     }
 
     @Default
@@ -70,16 +101,30 @@ public class VoteCommands extends BaseCommand {
     @CommandCompletion("@world")
     @CommandPermission("votes.admin")
     public void pull(CommandSender sender, @Conditions("plotworld") World world) {
-        votesPool.register(world.getName());
-        sender.sendMessage(plugin.getMessage(sender, "chat-message.plot-information-pulled"));
+        if (votesPool.register(world.getName())) {
+            sender.sendMessage(plugin.getMessage(sender, "chat-message.plot-information-pulled"));
+        } else {
+            sender.sendMessage(plugin.getMessage(sender, "chat-message.plot-information-pulled-already"));
+        }
     }
 
     @Subcommand("purge")
     @CommandCompletion("@world")
     @CommandPermission("votes.admin")
     public void purge(CommandSender sender, @Conditions("plotworld") World world) {
-        votesPool.unregister(world.getName());
-        sender.sendMessage(plugin.getMessage(sender, "chat-message.plot-information-deleted"));
+        if (votesPool.unregister(world.getName())) {
+            sender.sendMessage(plugin.getMessage(sender, "chat-message.plot-information-deleted"));
+        } else {
+            sender.sendMessage(plugin.getMessage(sender, "chat-message.plot-information-deleted-already"));
+        }
+
+    }
+
+    @Subcommand("save")
+    @CommandPermission("votes.admin")
+    public void save(CommandSender sender) {
+        voteStoragePool.saveAll();
+        sender.sendMessage(plugin.getMessage(sender, "chat-message.saved-all"));
     }
 
     @SuppressWarnings("StringBufferReplaceableByString ConstantConditions")
@@ -89,6 +134,7 @@ public class VoteCommands extends BaseCommand {
         // Portable way to get the line separator
         final String TITLE = ChatColor.translateAlternateColorCodes('&', "&8=-=-=-=-=-=-= &6比赛评分统计概览&8 =-=-=-=-=-=-=");
         final String LIST_SEPARATOR = ChatColor.translateAlternateColorCodes('&', " &8-&r ");
+
         final String LINE_SEPARATOR = System.lineSeparator();
 
         // These methods should be thread-safe, so run them async
@@ -101,8 +147,8 @@ public class VoteCommands extends BaseCommand {
                 int validRatersCount = calc.validRaters().size();
                 long invalidRatersCount = calc.invalidRaters().size();
                 Collector<CharSequence, ?, String> joining = Collectors.joining(LIST_SEPARATOR);
-                String invalidRaters = calc.invalidRaters().stream().map(MiscUtil::getPlayerName).collect(joining);
-                String validRaters = calc.validRaters().stream().map(MiscUtil::getPlayerName).collect(joining);
+                String invalidRaters = calc.invalidRaters().stream().map(PlayerUtil::getName).collect(joining);
+                String validRaters = calc.validRaters().stream().map(PlayerUtil::getName).collect(joining);
 
                 StringBuilder sb = new StringBuilder()
                         .append(TITLE).append(LINE_SEPARATOR)
@@ -112,7 +158,7 @@ public class VoteCommands extends BaseCommand {
                 sb.append(TITLE).append(LINE_SEPARATOR);
                 votesPool.get().getWorks().stream().map(Work::getOwner).forEach(uuid -> {
                     float greenVoteProportion = 100F * calc.greenVotes(uuid).size() / calc.validVotes(uuid).count();
-                    sb.append(String.format(plugin.getMessage(sender, "chat-message.work-information-line"), calc.greenVotes(uuid).size(), calc.redVotes(uuid).size(), calc.validVotes(uuid).count(), greenVoteProportion, MiscUtil.getPlayerName(uuid)));
+                    sb.append(String.format(plugin.getMessage(sender, "chat-message.work-information-line"), calc.greenVotes(uuid).size(), calc.redVotes(uuid).size(), calc.validVotes(uuid).count(), greenVoteProportion, PlayerUtil.getName(uuid)));
                     sb.append(LINE_SEPARATOR);
                 });
 
@@ -132,11 +178,11 @@ public class VoteCommands extends BaseCommand {
                 Collector<CharSequence, ?, String> joining = Collectors.joining(LIST_SEPARATOR);
                 String greenRaters = calc.greenVotes(workOwner).stream()
                         .map(Vote::getRater)
-                        .map(MiscUtil::getPlayerName)
+                        .map(PlayerUtil::getName)
                         .collect(joining);
                 String redRaters = calc.redVotes(workOwner).stream()
                         .map(Vote::getRater)
-                        .map(MiscUtil::getPlayerName)
+                        .map(PlayerUtil::getName)
                         .collect(joining);
 
                 StringBuilder sb = new StringBuilder()
@@ -159,12 +205,10 @@ public class VoteCommands extends BaseCommand {
                 long redWorksCount = calc.redWorks(raterUuid).size();
                 Collector<CharSequence, ?, String> joining = Collectors.joining(LIST_SEPARATOR);
                 String greenWorks = calc.greenWorks(raterUuid).stream()
-                        .map(Work::getOwner)
-                        .map(MiscUtil::getPlayerName)
+                        .map(Work::getOwnerName)
                         .collect(joining);
                 String redWorks = calc.redWorks(raterUuid).stream()
-                        .map(Work::getOwner)
-                        .map(MiscUtil::getPlayerName)
+                        .map(Work::getOwnerName)
                         .collect(joining);
 
                 StringBuilder sb = new StringBuilder()
@@ -175,35 +219,6 @@ public class VoteCommands extends BaseCommand {
                 sender.sendMessage(sb.toString());
             });
         }
-    }
-
-    private void registerCompletions() {
-        commands.getCommandCompletions().registerCompletion("world", c -> Bukkit.getWorlds().stream()
-                .map(World::getName)
-                .collect(Collectors.toUnmodifiableList()));
-        commands.getCommandCompletions().registerCompletion("rate", c -> votesPool.acquire()
-                .map(votes -> votes.getCalculator().rawRaters()
-                        .map(MiscUtil::getPlayerName)
-                        .collect(Collectors.toUnmodifiableList()))
-                .orElse(List.of("none")));
-        commands.getCommandCompletions().registerCompletion("work", c -> votesPool.acquire()
-                .map(votes -> votes.getWorks().stream()
-                        .map(Work::getOwner)
-                        .map(MiscUtil::getPlayerName)
-                        .collect(Collectors.toUnmodifiableList()))
-                .orElse(List.of("none")));
-    }
-
-    private void registerConditions() {
-        commands.getCommandConditions().addCondition("ready", c -> {
-            if (!votesPool.containsAny()) {
-                throw new ConditionFailedException(plugin.getMessage(c.getIssuer().getIssuer(), "chat-message.vote-system-not-available"));
-            }
-        });
-        commands.getCommandConditions().addCondition(World.class, "plotworld", (context, execContext, value) -> api.getPlotSquared().getPlotAreas(value.getName()).parallelStream()
-                .flatMap(plotArea -> plotArea.getPlots().stream())
-                .map(Plot::hasOwner) // Only count owned plots
-                .findAny().orElseThrow(() -> new ConditionFailedException(plugin.getMessage(execContext.getSender(), "chat-message.world-no-plots", "world", value.getName()))));
     }
 
 }

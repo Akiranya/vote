@@ -1,4 +1,4 @@
-package co.mcsky.vote;
+package co.mcsky.vote.file;
 
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.ConfigurateException;
@@ -11,17 +11,16 @@ import static co.mcsky.vote.VoteMain.plugin;
 
 public final class VoteConfig {
 
-    public static final String configFileName = "config.yml";
-
-    public boolean allowVoteWhenUndone;
-    public boolean allowVoteWhenNotEnded;
+    private static final String configFileName = "config.yml";
 
     private final YamlConfigurationLoader loader;
     private CommentedConfigurationNode root;
 
+    public boolean allowVoteWhenUndone;
+    public boolean allowVoteWhenNotEnded;
+
     public VoteConfig() {
         loader = YamlConfigurationLoader.builder()
-                .indent(4)
                 .path(new File(plugin.getDataFolder(), configFileName).toPath())
                 .nodeStyle(NodeStyle.BLOCK)
                 .build();
@@ -45,6 +44,10 @@ public final class VoteConfig {
         } catch (ConfigurateException e) {
             plugin.getLogger().severe(e.getMessage());
         }
+    }
+
+    public CommentedConfigurationNode root() {
+        return root;
     }
 
 }

@@ -2,7 +2,6 @@ package co.mcsky.vote.gui;
 
 import co.mcsky.vote.type.Votes;
 import co.mcsky.vote.events.PlayerVoteEvent;
-import co.mcsky.vote.helper.MiscUtil;
 import co.mcsky.vote.type.Vote;
 import co.mcsky.vote.type.Work;
 import me.lucko.helper.Events;
@@ -70,19 +69,18 @@ public class VoteOptionGui extends Gui {
                             }));
 
             // Populate the vote options
-            UUID workOwner = work.getOwner();
-            UUID voteOwner = getPlayer().getUniqueId();
+            UUID rater = getPlayer().getUniqueId();
             optionPopulator.accept(
                     ItemStackBuilder.of(Material.GREEN_WOOL)
                             .name(plugin.getMessage(getPlayer(), "gui.vote-options.vote-work.name"))
                             .lore(plugin.getMessage(getPlayer(), "gui.vote-options.vote-work.lore1"))
                             .lore(plugin.getMessage(getPlayer(), "gui.vote-options.vote-work.lore2"))
                             .build(() -> {
-                                Vote vote = Vote.builder(voteOwner).absent(false).build();
+                                Vote vote = Vote.create(rater).absent(false).build();
                                 if (!Events.callAndReturn(new PlayerVoteEvent(getPlayer(), work, vote, votes)).isCancelled()) {
                                     playSound(Sound.ENTITY_PLAYER_LEVELUP);
-                                    getPlayer().sendMessage(plugin.getMessage(getPlayer(), "gui-message.vote-work", "player", MiscUtil.getPlayerName(work.getOwner())));
-                                    votes.vote(workOwner, vote);
+                                    getPlayer().sendMessage(plugin.getMessage(getPlayer(), "gui-message.vote-work", "player", work.getOwnerName()));
+                                    votes.vote(work.getOwner(), vote);
                                     close();
                                 } else {
                                     playSound(Sound.ENTITY_BLAZE_HURT);
@@ -94,11 +92,11 @@ public class VoteOptionGui extends Gui {
                             .lore(plugin.getMessage(getPlayer(), "gui.vote-options.vote-work-absent.lore1"))
                             .lore(plugin.getMessage(getPlayer(), "gui.vote-options.vote-work-absent.lore2"))
                             .build(() -> {
-                                Vote vote = Vote.builder(voteOwner).absent(true).build();
-                                if (!Events.callAndReturn(new PlayerVoteEvent(getPlayer(), work, vote, votes)).isCancelled()) {
+                                Vote vote = Vote.create(rater).absent(true).build();
+                                if (!Events.callAndReturn(new PlayerVoteEvent(getPlayer(), this.work, vote, votes)).isCancelled()) {
                                     playSound(Sound.ENTITY_PLAYER_LEVELUP);
-                                    getPlayer().sendMessage(plugin.getMessage(getPlayer(), "gui-message.vote-work-absent", "player", MiscUtil.getPlayerName(work.getOwner())));
-                                    votes.vote(workOwner, Vote.builder(voteOwner).absent(true).build());
+                                    getPlayer().sendMessage(plugin.getMessage(getPlayer(), "gui-message.vote-work-absent", "player", work.getOwnerName()));
+                                    votes.vote(work.getOwner(), Vote.create(rater).absent(true).build());
                                     close();
                                 } else {
                                     playSound(Sound.ENTITY_BLAZE_HURT);

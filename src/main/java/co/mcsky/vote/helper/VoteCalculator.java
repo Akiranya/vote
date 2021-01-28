@@ -84,42 +84,42 @@ public class VoteCalculator {
     }
 
     /**
-     * @param workOwner the owner of a work
+     * @param work the owner of a work
      * @return set of votes of the work, regardless of the vote is valid
      */
-    public Set<Vote> rawVotes(UUID workOwner) {
-        return this.votes.getWork(workOwner)
+    public Set<Vote> rawVotes(UUID work) {
+        return this.votes.getWork(work)
                 .map(Work::getVotes)
                 .orElse(Set.of());
     }
 
     /**
-     * @param workOwner the owner of a work
+     * @param work the owner of a work
      * @return stream of all valid votes of the given work
      */
-    public Stream<Vote> validVotes(UUID workOwner) {
-        return this.votes.getWork(workOwner)
+    public Stream<Vote> validVotes(UUID work) {
+        return this.votes.getWork(work)
                 .map(Work::getVotes)
                 .orElse(Set.of()).stream()
                 .filter(vote -> valid(vote.getRater()));
     }
 
     /**
-     * @param workOwner the owner of the work
+     * @param work the owner of the work
      * @return set of valid red votes of the given work
      */
-    public Set<Vote> redVotes(UUID workOwner) {
-        return validVotes(workOwner)
+    public Set<Vote> redVotes(UUID work) {
+        return validVotes(work)
                 .filter(Vote::isAbsent)
                 .collect(Collectors.toUnmodifiableSet());
     }
 
     /**
-     * @param workOwner the owner of the work
+     * @param work the owner of the work
      * @return set of valid green votes of the given work
      */
-    public Set<Vote> greenVotes(UUID workOwner) {
-        return validVotes(workOwner)
+    public Set<Vote> greenVotes(UUID work) {
+        return validVotes(work)
                 .filter(Vote::isPresent)
                 .collect(Collectors.toUnmodifiableSet());
     }

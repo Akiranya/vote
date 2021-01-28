@@ -1,10 +1,11 @@
 package co.mcsky.vote.type;
 
-import co.mcsky.vote.helper.MiscUtil;
 import com.plotsquared.core.events.TeleportCause;
 import com.plotsquared.core.player.PlotPlayer;
 import com.plotsquared.core.plot.Plot;
 import com.plotsquared.core.plot.flag.implementations.DoneFlag;
+import me.lucko.helper.utils.Players;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import java.util.HashSet;
@@ -32,19 +33,25 @@ public class Work {
         this.plot = plot;
     }
 
+    /**
+     * @return the owner of this work
+     */
     public UUID getOwner() {
         return this.owner;
     }
 
     /**
-     * @param player the player to be teleported to this work
+     * @return the name of this work owner
      */
-    public void teleport(Player player) {
-        this.plot.teleportPlayer(
-                PlotPlayer.wrap(player),
-                TeleportCause.PLUGIN,
-                b -> player.sendMessage(plugin.getMessage(player, "gui-message.teleport-to-plot", "player", MiscUtil.getPlayerName(getOwner())))
-        );
+    public String getOwnerName() {
+        return Players.getOffline(owner).map(OfflinePlayer::getName).orElse("Not Cached");
+    }
+
+    /**
+     * @return the plot related to this work
+     */
+    public Plot getPlot() {
+        return plot;
     }
 
     /**
@@ -59,6 +66,17 @@ public class Work {
      */
     public boolean isDone() {
         return DoneFlag.isDone(this.plot);
+    }
+
+    /**
+     * @param player the player to be teleported to this work
+     */
+    public void teleport(Player player) {
+        this.plot.teleportPlayer(
+                PlotPlayer.wrap(player),
+                TeleportCause.PLUGIN,
+                b -> player.sendMessage(plugin.getMessage(player, "gui-message.teleport-to-plot", "player", getOwnerName()))
+        );
     }
 
     /**
@@ -112,8 +130,12 @@ public class Work {
                 .anyMatch(Vote::isAbsent);
     }
 
-    public static WorkBuilder builder(UUID workOwner, Plot plot) {
-        return new WorkBuilder(workOwner, plot);
+    public static WorkBuilder create(UUID work, Plot plot) {
+        return new WorkBuilder(work, plot);
+    }
+
+    public static WorkBuilder createX(UUID workOwner) {
+        return new WorkBuilder(workOwner, null);
     }
 
     public static class WorkBuilder {

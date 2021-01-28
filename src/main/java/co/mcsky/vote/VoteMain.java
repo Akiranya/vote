@@ -1,6 +1,10 @@
 package co.mcsky.vote;
 
 import co.aikar.commands.PaperCommandManager;
+import co.mcsky.vote.file.VoteConfig;
+import co.mcsky.vote.file.VoteStoragePool;
+import co.mcsky.vote.type.VotesPool;
+import com.plotsquared.core.api.PlotAPI;
 import de.themoep.utils.lang.bukkit.LanguageManager;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -14,6 +18,10 @@ import java.util.Arrays;
 public class VoteMain extends JavaPlugin {
 
     public static VoteMain plugin;
+    public static PlotAPI plotApi;
+
+    public VotesPool votesPool;
+    public VoteStoragePool voteStoragePool;
 
     public VoteConfig config;
     public LanguageManager lang;
@@ -21,15 +29,21 @@ public class VoteMain extends JavaPlugin {
 
     @Override
     public void onDisable() {
+        this.voteStoragePool.saveAll();
     }
 
     @Override
     public void onEnable() {
         plugin = this;
+        plotApi = new PlotAPI();
 
         this.config = new VoteConfig();
         this.config.load();
         this.config.save();
+
+        this.votesPool = VotesPool.create();
+        this.voteStoragePool = VoteStoragePool.create(votesPool);
+        this.voteStoragePool.readAll();
 
         loadLanguages();
         registerCommands();
@@ -37,7 +51,9 @@ public class VoteMain extends JavaPlugin {
 
     public void registerCommands() {
         commands = new PaperCommandManager(this);
-        commands.getCommandReplacements().addReplacement("moe", "moe");
+        commands.registerDependency(VotesPool.class, votesPool);
+        commands.registerDependency(VoteStoragePool.class, voteStoragePool);
+        commands.registerDependency(PaperCommandManager.class, commands);
         commands.registerCommand(new VoteCommands(commands));
     }
 
@@ -72,4 +88,5 @@ public class VoteMain extends JavaPlugin {
                     .toArray(String[]::new));
         }
     }
+
 }

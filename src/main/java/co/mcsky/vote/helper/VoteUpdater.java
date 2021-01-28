@@ -1,5 +1,6 @@
 package co.mcsky.vote.helper;
 
+import co.mcsky.vote.VoteMain;
 import co.mcsky.vote.type.Votes;
 import com.google.common.eventbus.Subscribe;
 import com.plotsquared.core.events.PlayerClaimPlotEvent;
@@ -20,7 +21,7 @@ public class VoteUpdater implements Terminable {
 
     public VoteUpdater(Votes votes) {
         this.votes = votes;
-        this.votes.getApi().registerListener(this);
+        VoteMain.plotApi.registerListener(this);
     }
 
     @Subscribe
@@ -33,7 +34,7 @@ public class VoteUpdater implements Terminable {
         }
     }
 
-    // This event is too buggy...
+    // Don't listen to PlayerAutoPlotEvent since this is too buggy...
 //    @Subscribe
 //    public void onPlayerAutoPlot(PlayerAutoPlotEvent event) {
 //        if (validateWorld(event.getPlotArea().getWorldName())) {
@@ -59,7 +60,7 @@ public class VoteUpdater implements Terminable {
     }
 
     @Override
-    public void close() throws Exception {
-        this.votes.getApi().getPlotSquared().getEventDispatcher().unregisterListener(this);
+    public void close() {
+        VoteMain.plotApi.getPlotSquared().getEventDispatcher().unregisterListener(this);
     }
 }
