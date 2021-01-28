@@ -1,8 +1,0 @@
-name: VotePlugin
-main: co.mcsky.vote.VoteMain
-version: 1.22
-api-version: 1.13
-author: Nailm
-prefix: Vote
-website: https://mimaru.me
-depend: [helper, PlotSquared]
