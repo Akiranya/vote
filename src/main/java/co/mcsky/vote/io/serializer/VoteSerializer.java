@@ -24,9 +24,6 @@ public class VoteSerializer implements TypeSerializer<Vote> {
 
     @Override
     public Vote deserialize(Type type, ConfigurationNode node) throws SerializationException {
-        if (node.getString() == null) {
-            throw new SerializationException("no value");
-        }
         UUID uuid = node.node("uuid").get(UUID.class);
         boolean absent = node.node("absent").getBoolean();
         return Vote.create(uuid).absent(absent).build();
