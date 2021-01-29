@@ -1,4 +1,4 @@
-package co.mcsky.vote.file.serializer;
+package co.mcsky.vote.io.serializer;
 
 import co.mcsky.vote.type.Vote;
 import co.mcsky.vote.type.Votes;
@@ -12,15 +12,21 @@ import org.spongepowered.configurate.serialize.TypeSerializer;
 
 import java.lang.reflect.Type;
 import java.util.*;
+import java.util.logging.Logger;
 
 /**
- * Handles de(serialization) for a instance of {@link Votes}
+ * Handles de(serialization) for an instance of {@link Votes}
  */
 public class VotesSerializer implements TypeSerializer<Votes> {
 
+    private final Logger logger;
+
+    public VotesSerializer(Logger logger) {
+        this.logger = logger;
+    }
+
     @Override
     public Votes deserialize(Type type, ConfigurationNode node) throws SerializationException {
-        // There should be only a key, so using findAny() to get the world name is okay
         String world = Objects.requireNonNull(node.node("world").getString(), "world");
 
         // Pull all works first. At this stage, all works have no votes
@@ -30,8 +36,13 @@ public class VotesSerializer implements TypeSerializer<Votes> {
         ConfigurationNode worksNode = node.node("works");
         for (Map.Entry<Object, ? extends ConfigurationNode> workNode : worksNode.childrenMap().entrySet()) {
             UUID workUuid = UUID.fromString(workNode.getKey().toString());
-            Work work = votes.getWork(workUuid).orElseThrow(() -> new SerializationException("Work is presented in file but not in plot database"));
-            workNode.getValue().node("raters").getList(Vote.class, List.of()).forEach(work::vote);
+            if (votes.getWork(workUuid).isPresent()) {
+                Work work = votes.getWork(workUuid).get();
+                workNode.getValue().node("raters").getList(Vote.class, List.of()).forEach(work::vote);
+            } else {
+                // Log the data alignment issue
+                logger.warning("UUID is presented in file but not in plot database: " + workUuid.toString());
+            }
         }
 
         return votes;

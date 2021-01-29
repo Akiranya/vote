@@ -1,4 +1,4 @@
-package co.mcsky.vote.file;
+package co.mcsky.vote;
 
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.ConfigurateException;

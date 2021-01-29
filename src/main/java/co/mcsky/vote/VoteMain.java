@@ -1,8 +1,7 @@
 package co.mcsky.vote;
 
 import co.aikar.commands.PaperCommandManager;
-import co.mcsky.vote.file.VoteConfig;
-import co.mcsky.vote.file.VoteStoragePool;
+import co.mcsky.vote.io.VoteStoragePool;
 import co.mcsky.vote.type.VotesPool;
 import com.plotsquared.core.api.PlotAPI;
 import de.themoep.utils.lang.bukkit.LanguageManager;

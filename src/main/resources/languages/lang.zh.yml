@@ -52,8 +52,8 @@ gui-message:
   vote-work-absent: "&7你给参赛选手 &6{player} &7的作品投出了 &c弃权票"
   teleport-to-plot: "&7已传送到参赛选手 &6{player} &7的作品附近"
   must-vote-filtered: "&7已为你显示必须要评分的作品."
-  vote-not-done: "&c你还没有完成评分, 这将导致你的所有评分结果被系统完全忽略!"
-  vote-all-done: "&6你已完成所有评分, 辛苦了~ 你的投票结果将作为参赛选手晋级的标准之一."
+  vote-not-done: "&c你还没有完成评分,这将导致你的所有评分结果被系统完全忽略!"
+  vote-all-done: "&6你已完成所有评分,辛苦了~你的投票结果将作为参赛选手晋级的标准之一."
 chat-message:
   saved-all: "&6所有地皮的评分数据已保存."
   cannot-vote-for-work-undone: "&c未完成的作品不能参与投票."

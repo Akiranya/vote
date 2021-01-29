@@ -1,14 +1,14 @@
-package co.mcsky.vote.file;
+package co.mcsky.vote.io;
 
+import co.mcsky.vote.VoteMain;
 import co.mcsky.vote.type.Vote;
 import co.mcsky.vote.type.Votes;
-import co.mcsky.vote.file.serializer.VoteSerializer;
-import co.mcsky.vote.file.serializer.VotesSerializer;
+import co.mcsky.vote.io.serializer.VoteSerializer;
+import co.mcsky.vote.io.serializer.VotesSerializer;
 import me.lucko.helper.serialize.FileStorageHandler;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.ConfigurateException;
 import org.spongepowered.configurate.serialize.TypeSerializerCollection;
-import org.spongepowered.configurate.yaml.NodeStyle;
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 
 import java.io.File;
@@ -32,13 +32,13 @@ public class VoteStorage extends FileStorageHandler<Votes> {
         super(fileName, fileExtension, dataFolder);
 
         TypeSerializerCollection serializers = TypeSerializerCollection.builder()
-                .register(Votes.class, new VotesSerializer())
-                .register(Vote.class, new VoteSerializer())
+                .register(Votes.class, new VotesSerializer(VoteMain.plugin.getLogger()))
+                .register(Vote.class, new VoteSerializer(VoteMain.plugin.getLogger()))
                 .build();
         loader = YamlConfigurationLoader.builder()
                 .path(new File(dataFolder, fileName + fileExtension).toPath())
                 .defaultOptions(opts -> opts.serializers(builder -> builder.registerAll(serializers)))
-                .nodeStyle(NodeStyle.BLOCK)
+//                .nodeStyle(NodeStyle.BLOCK)
                 .build();
 
         try {

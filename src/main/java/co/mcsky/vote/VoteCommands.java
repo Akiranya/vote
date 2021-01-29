@@ -4,7 +4,7 @@ import co.aikar.commands.BaseCommand;
 import co.aikar.commands.ConditionFailedException;
 import co.aikar.commands.PaperCommandManager;
 import co.aikar.commands.annotation.*;
-import co.mcsky.vote.file.VoteStoragePool;
+import co.mcsky.vote.io.VoteStoragePool;
 import co.mcsky.vote.gui.WorkListingGui;
 import co.mcsky.vote.util.PlayerUtil;
 import co.mcsky.vote.helper.VoteCalculator;
