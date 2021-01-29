@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
 import static co.mcsky.vote.VoteMain.plugin;
 
 @SuppressWarnings("ConstantConditions")
-public class WorkListingGui extends VoicedGui {
+public class MainGui extends VoicedGui {
 
     enum GuiView {
         LISTING, OPTIONS
@@ -107,7 +107,7 @@ public class WorkListingGui extends VoicedGui {
     // the backed instances
     private final Votes votes;
 
-    public WorkListingGui(Player player, Votes votes) {
+    public MainGui(Player player, Votes votes) {
         super(player, 5, plugin.getMessage(player, "gui.work-listing.title"));
         this.votes = votes;
 
