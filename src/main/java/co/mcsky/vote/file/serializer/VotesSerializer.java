@@ -23,8 +23,7 @@ public class VotesSerializer implements TypeSerializer<Votes> {
         // There should be only a key, so using findAny() to get the world name is okay
         String world = Objects.requireNonNull(node.node("world").getString(), "world");
 
-        // Pull all works first
-        // At this stage, all works have no votes
+        // Pull all works first. At this stage, all works have no votes
         Votes votes = new Votes(world);
 
         // Then for each work, we add votes from the file to the work
@@ -46,14 +45,12 @@ public class VotesSerializer implements TypeSerializer<Votes> {
 
         for (Work work : votes.getWorks()) {
             ConfigurationNode ownerUuid = node.node("works", work.getOwner().toString());
+            ownerUuid.node("raters").setList(Vote.class, new ArrayList<>(work.getVotes()));
 
-            // Just for op's information
+            // These nodes will not be deserialized, just for op's information
             ownerUuid.node("name").set(Players.getOffline(work.getOwner()).map(OfflinePlayer::getName).orElse("empty"));
             ownerUuid.node("done").set(work.isDone());
             ownerUuid.node("plot").set(work.getPlot().getId().toString());
-
-            List<Vote> collect = new ArrayList<>(work.getVotes());
-            ownerUuid.node("raters").setList(Vote.class, collect);
         }
     }
 }

@@ -1,7 +1,6 @@
 package co.mcsky.vote.type;
 
 import co.mcsky.vote.VoteMain;
-import co.mcsky.vote.file.VoteStorage;
 import co.mcsky.vote.helper.VoteCalculator;
 import co.mcsky.vote.helper.VoteListener;
 import co.mcsky.vote.helper.VoteUpdater;
@@ -13,7 +12,7 @@ import me.lucko.helper.terminable.composite.CompositeTerminable;
 import java.util.*;
 
 /**
- * Represents an entire vote for the building game. The design is that each instance of this class manages a distinct
+ * Represents an entire vote for a building game. The design is that each instance of this class manages a distinct
  * plot world. That is, there is a one-to-one relationship between a instance of this class and a plot world.
  */
 public class Votes implements Terminable {
@@ -95,7 +94,7 @@ public class Votes implements Terminable {
      * @param vote  the vote for this work
      */
     public void vote(UUID owner, Vote vote) {
-        Preconditions.checkArgument(works.containsKey(owner), "Null work entry");
+        Preconditions.checkArgument(works.containsKey(owner), "null work entry");
         works.get(owner).vote(vote);
     }
 

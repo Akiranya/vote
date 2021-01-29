@@ -134,10 +134,6 @@ public class Work {
         return new WorkBuilder(work, plot);
     }
 
-    public static WorkBuilder createX(UUID workOwner) {
-        return new WorkBuilder(workOwner, null);
-    }
-
     public static class WorkBuilder {
 
         private final UUID owner;

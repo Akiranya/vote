@@ -46,7 +46,7 @@ public class VoteCalculator {
      * @return set of works which have not been voted by the specified vote owner
      */
     public Stream<Work> missed(UUID rater) {
-        return this.votes.getWorks().parallelStream()
+        return this.votes.getWorks().stream()
                 .filter(work -> work.invoted(rater));
     }
 
