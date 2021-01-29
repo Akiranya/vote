@@ -157,8 +157,10 @@ public class VoteCommands extends BaseCommand {
 
                 sb.append(TITLE).append(LINE_SEPARATOR);
                 votesPool.get().getWorks().stream().map(Work::getOwner).forEach(uuid -> {
-                    float greenVoteProportion = 100F * calc.greenVotes(uuid).size() / calc.validVotes(uuid).count();
-                    sb.append(String.format(plugin.getMessage(sender, "chat-message.work-information-line"), calc.greenVotes(uuid).size(), calc.redVotes(uuid).size(), calc.validVotes(uuid).count(), greenVoteProportion, PlayerUtil.getName(uuid)));
+                    int redVotesCount = calc.redVotes(uuid).size();
+                    int greenVotesCount = calc.greenVotes(uuid).size();
+                    float greenVoteProportion = 100F * greenVotesCount / validRatersCount;
+                    sb.append(String.format(plugin.getMessage(sender, "chat-message.work-information-line"), greenVotesCount, redVotesCount, validRatersCount, greenVoteProportion, PlayerUtil.getName(uuid)));
                     sb.append(LINE_SEPARATOR);
                 });
 
