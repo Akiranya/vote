@@ -13,6 +13,7 @@ import co.mcsky.vote.type.VotesPool;
 import co.mcsky.vote.type.Work;
 import com.plotsquared.core.plot.Plot;
 import me.lucko.helper.Schedulers;
+import me.lucko.helper.promise.Promise;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.OfflinePlayer;
@@ -117,7 +118,6 @@ public class VoteCommands extends BaseCommand {
         } else {
             sender.sendMessage(plugin.getMessage(sender, "chat-message.plot-information-deleted-already"));
         }
-
     }
 
     @Subcommand("save")
@@ -141,7 +141,7 @@ public class VoteCommands extends BaseCommand {
 
         @Default
         public void overview(CommandSender sender) {
-            Schedulers.builder().async().now().run(() -> {
+            Promise.start().thenApplyAsync(n -> {
                 VoteCalculator calc = votesPool.get().getCalculator();
 
                 int validRatersCount = calc.validRaters().size();
@@ -164,14 +164,14 @@ public class VoteCommands extends BaseCommand {
                     sb.append(LINE_SEPARATOR);
                 });
 
-                Schedulers.builder().sync().now().run(() -> sender.sendMessage(sb.toString()));
-            });
+                return sb.toString();
+            }).thenAcceptSync(sender::sendMessage);
         }
 
         @Subcommand("work")
         @CommandCompletion("@work")
         public void work(CommandSender sender, OfflinePlayer work) {
-            Schedulers.builder().async().now().run(() -> {
+            Promise.start().thenApplyAsync(n -> {
                 VoteCalculator calc = votesPool.get().getCalculator();
 
                 UUID workOwner = work.getUniqueId();
@@ -192,14 +192,14 @@ public class VoteCommands extends BaseCommand {
                         .append(plugin.getMessage(sender, "chat-message.green-rater-list", "count", greenRatersCount, "list", greenRaters)).append(LINE_SEPARATOR)
                         .append(plugin.getMessage(sender, "chat-message.red-rater-list", "count", redRatersCount, "list", redRaters)).append(LINE_SEPARATOR);
 
-                Schedulers.builder().sync().now().run(() -> sender.sendMessage(sb.toString()));
-            });
+                return sb.toString();
+            }).thenAcceptSync(sender::sendMessage);
         }
 
         @Subcommand("rate")
         @CommandCompletion("@rate")
         public void rater(CommandSender sender, OfflinePlayer rater) {
-            Schedulers.builder().async().now().run(() -> {
+            Promise.start().thenApplyAsync(n -> {
                 VoteCalculator calc = votesPool.get().getCalculator();
 
                 UUID raterUuid = rater.getUniqueId();
@@ -218,8 +218,8 @@ public class VoteCommands extends BaseCommand {
                         .append(plugin.getMessage(sender, "chat-message.green-work-list", "count", greenWorksCount, "list", greenWorks)).append(LINE_SEPARATOR)
                         .append(plugin.getMessage(sender, "chat-message.red-work-list", "count", redWorksCount, "list", redWorks)).append(LINE_SEPARATOR);
 
-                Schedulers.builder().sync().now().run(() -> sender.sendMessage(sb.toString()));
-            });
+                return sb.toString();
+            }).thenAcceptSync(sender::sendMessage);
         }
     }
 
