@@ -3,15 +3,15 @@ package co.mcsky.vote.helper;
 import co.mcsky.vote.VoteMain;
 import co.mcsky.vote.type.Votes;
 import com.google.common.eventbus.Subscribe;
-import com.plotsquared.core.events.CancellablePlotEvent;
 import com.plotsquared.core.events.PlayerClaimPlotEvent;
 import com.plotsquared.core.events.PlotDeleteEvent;
-import com.plotsquared.core.events.Result;
+import com.plotsquared.core.player.PlotPlayer;
 import com.plotsquared.core.plot.Plot;
 import me.lucko.helper.terminable.Terminable;
 
 import java.util.Optional;
 import java.util.UUID;
+import java.util.logging.Logger;
 
 /**
  * The {@link VoteUpdater} must associate with an instance of {@link Votes} (one-to-one relationship).
@@ -20,49 +20,44 @@ import java.util.UUID;
 public class VoteUpdater implements Terminable {
 
     private final Votes votes;
+    private final Logger logger;
 
     public VoteUpdater(Votes votes) {
         this.votes = votes;
+        this.logger = VoteMain.plugin.getLogger();
         VoteMain.plotApi.registerListener(this);
     }
 
-    // Don't listen to PlayerAutoPlotEvent since this is too buggy...
-//    @Subscribe
-//    public void onPlayerAutoPlot(PlayerAutoPlotEvent event) {
-//        if (validateWorld(event.getPlotArea().getWorldName())) {
-//            UUID workOwner = event.getPlayer().getUUID();
-//            Plot plot = event.getPlot();
-//            this.votes.createEntry(workOwner, plot);
-//            this.votes.getPlugin().getLogger().info("[VoteUpdater] New entry created : " + event.getPlayer().getName());
-//        }
-//    }
-
+    // Warning: this event is fired before the plot is actually claimed by the player
+    // so it is necessary to check if the player can really claim this plot.
+    // Also, the javadoc says nothing when exactly the event is fired!
     @Subscribe
     public void onPlayerClaimPlot(PlayerClaimPlotEvent event) {
-        if (validateWorld(event.getPlot().getWorldName()) && validateAccept(event)) {
-            UUID workOwner = event.getPlotPlayer().getUUID();
-            Plot plot = event.getPlot();
+        //noinspection rawtypes
+        PlotPlayer plotPlayer = event.getPlotPlayer();
+        Plot plot = event.getPlot();
+
+        // Check claimable and validate the world
+        if (plot.canClaim(plotPlayer) && validateWorld(plot.getWorldName())) {
+            UUID workOwner = plotPlayer.getUUID();
             this.votes.createEntry(workOwner, plot);
-            VoteMain.plugin.getLogger().info("[VoteUpdater] New entry created : " + event.getPlotPlayer().getName());
+            logger.info("[VoteUpdater] Created : " + plotPlayer.getName());
         }
     }
 
+    // From the source, I see that this event is fired AFTER the plot is actually deleted.
     @Subscribe
     public void onPlotDelete(PlotDeleteEvent event) {
-        if (validateWorld(event.getWorld()) && validateAccept(event)) {
+        if (validateWorld(event.getWorld())) {
             Optional.ofNullable(event.getPlot().getOwnerAbs()).ifPresent(workOwner -> {
                 this.votes.deleteEntry(workOwner);
-                VoteMain.plugin.getLogger().info("[VoteUpdater] Entry removed : " + event.getPlotId().toString());
+                logger.info("[VoteUpdater] Removed : " + event.getPlotId().toString());
             });
         }
     }
 
     private boolean validateWorld(String plotWorld) {
         return this.votes.getPlotWorld().equalsIgnoreCase(plotWorld);
-    }
-
-    private boolean validateAccept(CancellablePlotEvent event) {
-        return event.getEventResult() == Result.ACCEPT;
     }
 
     @Override
