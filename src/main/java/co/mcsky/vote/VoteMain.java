@@ -1,6 +1,7 @@
 package co.mcsky.vote;
 
 import co.aikar.commands.PaperCommandManager;
+import co.mcsky.vote.cache.SkullCache;
 import co.mcsky.vote.io.VoteStoragePool;
 import co.mcsky.vote.type.VotesPool;
 import com.plotsquared.core.api.PlotAPI;
@@ -19,12 +20,13 @@ public class VoteMain extends JavaPlugin {
     public static VoteMain plugin;
     public static PlotAPI plotApi;
 
-    public VotesPool votesPool;
-    public VoteStoragePool voteStoragePool;
-
     public VoteConfig config;
     public LanguageManager lang;
     public PaperCommandManager commands;
+
+    private SkullCache skullCache;
+    private VotesPool votesPool;
+    private VoteStoragePool voteStoragePool;
 
     @Override
     public void onDisable() {
@@ -40,6 +42,7 @@ public class VoteMain extends JavaPlugin {
         this.config.load();
         this.config.save();
 
+        this.skullCache = SkullCache.create();
         this.votesPool = VotesPool.create();
         this.voteStoragePool = VoteStoragePool.create(votesPool);
         this.voteStoragePool.readAll();
@@ -52,7 +55,7 @@ public class VoteMain extends JavaPlugin {
         commands = new PaperCommandManager(this);
         commands.registerDependency(VotesPool.class, votesPool);
         commands.registerDependency(VoteStoragePool.class, voteStoragePool);
-        commands.registerDependency(PaperCommandManager.class, commands);
+        commands.registerDependency(SkullCache.class, skullCache);
         commands.registerCommand(new VoteCommands(commands));
     }
 

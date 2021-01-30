@@ -1,5 +1,6 @@
 package co.mcsky.vote.gui;
 
+import co.mcsky.vote.cache.SkullCache;
 import co.mcsky.vote.events.PlayerVoteEvent;
 import co.mcsky.vote.type.Vote;
 import co.mcsky.vote.type.Votes;
@@ -14,12 +15,10 @@ import me.lucko.helper.menu.paginated.PageInfo;
 import me.lucko.helper.menu.scheme.MenuPopulator;
 import me.lucko.helper.menu.scheme.MenuScheme;
 import me.lucko.helper.menu.scheme.StandardSchemeMappings;
-import me.lucko.helper.utils.Players;
 import org.bukkit.EntityEffect;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -107,9 +106,13 @@ public class MainGui extends VoicedGui {
     // the backed instances
     private final Votes votes;
 
-    public MainGui(Player player, Votes votes) {
+    // head cache pool for non-blocking player head display
+    private final SkullCache skullCache;
+
+    public MainGui(Player player, Votes votes, SkullCache skullCache) {
         super(player, 5, plugin.getMessage(player, "gui.work-listing.title"));
         this.votes = votes;
+        this.skullCache = skullCache;
 
         // setup next page item
         this.nextPageItem = pageInfo -> ItemStackBuilder.of(Material.PAPER)
@@ -183,7 +186,6 @@ public class MainGui extends VoicedGui {
                         updateContent(WorkFilter.undone(getPlayer().getUniqueId()));
                         redraw();
                     } else {
-                        // TODO use metadata to set a cool down for the prompt
                         // prompt the player that he has done
                         getPlayer().sendMessage(plugin.getMessage(getPlayer(), "gui-message.vote-all-done"));
                         getPlayer().playEffect(EntityEffect.TOTEM_RESURRECT);
@@ -324,19 +326,13 @@ public class MainGui extends VoicedGui {
                 .stream()
                 .filter(this.filter)
                 .map(work -> ItemStackBuilder.of(Material.PLAYER_HEAD)
+                        .transform(itemStack -> skullCache.mutateMeta(work.getOwner(), itemStack))
                         .name(plugin.getMessage(getPlayer(), "gui.work-listing.work-entry.name", "player", work.getOwnerName()))
                         .lore(plugin.getMessage(getPlayer(), "gui.work-listing.work-entry.lore1"))
                         .lore(plugin.getMessage(getPlayer(), "gui.work-listing.work-entry.lore2", "done", work.isDone() ? plugin.getMessage(getPlayer(), "gui.work-listing.done") : plugin.getMessage(getPlayer(), "gui.work-listing.undone")))
                         .lore(plugin.getMessage(getPlayer(), "gui.work-listing.work-entry.lore3", "done", work.voted(getPlayer().getUniqueId()) ? plugin.getMessage(getPlayer(), "gui.work-listing.done") : plugin.getMessage(getPlayer(), "gui.work-listing.undone")))
                         .lore(plugin.getMessage(getPlayer(), "gui.work-listing.work-entry.lore4"))
                         .lore(plugin.getMessage(getPlayer(), "gui.work-listing.work-entry.lore5"))
-                        .transformMeta(itemMeta -> {
-                            // TODO support offline skull skin display
-                            Players.get(work.getOwner()).ifPresent(p -> {
-                                SkullMeta skullMeta = (SkullMeta) itemMeta;
-                                skullMeta.setPlayerProfile(p.getPlayerProfile());
-                            });
-                        })
                         .build(() -> {
                             this.work = work;
                             drawVoteOption();

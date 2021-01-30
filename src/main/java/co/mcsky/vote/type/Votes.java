@@ -125,10 +125,6 @@ public class Votes implements Terminable {
                 .forEach(p -> createEntry(p.getOwner(), p));
     }
 
-    public VoteMain getPlugin() {
-        return VoteMain.plugin;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

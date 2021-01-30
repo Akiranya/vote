@@ -26,7 +26,7 @@ public class VoteListener implements TerminableModule {
         // Don't allow to vote if the vote system is not ready yet
         Events.subscribe(PlayerVoteEvent.class)
                 .filter(e -> votes.getPlotWorld().equalsIgnoreCase(e.getVotes().getPlotWorld()))
-                .filter(e -> !votes.getPlugin().config.allowVoteWhenNotEnded)
+                .filter(e -> !VoteMain.plugin.config.allowVoteWhenNotEnded)
                 .filter(e -> !votes.isReady())
                 .handler(e -> {
                     e.setCancelled(true);
@@ -38,7 +38,7 @@ public class VoteListener implements TerminableModule {
         Events.subscribe(PlayerVoteEvent.class)
                 .filter(EventFilters.ignoreCancelled())
                 .filter(e -> votes.getPlotWorld().equalsIgnoreCase(e.getVotes().getPlotWorld()))
-                .filter(e -> !votes.getPlugin().config.allowVoteWhenUndone)
+                .filter(e -> !VoteMain.plugin.config.allowVoteWhenUndone)
                 .filter(e -> !e.getWork().isDone())
                 .handler(e -> {
                     e.setCancelled(true);

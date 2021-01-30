@@ -4,6 +4,7 @@ import co.aikar.commands.BaseCommand;
 import co.aikar.commands.ConditionFailedException;
 import co.aikar.commands.PaperCommandManager;
 import co.aikar.commands.annotation.*;
+import co.mcsky.vote.cache.SkullCache;
 import co.mcsky.vote.io.VoteStoragePool;
 import co.mcsky.vote.gui.MainGui;
 import co.mcsky.vote.util.PlayerUtil;
@@ -12,7 +13,6 @@ import co.mcsky.vote.type.Vote;
 import co.mcsky.vote.type.VotesPool;
 import co.mcsky.vote.type.Work;
 import com.plotsquared.core.plot.Plot;
-import me.lucko.helper.Schedulers;
 import me.lucko.helper.promise.Promise;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -38,6 +38,8 @@ public class VoteCommands extends BaseCommand {
     private VotesPool votesPool;
     @Dependency
     private VoteStoragePool voteStoragePool;
+    @Dependency
+    private SkullCache skullCache;
 
     public VoteCommands(PaperCommandManager commands) {
         this.commands = commands;
@@ -78,7 +80,7 @@ public class VoteCommands extends BaseCommand {
     @Default
     @Conditions("ready")
     public void open(Player player) {
-        new MainGui(player, votesPool.get()).open();
+        new MainGui(player, votesPool.get(), skullCache).open();
     }
 
     @SuppressWarnings("ConstantConditions")
@@ -125,6 +127,13 @@ public class VoteCommands extends BaseCommand {
     public void save(CommandSender sender) {
         voteStoragePool.saveAll();
         sender.sendMessage(plugin.getMessage(sender, "chat-message.saved-all"));
+    }
+
+    @Subcommand("cache clear")
+    @CommandPermission("votes.admin")
+    public void clear(CommandSender sender) {
+        skullCache.clear();
+        sender.sendMessage(plugin.getMessage(sender, "chat-message.skin-cache-cleared"));
     }
 
     @SuppressWarnings("StringBufferReplaceableByString ConstantConditions")

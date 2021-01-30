@@ -1,11 +1,10 @@
 package co.mcsky.vote.type;
 
+import co.mcsky.vote.util.PlayerUtil;
 import com.plotsquared.core.events.TeleportCause;
 import com.plotsquared.core.player.PlotPlayer;
 import com.plotsquared.core.plot.Plot;
 import com.plotsquared.core.plot.flag.implementations.DoneFlag;
-import me.lucko.helper.utils.Players;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 
 import java.util.HashSet;
@@ -44,14 +43,14 @@ public class Work {
      * @return the name of this work owner
      */
     public String getOwnerName() {
-        return Players.getOffline(owner).map(OfflinePlayer::getName).orElse("Not Cached");
+        return PlayerUtil.getName(this.owner);
     }
 
     /**
      * @return the plot related to this work
      */
     public Plot getPlot() {
-        return plot;
+        return this.plot;
     }
 
     /**

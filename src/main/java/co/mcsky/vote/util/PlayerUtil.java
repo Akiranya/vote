@@ -12,7 +12,7 @@ public class PlayerUtil {
      * @return the name of the player, or {@code None} if the player does not exist
      */
     public static String getName(UUID uuid) {
-        return Players.getOffline(uuid).map(OfflinePlayer::getName).orElse("Not Cached");
+        return Players.getOffline(uuid).map(OfflinePlayer::getName).orElse("OFFLINE");
     }
 
 }

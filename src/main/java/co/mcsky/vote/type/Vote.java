@@ -1,7 +1,6 @@
 package co.mcsky.vote.type;
 
-import me.lucko.helper.utils.Players;
-import org.bukkit.OfflinePlayer;
+import co.mcsky.vote.util.PlayerUtil;
 
 import java.util.UUID;
 
@@ -34,7 +33,7 @@ public class Vote {
      * @return the name of this vote owner
      */
     public String getRaterName() {
-        return Players.getOffline(rater).map(OfflinePlayer::getName).orElse("Not Cached");
+        return PlayerUtil.getName(this.rater);
     }
 
     /**
