@@ -19,6 +19,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Base64;
 import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
 /**
@@ -67,11 +68,14 @@ public class SkullCreator {
                 String base64 = textureProperty.get("value").getAsString();
                 return itemWithBase64(item, base64);
             } catch (IOException e) {
-                e.printStackTrace();
                 // cannot connect to mojang, retry
-                if (retryCount-- < 0) return item;
+                if (--retryCount < 0) return item;
+                try {
+                    //noinspection BusyWait
+                    Thread.sleep(TimeUnit.SECONDS.toMillis(60));
+                } catch (InterruptedException ignored) {
+                }
             } catch (IllegalStateException e) {
-                e.printStackTrace();
                 // connection is good, but the JsonObject retrieved is not expected,
                 // which means that the player is cracked
                 // return as-is

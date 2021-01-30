@@ -19,6 +19,7 @@ import org.bukkit.EntityEffect;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -326,7 +327,7 @@ public class MainGui extends VoicedGui {
                 .stream()
                 .filter(this.filter)
                 .map(work -> ItemStackBuilder.of(Material.PLAYER_HEAD)
-                        .transform(itemStack -> skullCache.mutateMeta(work.getOwner(), itemStack))
+                        .transform(item -> skullCache.mutateMeta(work.getOwner(), item))
                         .name(plugin.getMessage(getPlayer(), "gui.work-listing.work-entry.name", "player", work.getOwnerName()))
                         .lore(plugin.getMessage(getPlayer(), "gui.work-listing.work-entry.lore1"))
                         .lore(plugin.getMessage(getPlayer(), "gui.work-listing.work-entry.lore2", "done", work.isDone() ? plugin.getMessage(getPlayer(), "gui.work-listing.done") : plugin.getMessage(getPlayer(), "gui.work-listing.undone")))
