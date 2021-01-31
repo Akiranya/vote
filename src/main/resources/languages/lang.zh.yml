@@ -1,6 +1,6 @@
 gui:
   work-listing:
-    title: "上古时代 建筑比赛投票"
+    title: "上古时代 建筑比赛作品概览"
     done: "&a已完成"
     undone: "&4未完成"
     submit:
@@ -11,9 +11,9 @@ gui:
       lore4: " &8&l> &7来检查你的评分是否符合条件哦~"
       lore5: ""
     menu-tips:
-      name: "&b第九届&8·&e建筑比赛&8·&a主题未定"
+      name: "&7欢迎来到 &b建筑比赛作品概览"
       lore1: ""
-      lore2: "&7请客观的对选手作品进行投票"
+      lore2: "&d请客观的对选手作品进行投票"
       lore3: ""
     next-page:
       name: "&8&l>>> &b&l查看下一页"

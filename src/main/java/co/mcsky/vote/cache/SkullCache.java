@@ -1,6 +1,5 @@
 package co.mcsky.vote.cache;
 
-import com.destroystokyo.paper.profile.PlayerProfile;
 import me.lucko.helper.Schedulers;
 import me.lucko.helper.promise.Promise;
 import me.lucko.helper.terminable.Terminable;
@@ -13,11 +12,14 @@ import java.util.concurrent.TimeUnit;
 
 public class SkullCache {
 
-    // All async tasks
-    private final Set<Terminable> asyncTasks;
-    // Only store the profile which contains texture
-    private final Map<UUID, PlayerProfile> cacheMap;
-    // uuid which are already scheduled to fetch skin
+    // the skull cache
+    private final Map<UUID, ItemStack> cache;
+
+    // all scheduled (async) tasks
+    // track them so that we can terminate when needed
+    private final Set<Terminable> scheduledTasks;
+
+    // uuids which are already scheduled tasks to fetch skin
     private final Set<UUID> fetching;
 
     /**
@@ -28,25 +30,28 @@ public class SkullCache {
     }
 
     private SkullCache() {
-        this.cacheMap = new HashMap<>();
+        this.cache = new HashMap<>();
         this.fetching = new HashSet<>();
-        this.asyncTasks = new HashSet<>();
+        this.scheduledTasks = new HashSet<>();
 
-        // Clear cache at some interval
+        // refresh the cache at certain interval
         Schedulers.builder()
                 .async()
                 .afterAndEvery(30, TimeUnit.MINUTES)
-                .run(this::clear);
+                .run(() -> {
+                    scheduledTasks.forEach(Terminable::closeSilently);
+                    cache.forEach((id, item) -> fetch(item, id));
+                });
     }
 
     /**
-     * Clear cache immediately.
+     * Clears the cache and terminates all scheduled tasks.
      */
     public void clear() {
-        asyncTasks.forEach(Terminable::closeSilently);
-        asyncTasks.clear();
-        cacheMap.clear();
+        scheduledTasks.forEach(Terminable::closeSilently);
+        scheduledTasks.clear();
         fetching.clear();
+        cache.clear();
     }
 
     /**
@@ -65,41 +70,47 @@ public class SkullCache {
             return;
         }
 
-        if (cacheMap.containsKey(id)) {
+        if (cache.containsKey(id)) {
             // if cached, updates the skull's texture
 
-            SkullMeta skullMeta = (SkullMeta) itemMeta;
-            // only change the profile to avoid the lore duplicate bug
-            skullMeta.setPlayerProfile(cacheMap.get(id));
-            item.setItemMeta(skullMeta);
-            return;
-        }
+            SkullMeta otherSkullMeta = (SkullMeta) itemMeta;
+            SkullMeta cachedSkullMeta = (SkullMeta) cache.get(id).getItemMeta();
+            // only set the player profile to avoid unexpected lore duplicate
+            otherSkullMeta.setPlayerProfile(cachedSkullMeta.getPlayerProfile());
+            item.setItemMeta(otherSkullMeta);
+        } else {
+            // schedules a task to fetch the skull texture,
+            // put it in the cache when the task completes successfully
 
-        fetch(item, id);
+            fetch(item, id);
+        }
     }
 
     /**
-     * Schedules a task to fetch the skull texture, then put it into the map when the task completes successfully.
+     * Schedules a task to fetch the skull texture.
+     * <p>
+     * The texture will be put into the map ONLY when the task completes so that subsequent "get" calls on the map will
+     * return the fetched textures.
      *
-     * @param id the UUID for the skull texture
+     * @param id the UUID of the skull texture
      */
     private void fetch(ItemStack item, UUID id) {
-        // schedule the fetch task iff the id is not being fetched right now
         if (!fetching.contains(id)) {
+            // schedule the fetch task iff the id is not being fetched right now
+
             // mark this id is being fetched
             fetching.add(id);
 
-            Promise<Void> fetchTask = Promise.start().thenApplyAsync(n -> {
-                SkullMeta skullMeta = (SkullMeta) SkullCreator.itemWithUuid(item, id).getItemMeta();
-                return skullMeta.getPlayerProfile();
-            }).thenAcceptSync(profile -> {
-                cacheMap.put(id, profile);
+            Promise<Void> fetchTask = Promise.start()
+                    .thenApplyAsync(n -> SkullCreator.itemWithUuid(item, id))
+                    .thenAcceptSync(fetchedItem -> {
+                        cache.put(id, fetchedItem);
 
-                // fetched, unmark the id
-                fetching.remove(id);
-            });
+                        // fetched, unmark the id
+                        fetching.remove(id);
+                    });
 
-            asyncTasks.add(fetchTask);
+            scheduledTasks.add(fetchTask);
         }
     }
 
