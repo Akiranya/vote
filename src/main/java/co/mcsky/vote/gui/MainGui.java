@@ -1,7 +1,7 @@
 package co.mcsky.vote.gui;
 
 import co.mcsky.vote.cache.SkullCache;
-import co.mcsky.vote.events.PlayerVoteEvent;
+import co.mcsky.vote.event.PlayerVoteEvent;
 import co.mcsky.vote.type.Vote;
 import co.mcsky.vote.type.Votes;
 import co.mcsky.vote.type.Work;

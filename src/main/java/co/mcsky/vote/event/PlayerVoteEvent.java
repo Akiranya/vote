@@ -1,4 +1,4 @@
-package co.mcsky.vote.events;
+package co.mcsky.vote.event;
 
 import co.mcsky.vote.type.Votes;
 import co.mcsky.vote.type.Vote;

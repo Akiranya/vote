@@ -1,8 +1,8 @@
-package co.mcsky.vote.helper;
+package co.mcsky.vote.listener;
 
 import co.mcsky.vote.VoteMain;
 import co.mcsky.vote.type.Votes;
-import co.mcsky.vote.events.PlayerVoteEvent;
+import co.mcsky.vote.event.PlayerVoteEvent;
 import me.lucko.helper.Events;
 import me.lucko.helper.event.filter.EventFilters;
 import me.lucko.helper.terminable.TerminableConsumer;
@@ -11,13 +11,13 @@ import me.lucko.helper.terminable.module.TerminableModule;
 import javax.annotation.Nonnull;
 
 /**
- * The {@link VoteListener} must associate with an instance of {@link Votes} (one-to-one relationship).
+ * The {@link VoteLimiter} must associate with an instance of {@link Votes} (one-to-one relationship).
  */
-public class VoteListener implements TerminableModule {
+public class VoteLimiter implements TerminableModule {
 
     private final Votes votes;
 
-    public VoteListener(Votes votes) {
+    public VoteLimiter(Votes votes) {
         this.votes = votes;
     }
 

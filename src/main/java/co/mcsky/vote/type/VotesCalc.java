@@ -1,8 +1,4 @@
-package co.mcsky.vote.helper;
-
-import co.mcsky.vote.type.Votes;
-import co.mcsky.vote.type.Vote;
-import co.mcsky.vote.type.Work;
+package co.mcsky.vote.type;
 
 import java.util.Set;
 import java.util.UUID;
@@ -12,12 +8,12 @@ import java.util.stream.Stream;
 /**
  * Provides useful methods to get the statistics from the instance of {@link Votes}.
  */
-public class VoteCalculator {
+public class VotesCalc {
 
     // The instance of Votes from which the statistics is generated
     private final Votes votes;
 
-    public VoteCalculator(Votes votes) {
+    public VotesCalc(Votes votes) {
         this.votes = votes;
     }
 

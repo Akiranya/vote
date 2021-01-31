@@ -1,4 +1,4 @@
-package co.mcsky.vote.helper;
+package co.mcsky.vote.listener;
 
 import co.mcsky.vote.VoteMain;
 import co.mcsky.vote.type.Votes;
@@ -14,15 +14,15 @@ import java.util.UUID;
 import java.util.logging.Logger;
 
 /**
- * The {@link VoteUpdater} must associate with an instance of {@link Votes} (one-to-one relationship).
+ * The {@link WorkUpdater} must associate with an instance of {@link Votes} (one-to-one relationship).
  */
 @SuppressWarnings("UnstableApiUsage")
-public class VoteUpdater implements Terminable {
+public class WorkUpdater implements Terminable {
 
     private final Votes votes;
     private final Logger logger;
 
-    public VoteUpdater(Votes votes) {
+    public WorkUpdater(Votes votes) {
         this.votes = votes;
         this.logger = VoteMain.plugin.getLogger();
         VoteMain.plotApi.registerListener(this);

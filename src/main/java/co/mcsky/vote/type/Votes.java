@@ -1,9 +1,8 @@
 package co.mcsky.vote.type;
 
 import co.mcsky.vote.VoteMain;
-import co.mcsky.vote.helper.VoteCalculator;
-import co.mcsky.vote.helper.VoteListener;
-import co.mcsky.vote.helper.VoteUpdater;
+import co.mcsky.vote.listener.VoteLimiter;
+import co.mcsky.vote.listener.WorkUpdater;
 import com.google.common.base.Preconditions;
 import com.plotsquared.core.plot.Plot;
 import me.lucko.helper.terminable.Terminable;
@@ -28,7 +27,7 @@ public class Votes implements Terminable {
     private final CompositeTerminable terminableRegistry;
 
     // A calculator to get statistics about this votes
-    private final VoteCalculator voteCalculator;
+    private final VotesCalc votesCalc;
 
     /**
      * Direct initialization is discouraged, instead use {@link VotesPool} to get an instance.
@@ -41,10 +40,10 @@ public class Votes implements Terminable {
         this.ready = false;
 
         this.terminableRegistry = CompositeTerminable.create();
-        this.terminableRegistry.bind(new VoteUpdater(this));
-        this.terminableRegistry.bindModule(new VoteListener(this));
+        this.terminableRegistry.bind(new WorkUpdater(this));
+        this.terminableRegistry.bindModule(new VoteLimiter(this));
 
-        this.voteCalculator = new VoteCalculator(this);
+        this.votesCalc = new VotesCalc(this);
 
         // Pull plot information when initiated
         pull();
@@ -54,8 +53,8 @@ public class Votes implements Terminable {
         return plotWorld;
     }
 
-    public VoteCalculator getCalculator() {
-        return voteCalculator;
+    public VotesCalc getCalculator() {
+        return votesCalc;
     }
 
     /**
