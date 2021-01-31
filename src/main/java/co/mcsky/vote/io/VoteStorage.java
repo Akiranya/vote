@@ -1,6 +1,5 @@
 package co.mcsky.vote.io;
 
-import co.mcsky.vote.VoteMain;
 import co.mcsky.vote.type.Vote;
 import co.mcsky.vote.type.Votes;
 import co.mcsky.vote.io.serializer.VoteSerializer;
@@ -13,6 +12,8 @@ import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 
 import java.io.File;
 import java.nio.file.Path;
+
+import static co.mcsky.vote.VoteMain.*;
 
 /**
  * Each instance of {@link VoteStorage} (can only) handles a file (a instance of {@link Votes}).
@@ -32,8 +33,8 @@ public class VoteStorage extends FileStorageHandler<Votes> {
         super(fileName, fileExtension, dataFolder);
 
         TypeSerializerCollection serializers = TypeSerializerCollection.builder()
-                .register(Votes.class, new VotesSerializer(VoteMain.plugin.getLogger()))
-                .register(Vote.class, new VoteSerializer(VoteMain.plugin.getLogger()))
+                .register(Votes.class, new VotesSerializer(plugin.getLogger()))
+                .register(Vote.class, new VoteSerializer(plugin.getLogger()))
                 .build();
         loader = YamlConfigurationLoader.builder()
                 .path(new File(dataFolder, fileName + fileExtension).toPath())

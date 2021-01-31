@@ -18,6 +18,8 @@ public abstract class VoicedGui extends Gui {
                 .filter(e -> e.getInventory().getHolder() != null)
                 .filter(e -> e.getInventory().getHolder().equals(getPlayer()))
                 .filter(e -> e.getCurrentItem() != null)
+                // ignore background items
+                .filter(e -> !e.getCurrentItem().getItemMeta().getDisplayName().isBlank())
                 .handler(e -> getPlayer().playSound(getPlayer().getLocation(), Sound.UI_BUTTON_CLICK, 1F, 1F))
                 .bindWith(this);
 

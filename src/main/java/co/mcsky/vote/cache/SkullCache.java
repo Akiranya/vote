@@ -10,7 +10,7 @@ import org.bukkit.inventory.meta.SkullMeta;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
-public class SkullCache {
+public class SkullCache implements Terminable{
 
     // the skull cache
     private final Map<UUID, ItemStack> cache;
@@ -87,10 +87,10 @@ public class SkullCache {
     }
 
     /**
-     * Schedules a task to fetch the skull texture.
+     * Schedules a task to fetch the skull texture of given player's UUID.
      * <p>
-     * The texture will be put into the cache ONLY when the task completes so that subsequent "get" calls on the cache
-     * will return the fetched textures.
+     * The texture to be fetched will be put into the cache ONLY when the task completes so that subsequent "get" calls
+     * on the cache will return the fetched textures.
      *
      * @param id the UUID of the skull texture
      */
@@ -114,4 +114,8 @@ public class SkullCache {
         }
     }
 
+    @Override
+    public void close() {
+        clear();
+    }
 }

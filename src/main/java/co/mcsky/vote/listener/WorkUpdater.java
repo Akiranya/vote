@@ -1,6 +1,5 @@
 package co.mcsky.vote.listener;
 
-import co.mcsky.vote.VoteMain;
 import co.mcsky.vote.type.Votes;
 import com.google.common.eventbus.Subscribe;
 import com.plotsquared.core.events.PlayerClaimPlotEvent;
@@ -13,6 +12,8 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.logging.Logger;
 
+import static co.mcsky.vote.VoteMain.*;
+
 /**
  * The {@link WorkUpdater} must associate with an instance of {@link Votes} (one-to-one relationship).
  */
@@ -24,8 +25,8 @@ public class WorkUpdater implements Terminable {
 
     public WorkUpdater(Votes votes) {
         this.votes = votes;
-        this.logger = VoteMain.plugin.getLogger();
-        VoteMain.plotApi.registerListener(this);
+        this.logger = plugin.getLogger();
+        plotApi.registerListener(this);
     }
 
     // Warning: this event is fired before the plot is actually claimed by the player
@@ -62,6 +63,6 @@ public class WorkUpdater implements Terminable {
 
     @Override
     public void close() {
-        VoteMain.plotApi.getPlotSquared().getEventDispatcher().unregisterListener(this);
+        plotApi.getPlotSquared().getEventDispatcher().unregisterListener(this);
     }
 }

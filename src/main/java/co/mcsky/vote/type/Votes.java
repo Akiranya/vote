@@ -1,6 +1,5 @@
 package co.mcsky.vote.type;
 
-import co.mcsky.vote.VoteMain;
 import co.mcsky.vote.listener.VoteLimiter;
 import co.mcsky.vote.listener.WorkUpdater;
 import com.google.common.base.Preconditions;
@@ -9,6 +8,8 @@ import me.lucko.helper.terminable.Terminable;
 import me.lucko.helper.terminable.composite.CompositeTerminable;
 
 import java.util.*;
+
+import static co.mcsky.vote.VoteMain.*;
 
 /**
  * Represents an entire vote for a building game. The design is that each instance of this class manages a distinct
@@ -119,7 +120,7 @@ public class Votes implements Terminable {
      * Updates work entries from all legal plots.
      */
     public void pull() {
-        VoteMain.plotApi.getAllPlots().parallelStream()
+        plotApi.getAllPlots().parallelStream()
                 .filter(p -> p.hasOwner() && p.getWorldName().equalsIgnoreCase(plotWorld))
                 .forEach(p -> createEntry(p.getOwner(), p));
     }

@@ -326,13 +326,13 @@ public class MainGui extends VoicedGui {
                 .stream()
                 .filter(this.filter)
                 .map(work -> ItemStackBuilder.of(Material.PLAYER_HEAD)
-                        .transform(item -> skullCache.mutateMeta(item, work.getOwner()))
                         .name(plugin.getMessage(getPlayer(), "gui.work-listing.work-entry.name", "player", work.getOwnerName()))
                         .lore(plugin.getMessage(getPlayer(), "gui.work-listing.work-entry.lore1"))
                         .lore(plugin.getMessage(getPlayer(), "gui.work-listing.work-entry.lore2", "done", work.isDone() ? plugin.getMessage(getPlayer(), "gui.work-listing.done") : plugin.getMessage(getPlayer(), "gui.work-listing.undone")))
                         .lore(plugin.getMessage(getPlayer(), "gui.work-listing.work-entry.lore3", "done", work.voted(getPlayer().getUniqueId()) ? plugin.getMessage(getPlayer(), "gui.work-listing.done") : plugin.getMessage(getPlayer(), "gui.work-listing.undone")))
                         .lore(plugin.getMessage(getPlayer(), "gui.work-listing.work-entry.lore4"))
                         .lore(plugin.getMessage(getPlayer(), "gui.work-listing.work-entry.lore5"))
+                        .transform(item -> skullCache.mutateMeta(item, work.getOwner()))
                         .build(() -> {
                             this.work = work;
                             drawVoteOption();

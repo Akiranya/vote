@@ -22,6 +22,8 @@ import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Logger;
 
+import static co.mcsky.vote.VoteMain.*;
+
 /**
  * A library for the Bukkit API to create player skulls from names, base64 strings, and texture URLs.
  * <p>
@@ -33,7 +35,7 @@ import java.util.logging.Logger;
  */
 public class SkullCreator {
 
-    private final Logger logger = VoteMain.plugin.getLogger();
+    private final Logger logger = plugin.getLogger();
 
     private SkullCreator() {
     }
