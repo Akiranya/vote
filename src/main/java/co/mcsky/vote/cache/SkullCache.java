@@ -89,8 +89,8 @@ public class SkullCache {
     /**
      * Schedules a task to fetch the skull texture.
      * <p>
-     * The texture will be put into the map ONLY when the task completes so that subsequent "get" calls on the map will
-     * return the fetched textures.
+     * The texture will be put into the cache ONLY when the task completes so that subsequent "get" calls on the cache
+     * will return the fetched textures.
      *
      * @param id the UUID of the skull texture
      */
