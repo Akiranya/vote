@@ -326,7 +326,7 @@ public class MainGui extends VoicedGui {
                 .stream()
                 .filter(this.filter)
                 .map(work -> ItemStackBuilder.of(Material.PLAYER_HEAD)
-                        .transform(item -> skullCache.mutateMeta(work.getOwner(), item))
+                        .transform(item -> skullCache.mutateMeta(item, work.getOwner()))
                         .name(plugin.getMessage(getPlayer(), "gui.work-listing.work-entry.name", "player", work.getOwnerName()))
                         .lore(plugin.getMessage(getPlayer(), "gui.work-listing.work-entry.lore1"))
                         .lore(plugin.getMessage(getPlayer(), "gui.work-listing.work-entry.lore2", "done", work.isDone() ? plugin.getMessage(getPlayer(), "gui.work-listing.done") : plugin.getMessage(getPlayer(), "gui.work-listing.undone")))

@@ -4,7 +4,6 @@ import com.destroystokyo.paper.profile.PlayerProfile;
 import me.lucko.helper.Schedulers;
 import me.lucko.helper.promise.Promise;
 import me.lucko.helper.terminable.Terminable;
-import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
@@ -33,29 +32,31 @@ public class SkullCache {
         this.fetching = new HashSet<>();
         this.asyncTasks = new HashSet<>();
 
-        // Update cache at some interval
+        // Clear cache at some interval
         Schedulers.builder()
                 .async()
                 .afterAndEvery(30, TimeUnit.MINUTES)
-                .run(() -> cacheMap.forEach((k, v) -> fetch(k)));
+                .run(this::clear);
     }
 
     /**
      * Clear cache immediately.
      */
     public void clear() {
+        asyncTasks.forEach(Terminable::closeSilently);
+        asyncTasks.clear();
         cacheMap.clear();
-        asyncTasks.forEach(Terminable::closeAndReportException);
+        fetching.clear();
     }
 
     /**
      * Modifies the head to give it a texture of the given player's UUID. The {@code item} will leave unchanged if the
      * texture has not been fetched yet when calling this method.
      *
-     * @param uuid uuid of the player
+     * @param id   the UUID of the player
      * @param item the head to be modified
      */
-    public void mutateMeta(UUID uuid, ItemStack item) {
+    public void mutateMeta(ItemStack item, UUID id) {
         // Gets a copy of item meta of the item
         ItemMeta itemMeta = item.getItemMeta();
 
@@ -64,37 +65,38 @@ public class SkullCache {
             return;
         }
 
-        if (cacheMap.containsKey(uuid)) {
+        if (cacheMap.containsKey(id)) {
             // if cached, updates the skull's texture
+
             SkullMeta skullMeta = (SkullMeta) itemMeta;
-            skullMeta.setPlayerProfile(cacheMap.get(uuid));
+            // only change the profile to avoid the lore duplicate bug
+            skullMeta.setPlayerProfile(cacheMap.get(id));
             item.setItemMeta(skullMeta);
             return;
         }
 
-        fetch(uuid);
+        fetch(item, id);
     }
 
     /**
      * Schedules a task to fetch the skull texture, then put it into the map when the task completes successfully.
      *
-     * @param uuid the uuid for the skull texture
+     * @param id the UUID for the skull texture
      */
-    private void fetch(UUID uuid) {
-        // schedule the fetch task iff the uuid is not being fetched right now
-        if (!fetching.contains(uuid)) {
-            // mark this uuid is being fetched
-            fetching.add(uuid);
+    private void fetch(ItemStack item, UUID id) {
+        // schedule the fetch task iff the id is not being fetched right now
+        if (!fetching.contains(id)) {
+            // mark this id is being fetched
+            fetching.add(id);
 
             Promise<Void> fetchTask = Promise.start().thenApplyAsync(n -> {
-                ItemStack item = new ItemStack(Material.PLAYER_HEAD);
-                SkullMeta skullMeta = (SkullMeta) SkullCreator.itemWithUuid(item, uuid).getItemMeta();
+                SkullMeta skullMeta = (SkullMeta) SkullCreator.itemWithUuid(item, id).getItemMeta();
                 return skullMeta.getPlayerProfile();
             }).thenAcceptSync(profile -> {
-                cacheMap.put(uuid, profile);
+                cacheMap.put(id, profile);
 
-                // fetched, unmark the uuid
-                fetching.remove(uuid);
+                // fetched, unmark the id
+                fetching.remove(id);
             });
 
             asyncTasks.add(fetchTask);
