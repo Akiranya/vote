@@ -1,6 +1,5 @@
 package co.mcsky.vote.cache;
 
-import co.mcsky.vote.VoteMain;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.authlib.GameProfile;
@@ -84,6 +83,20 @@ public class SkullCreator {
                 return item;
             }
         }
+    }
+
+    /**
+     * Modifies a skull to use the skin at the given Mojang URL.
+     *
+     * @param item The item to apply the skin to. Must be a player skull
+     * @param url  The URL of the Mojang skin
+     * @return The head associated with the URL
+     */
+    public static ItemStack itemWithUrl(ItemStack item, String url) {
+        notNull(item, "item");
+        notNull(url, "url");
+
+        return itemWithBase64(item, urlToBase64(url));
     }
 
     /**

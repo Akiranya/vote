@@ -332,7 +332,7 @@ public class MainGui extends VoicedGui {
                         .lore(plugin.getMessage(getPlayer(), "gui.work-listing.work-entry.lore3", "done", work.voted(getPlayer().getUniqueId()) ? plugin.getMessage(getPlayer(), "gui.work-listing.done") : plugin.getMessage(getPlayer(), "gui.work-listing.undone")))
                         .lore(plugin.getMessage(getPlayer(), "gui.work-listing.work-entry.lore4"))
                         .lore(plugin.getMessage(getPlayer(), "gui.work-listing.work-entry.lore5"))
-                        .transform(item -> skullCache.mutateMeta(item, work.getOwner()))
+                        .transform(item -> skullCache.itemWithUuid(item, work.getOwner()))
                         .build(() -> {
                             this.work = work;
                             drawVoteOption();

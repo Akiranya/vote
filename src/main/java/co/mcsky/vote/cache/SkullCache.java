@@ -10,7 +10,7 @@ import org.bukkit.inventory.meta.SkullMeta;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
-public class SkullCache implements Terminable{
+public class SkullCache implements Terminable {
 
     // the skull cache
     private final Map<UUID, ItemStack> cache;
@@ -61,7 +61,7 @@ public class SkullCache implements Terminable{
      * @param id   the UUID of the player
      * @param item the head to be modified
      */
-    public void mutateMeta(ItemStack item, UUID id) {
+    public void itemWithUuid(ItemStack item, UUID id) {
         // Gets a copy of item meta of the item
         ItemMeta itemMeta = item.getItemMeta();
 
@@ -73,14 +73,9 @@ public class SkullCache implements Terminable{
         if (cache.containsKey(id)) {
             // if cached, updates the skull's texture
 
-            SkullMeta otherSkullMeta = (SkullMeta) itemMeta;
-            SkullMeta cachedSkullMeta = (SkullMeta) cache.get(id).getItemMeta();
-            // only set the player profile to avoid unexpected lore duplicate
-            otherSkullMeta.setPlayerProfile(cachedSkullMeta.getPlayerProfile());
-            item.setItemMeta(otherSkullMeta);
+            mutateProfile(item, id);
         } else {
-            // schedules a task to fetch the skull texture,
-            // put it in the cache when the task completes successfully
+            // schedules a task to fetch the skull texture
 
             fetch(item, id);
         }
@@ -103,8 +98,9 @@ public class SkullCache implements Terminable{
 
             Promise<Void> fetchTask = Promise.start()
                     .thenApplyAsync(n -> SkullCreator.itemWithUuid(item, id))
-                    .thenAcceptSync(fetchedItem -> {
-                        cache.put(id, fetchedItem);
+                    .thenAcceptSync(fetched -> {
+                        cache.put(id, fetched);
+                        mutateProfile(item, id);
 
                         // fetched, unmark the id
                         fetching.remove(id);
@@ -112,6 +108,20 @@ public class SkullCache implements Terminable{
 
             scheduledTasks.add(fetchTask);
         }
+    }
+
+    /**
+     * Modifies the head to have the texture obtained from the cache.
+     *
+     * @param origin the head to be modified
+     * @param id     the player's UUID
+     */
+    private void mutateProfile(ItemStack origin, UUID id) {
+        SkullMeta originSkullMeta = (SkullMeta) origin.getItemMeta();
+        SkullMeta cachedSkullMeta = (SkullMeta) cache.get(id).getItemMeta();
+        // only set the player profile to avoid unexpected lore duplicate
+        originSkullMeta.setPlayerProfile(cachedSkullMeta.getPlayerProfile());
+        origin.setItemMeta(originSkullMeta);
     }
 
     @Override
