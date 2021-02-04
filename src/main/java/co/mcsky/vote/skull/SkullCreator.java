@@ -4,6 +4,10 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.SkullType;
+import org.bukkit.block.Block;
 import org.bukkit.block.Skull;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
@@ -19,9 +23,6 @@ import java.net.URL;
 import java.util.Base64;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
-import java.util.logging.Logger;
-
-import static co.mcsky.vote.VoteMain.*;
 
 /**
  * A library for the Bukkit API to create player skulls from names, base64 strings, and texture URLs.
@@ -34,7 +35,7 @@ import static co.mcsky.vote.VoteMain.*;
  */
 public class SkullCreator {
 
-    private final Logger logger = plugin.getLogger();
+    private static boolean warningPosted = false;
 
     private SkullCreator() {
     }
@@ -57,31 +58,11 @@ public class SkullCreator {
         notNull(item, "item");
         notNull(id, "id");
 
-        int retryCount = 10;
-        while (true) {
-            try {
-                URL url = new URL("https://sessionserver.mojang.com/session/minecraft/profile/" + id.toString() + "?unsigned=false");
-                InputStreamReader in = new InputStreamReader(url.openStream());
-                JsonObject textureProperty = new JsonParser().parse(in)
-                        .getAsJsonObject().get("properties")
-                        .getAsJsonArray().get(0)
-                        .getAsJsonObject();
-                String base64 = textureProperty.get("value").getAsString();
-                return itemWithBase64(item, base64);
-            } catch (IOException e) {
-                // cannot connect to mojang, retry
-                if (--retryCount < 0) return item;
-                try {
-                    //noinspection BusyWait
-                    Thread.sleep(TimeUnit.SECONDS.toMillis(60));
-                } catch (InterruptedException ignored) {
-                }
-            } catch (IllegalStateException e) {
-                // connection is good, but the JsonObject retrieved is not expected,
-                // which means that the player is cracked
-                // return as-is
-                return item;
-            }
+        String base64 = base64(id);
+        if (base64 != null) {
+            return itemWithBase64(item, base64);
+        } else {
+            return item;
         }
     }
 
@@ -120,14 +101,106 @@ public class SkullCreator {
         return item;
     }
 
+    /**
+     * Sets the block to a skull with the given UUID.
+     *
+     * @param block The block to set.
+     * @param id    The player to set it to.
+     */
+    public static void blockWithUuid(Block block, UUID id) {
+        notNull(block, "block");
+        notNull(id, "id");
+
+        setToSkull(block);
+        String base64 = base64(id);
+        if (base64 != null) {
+            blockWithBase64(block, base64);
+        }
+    }
+
+    /**
+     * Sets the block to a skull with the skin found at the provided mojang URL.
+     *
+     * @param block The block to set.
+     * @param url   The mojang URL to set it to use.
+     */
+    public static void blockWithUrl(Block block, String url) {
+        notNull(block, "block");
+        notNull(url, "url");
+
+        blockWithBase64(block, urlToBase64(url));
+    }
+
+    /**
+     * Sets the block to a skull with the skin for the base64 string.
+     *
+     * @param block  The block to set.
+     * @param base64 The base64 to set it to use.
+     */
+    public static void blockWithBase64(Block block, String base64) {
+        notNull(block, "block");
+        notNull(base64, "base64");
+
+        setToSkull(block);
+        Skull state = (Skull) block.getState();
+        mutateBlockState(state, base64);
+        state.update(false, false);
+    }
+
+    private static void setToSkull(Block block) {
+        checkLegacy();
+
+        try {
+            block.setType(Material.valueOf("PLAYER_HEAD"), false);
+        } catch (IllegalArgumentException e) {
+            block.setType(Material.valueOf("SKULL"), false);
+            Skull state = (Skull) block.getState();
+            //noinspection deprecation
+            state.setSkullType(SkullType.PLAYER);
+            state.update(false, false);
+        }
+    }
+
     private static void notNull(Object o, String name) {
         if (o == null) {
             throw new NullPointerException(name + " should not be null!");
         }
     }
 
-    private static String urlToBase64(String url) {
+    private static String base64(UUID id) {
+        short retryCount = 10;
+        while (true) {
+            try {
+                URL url = new URL("https://sessionserver.mojang.com/session/minecraft/profile/" + id.toString() + "?unsigned=false");
+                InputStreamReader in = new InputStreamReader(url.openStream());
+                JsonObject textureProperty = new JsonParser().parse(in)
+                        .getAsJsonObject().get("properties")
+                        .getAsJsonArray().get(0)
+                        .getAsJsonObject();
+                return textureProperty.get("value").getAsString();
+            } catch (IOException e) {
+                // cannot connect to mojang, retry
+                if (--retryCount < 0) {
+                    Bukkit.getLogger().warning("SKULLCREATOR API - Retry over 10 times, aborted");
+                    return null;
+                }
+                try {
+                    Bukkit.getLogger().info("SKULLCREATOR API - Cannot connect to Mojang, retrying");
+                    //noinspection BusyWait
+                    Thread.sleep(TimeUnit.SECONDS.toMillis(60));
+                } catch (InterruptedException ignored) {
+                }
+            } catch (IllegalStateException e) {
+                // connection is good, but the JsonObject retrieved is not expected,
+                // which means that the player is cracked
+                // return as-is
+                Bukkit.getLogger().warning("SKULLCREATOR API - UUID might be a cracked player, aborted");
+                return null;
+            }
+        }
+    }
 
+    private static String urlToBase64(String url) {
         URI actualUrl;
         try {
             actualUrl = new URI(url);
@@ -181,6 +254,21 @@ public class SkullCreator {
             } catch (NoSuchFieldException | IllegalAccessException ex2) {
                 ex2.printStackTrace();
             }
+        }
+    }
+
+    private static void checkLegacy() {
+        try {
+            // if both of these succeed, then we are running
+            // in a legacy api, but on a modern (1.13+) server.
+            Material.class.getDeclaredField("PLAYER_HEAD");
+            Material.valueOf("SKULL");
+
+            if (!warningPosted) {
+                Bukkit.getLogger().warning("SKULLCREATOR API - Using the legacy bukkit API with 1.13+ bukkit versions is not supported!");
+                warningPosted = true;
+            }
+        } catch (NoSuchFieldException | IllegalArgumentException ignored) {
         }
     }
 
