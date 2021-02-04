@@ -1,21 +1,19 @@
 package co.mcsky.vote;
 
 import co.aikar.commands.PaperCommandManager;
-import co.mcsky.vote.cache.SkullCache;
-import co.mcsky.vote.io.VoteStoragePool;
-import co.mcsky.vote.type.VotesPool;
+import co.mcsky.vote.file.VoteStoragePool;
 import com.plotsquared.core.api.PlotAPI;
 import de.themoep.utils.lang.bukkit.LanguageManager;
+import me.lucko.helper.plugin.ExtendedJavaPlugin;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Arrays;
 
 /**
  * The main class of this plugin.
  */
-public class VoteMain extends JavaPlugin {
+public class VoteMain extends ExtendedJavaPlugin {
 
     public static VoteMain plugin;
     public static PlotAPI plotApi;
@@ -24,17 +22,13 @@ public class VoteMain extends JavaPlugin {
     public LanguageManager lang;
     public PaperCommandManager commands;
 
-    private SkullCache skullCache;
-    private VotesPool votesPool;
-    private VoteStoragePool voteStoragePool;
-
     @Override
-    public void onDisable() {
-        this.voteStoragePool.saveAll();
+    public void disable() {
+        VoteStoragePool.INSTANCE.saveAll();
     }
 
     @Override
-    public void onEnable() {
+    public void enable() {
         plugin = this;
         plotApi = new PlotAPI();
 
@@ -42,10 +36,7 @@ public class VoteMain extends JavaPlugin {
         this.config.load();
         this.config.save();
 
-        this.skullCache = SkullCache.create();
-        this.votesPool = VotesPool.create();
-        this.voteStoragePool = VoteStoragePool.create(votesPool);
-        this.voteStoragePool.readAll();
+        VoteStoragePool.INSTANCE.readAll();
 
         loadLanguages();
         registerCommands();
@@ -53,9 +44,6 @@ public class VoteMain extends JavaPlugin {
 
     public void registerCommands() {
         commands = new PaperCommandManager(this);
-        commands.registerDependency(VotesPool.class, votesPool);
-        commands.registerDependency(VoteStoragePool.class, voteStoragePool);
-        commands.registerDependency(SkullCache.class, skullCache);
         commands.registerCommand(new VoteCommands(commands));
     }
 

@@ -26,7 +26,7 @@ public class VoteLimiter implements TerminableModule {
     public void setup(@Nonnull TerminableConsumer consumer) {
         // Don't allow to vote if the vote system is not ready yet
         Events.subscribe(PlayerVoteEvent.class)
-                .filter(e -> votes.getPlotWorld().equalsIgnoreCase(e.getVotes().getPlotWorld()))
+                .filter(e -> votes.getWorld().equalsIgnoreCase(e.getVotes().getWorld()))
                 .filter(e -> !plugin.config.allowVoteWhenNotEnded)
                 .filter(e -> !votes.isReady())
                 .handler(e -> {
@@ -38,7 +38,7 @@ public class VoteLimiter implements TerminableModule {
         // Don't allow to vote if the work is undone yet
         Events.subscribe(PlayerVoteEvent.class)
                 .filter(EventFilters.ignoreCancelled())
-                .filter(e -> votes.getPlotWorld().equalsIgnoreCase(e.getVotes().getPlotWorld()))
+                .filter(e -> votes.getWorld().equalsIgnoreCase(e.getVotes().getWorld()))
                 .filter(e -> !plugin.config.allowVoteWhenUndone)
                 .filter(e -> !e.getWork().isDone())
                 .handler(e -> {

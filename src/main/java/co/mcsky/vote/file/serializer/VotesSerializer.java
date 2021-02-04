@@ -1,4 +1,4 @@
-package co.mcsky.vote.io.serializer;
+package co.mcsky.vote.file.serializer;
 
 import co.mcsky.vote.type.Vote;
 import co.mcsky.vote.type.Votes;
@@ -52,9 +52,9 @@ public class VotesSerializer implements TypeSerializer<Votes> {
     public void serialize(Type type, @Nullable Votes votes, ConfigurationNode node) throws SerializationException {
         Objects.requireNonNull(votes, "votes");
 
-        node.node("world").set(votes.getPlotWorld());
+        node.node("world").set(votes.getWorld());
 
-        for (Work work : votes.getWorks()) {
+        for (Work work : votes.getWorkAll()) {
             ConfigurationNode ownerUuid = node.node("works", work.getOwner().toString());
             ownerUuid.node("raters").setList(Vote.class, new ArrayList<>(work.getVotes()));
 

@@ -1,4 +1,4 @@
-package co.mcsky.vote.cache;
+package co.mcsky.vote.skull;
 
 import me.lucko.helper.Schedulers;
 import me.lucko.helper.promise.Promise;
@@ -10,26 +10,24 @@ import org.bukkit.inventory.meta.SkullMeta;
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
-public class SkullCache implements Terminable {
+/**
+ * Head cache pool for non-blocking player head display.
+ */
+public enum SkullCache implements Terminable {
+
+    // singleton
+    INSTANCE;
 
     // the skull cache
     private final Map<UUID, ItemStack> cache;
 
     // all scheduled (async) tasks
-    // track them so that we can terminate when needed
     private final Set<Terminable> scheduledTasks;
 
     // uuids which are already scheduled tasks to fetch skin
     private final Set<UUID> fetching;
 
-    /**
-     * @return a new cache pool for skin textures.
-     */
-    public static SkullCache create() {
-        return new SkullCache();
-    }
-
-    private SkullCache() {
+    SkullCache() {
         this.cache = new HashMap<>();
         this.fetching = new HashSet<>();
         this.scheduledTasks = new HashSet<>();

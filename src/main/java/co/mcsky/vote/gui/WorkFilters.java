@@ -6,7 +6,7 @@ import me.lucko.helper.function.Predicates;
 import java.util.UUID;
 import java.util.function.Predicate;
 
-public final class WorkFilter {
+public final class WorkFilters {
 
     public static Predicate<Work> all() {
         return Predicates.alwaysTrue();

@@ -1,6 +1,6 @@
 package co.mcsky.vote.gui;
 
-import co.mcsky.vote.cache.SkullCache;
+import co.mcsky.vote.skull.SkullCache;
 import co.mcsky.vote.event.PlayerVoteEvent;
 import co.mcsky.vote.type.Vote;
 import co.mcsky.vote.type.Votes;
@@ -106,13 +106,9 @@ public class MainGui extends VoicedGui {
     // the backed instances
     private final Votes votes;
 
-    // head cache pool for non-blocking player head display
-    private final SkullCache skullCache;
-
-    public MainGui(Player player, Votes votes, SkullCache skullCache) {
+    public MainGui(Player player, Votes votes) {
         super(player, 5, plugin.getMessage(player, "gui.work-listing.title"));
         this.votes = votes;
-        this.skullCache = skullCache;
 
         // setup next page item
         this.nextPageItem = pageInfo -> ItemStackBuilder.of(Material.PAPER)
@@ -132,7 +128,7 @@ public class MainGui extends VoicedGui {
         // by default, currently selected work is null
         this.work = null;
         // show all works by default
-        this.filter = WorkFilter.all();
+        this.filter = WorkFilters.all();
         updateContent();
     }
 
@@ -175,7 +171,7 @@ public class MainGui extends VoicedGui {
                 .lore(plugin.getMessage(getPlayer(), "gui.work-listing.submit.lore4"))
                 .lore(plugin.getMessage(getPlayer(), "gui.work-listing.submit.lore5"))
                 .build(() -> {
-                    boolean invalid = this.votes.getCalculator().invalid(getPlayer().getUniqueId());
+                    boolean invalid = this.votes.getCalc().invalid(getPlayer().getUniqueId());
 
                     // send prompts
                     if (invalid) {
@@ -183,7 +179,7 @@ public class MainGui extends VoicedGui {
                         getPlayer().sendMessage(plugin.getMessage(getPlayer(), "gui-message.vote-not-done"));
                         getPlayer().sendMessage(plugin.getMessage(getPlayer(), "gui-message.must-vote-filtered"));
                         // then filter content to only show the works he needs to vote for
-                        updateContent(WorkFilter.undone(getPlayer().getUniqueId()));
+                        updateContent(WorkFilters.undone(getPlayer().getUniqueId()));
                         redraw();
                     } else {
                         // prompt the player that he has done
@@ -322,7 +318,7 @@ public class MainGui extends VoicedGui {
 
     private void updateContent() {
         this.content = this.votes
-                .getWorks()
+                .getWorkAll()
                 .stream()
                 .filter(this.filter)
                 .map(work -> ItemStackBuilder.of(Material.PLAYER_HEAD)
@@ -332,7 +328,7 @@ public class MainGui extends VoicedGui {
                         .lore(plugin.getMessage(getPlayer(), "gui.work-listing.work-entry.lore3", "done", work.voted(getPlayer().getUniqueId()) ? plugin.getMessage(getPlayer(), "gui.work-listing.done") : plugin.getMessage(getPlayer(), "gui.work-listing.undone")))
                         .lore(plugin.getMessage(getPlayer(), "gui.work-listing.work-entry.lore4"))
                         .lore(plugin.getMessage(getPlayer(), "gui.work-listing.work-entry.lore5"))
-                        .transform(item -> skullCache.itemWithUuid(item, work.getOwner()))
+                        .transform(item -> SkullCache.INSTANCE.itemWithUuid(item, work.getOwner()))
                         .build(() -> {
                             this.work = work;
                             drawVoteOption();

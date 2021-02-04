@@ -50,11 +50,11 @@ public class Votes implements Terminable {
         pull();
     }
 
-    public String getPlotWorld() {
+    public String getWorld() {
         return plotWorld;
     }
 
-    public VotesCalc getCalculator() {
+    public VotesCalc getCalc() {
         return votesCalc;
     }
 
@@ -83,7 +83,7 @@ public class Votes implements Terminable {
     /**
      * @return all works
      */
-    public Collection<Work> getWorks() {
+    public Collection<Work> getWorkAll() {
         return works.values();
     }
 

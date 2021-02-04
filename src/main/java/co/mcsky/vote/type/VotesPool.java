@@ -9,19 +9,21 @@ import java.util.function.Consumer;
 
 /**
  * Represents all entire votes for all building games.
+ * <p>
+ * "pool-design" is used because there are more than one building games.
  */
-public class VotesPool implements Terminable, Iterable<Votes> {
+public enum VotesPool implements Terminable, Iterable<Votes> {
 
-    public static VotesPool create() {
-        return new VotesPool();
-    }
+    // singleton
+    INSTANCE;
 
+    // world name - votes
     private final Map<String, Votes> votes;
     private final CompositeTerminable compositeTerminable;
 
     private String currentWorldName;
 
-    private VotesPool() {
+    VotesPool() {
         this.votes = new HashMap<>();
         this.compositeTerminable = CompositeTerminable.create();
     }
@@ -34,14 +36,14 @@ public class VotesPool implements Terminable, Iterable<Votes> {
      * @param instance the instance to be added to the pool
      */
     public void register(Votes instance) {
-        currentWorldName = instance.getPlotWorld();
+        currentWorldName = instance.getWorld();
         votes.put(currentWorldName, instance);
     }
 
     /**
      * Registers a entire vote for the given world. This changes {@link VotesPool#currentWorldName} to the specified
-     * one. Registering the same world multiple times does not overwrite anything. To delete/overwrite an existing
-     * instance, use {@link #unregister(String)} instead.
+     * one, which changes the instance obtained from {@link #get()}. Registering the same world multiple times does not
+     * overwrite anything. To delete/overwrite an existing instance, use {@link #unregister(String)} instead.
      *
      * @param worldName the name of plot world
      * @return true, if the world is registered successfully, otherwise false to indicate it already registered
@@ -123,7 +125,6 @@ public class VotesPool implements Terminable, Iterable<Votes> {
         compositeTerminable.close();
     }
 
-    @SuppressWarnings("NullableProblems")
     @Override
     public Iterator<Votes> iterator() {
         return votes.values().iterator();

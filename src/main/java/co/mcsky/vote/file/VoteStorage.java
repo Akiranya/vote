@@ -1,9 +1,9 @@
-package co.mcsky.vote.io;
+package co.mcsky.vote.file;
 
 import co.mcsky.vote.type.Vote;
 import co.mcsky.vote.type.Votes;
-import co.mcsky.vote.io.serializer.VoteSerializer;
-import co.mcsky.vote.io.serializer.VotesSerializer;
+import co.mcsky.vote.file.serializer.VoteSerializer;
+import co.mcsky.vote.file.serializer.VotesSerializer;
 import me.lucko.helper.serialize.FileStorageHandler;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.ConfigurateException;
@@ -39,7 +39,6 @@ public class VoteStorage extends FileStorageHandler<Votes> {
         loader = YamlConfigurationLoader.builder()
                 .path(new File(dataFolder, fileName + fileExtension).toPath())
                 .defaultOptions(opts -> opts.serializers(builder -> builder.registerAll(serializers)))
-//                .nodeStyle(NodeStyle.BLOCK)
                 .build();
 
         try {

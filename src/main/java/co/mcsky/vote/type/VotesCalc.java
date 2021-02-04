@@ -18,32 +18,11 @@ public class VotesCalc {
     }
 
     /**
-     * This statistics neglects whether the raters are valid or not.
-     *
-     * @return a stream of UUID of players who have participated the vote.
-     */
-    public Stream<UUID> rawRaters() {
-        return this.votes.getWorks().stream()
-                .flatMap(w -> w.getVotes().stream())
-                .map(Vote::getRater)
-                .distinct();
-    }
-
-    /**
-     * @return stream of works which are done
-     */
-    public Stream<Work> done() {
-        return this.votes.getWorks().stream()
-                .filter(Work::isDone);
-    }
-
-    /**
      * @param rater the owner of the vote
      * @return set of works which have not been voted by the specified vote owner
      */
     public Stream<Work> missed(UUID rater) {
-        return this.votes.getWorks().stream()
-                .filter(work -> work.invoted(rater));
+        return votes.getWorkAll().stream().filter(work -> work.invoted(rater));
     }
 
     /**
@@ -51,10 +30,7 @@ public class VotesCalc {
      * @return true, if the owner has voted all works which are done, otherwise false
      */
     public boolean valid(UUID rater) {
-        return missed(rater)
-                .filter(Work::isDone)
-                .findAny()
-                .isEmpty();
+        return missed(rater).noneMatch(Work::isDone);
     }
 
     /**
@@ -62,31 +38,31 @@ public class VotesCalc {
      * @return true, if the owner has NOT voted all works which are done, otherwise false
      */
     public boolean invalid(UUID rater) {
-        return !valid(rater);
+        return missed(rater).anyMatch(Work::isDone);
     }
 
     /**
-     * @return set of UUID of valid raters
+     * @return stream of UUIDs of players who have participated the vote, regardless of the raters are valid or not
+     */
+    public Stream<UUID> rawRaters() {
+        return votes.getWorkAll().stream()
+                .flatMap(w -> w.getVotes().stream())
+                .map(Vote::getRater)
+                .distinct();
+    }
+
+    /**
+     * @return set of UUIDs of valid raters
      */
     public Set<UUID> validRaters() {
-        return rawRaters().filter(this::valid).collect(Collectors.toUnmodifiableSet());
+        return rawRaters().filter(this::valid).collect(Collectors.toSet());
     }
 
     /**
-     * @return set UUID of invalid raters
+     * @return set of UUIDs of invalid raters
      */
     public Set<UUID> invalidRaters() {
-        return rawRaters().filter(this::invalid).collect(Collectors.toUnmodifiableSet());
-    }
-
-    /**
-     * @param work the owner of a work
-     * @return set of votes of the work, regardless of the vote is valid
-     */
-    public Set<Vote> rawVotes(UUID work) {
-        return this.votes.getWork(work)
-                .map(Work::getVotes)
-                .orElse(Set.of());
+        return rawRaters().filter(this::invalid).collect(Collectors.toSet());
     }
 
     /**
@@ -94,7 +70,7 @@ public class VotesCalc {
      * @return stream of all valid votes of the given work
      */
     public Stream<Vote> validVotes(UUID work) {
-        return this.votes.getWork(work)
+        return votes.getWork(work)
                 .map(Work::getVotes)
                 .orElse(Set.of()).stream()
                 .filter(vote -> valid(vote.getRater()));
@@ -105,9 +81,7 @@ public class VotesCalc {
      * @return set of valid red votes of the given work
      */
     public Set<Vote> redVotes(UUID work) {
-        return validVotes(work)
-                .filter(Vote::isAbsent)
-                .collect(Collectors.toUnmodifiableSet());
+        return validVotes(work).filter(Vote::isAbsent).collect(Collectors.toSet());
     }
 
     /**
@@ -115,9 +89,7 @@ public class VotesCalc {
      * @return set of valid green votes of the given work
      */
     public Set<Vote> greenVotes(UUID work) {
-        return validVotes(work)
-                .filter(Vote::isPresent)
-                .collect(Collectors.toUnmodifiableSet());
+        return validVotes(work).filter(Vote::isPresent).collect(Collectors.toSet());
     }
 
     /**
@@ -127,7 +99,7 @@ public class VotesCalc {
      * @return set of works which the rater gave a green vote
      */
     public Set<Work> greenWorks(UUID rater) {
-        return this.votes.getWorks().stream()
+        return votes.getWorkAll().stream()
                 .filter(work -> work.voted(rater))
                 .filter(work -> work.present(rater))
                 .collect(Collectors.toUnmodifiableSet());
@@ -140,7 +112,7 @@ public class VotesCalc {
      * @return set of works which the rater gave a red vote
      */
     public Set<Work> redWorks(UUID rater) {
-        return this.votes.getWorks().stream()
+        return votes.getWorkAll().stream()
                 .filter(work -> work.voted(rater))
                 .filter(work -> work.absent(rater))
                 .collect(Collectors.toUnmodifiableSet());

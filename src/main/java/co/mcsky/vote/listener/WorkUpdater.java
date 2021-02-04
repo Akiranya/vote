@@ -58,7 +58,7 @@ public class WorkUpdater implements Terminable {
     }
 
     private boolean validateWorld(String plotWorld) {
-        return this.votes.getPlotWorld().equalsIgnoreCase(plotWorld);
+        return this.votes.getWorld().equalsIgnoreCase(plotWorld);
     }
 
     @Override

@@ -80,6 +80,13 @@ dependencies {
 shadowJar {
     minimize()
 
+    relocate 'de.themoep.utils', 'co.mcsky.vote.languages'
+    relocate 'co.aikar.commands', 'co.mcsky.vote.commands'
+    relocate 'co.aikar.locales', 'co.mcsky.vote.locales'
+    relocate 'org.spongepowered', 'co.mcsky.vote.spongepowered'
+    relocate 'org.yaml.snakeyaml', 'co.mcsky.vote.snakeyaml'
+    relocate 'io.leangen.geantyref', 'co.mcsky.vote.geantyref'
+
     // exclude unnecessary language files
     exclude 'acf-core_bg.properties'
     exclude 'acf-core_cs.properties'

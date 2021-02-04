@@ -1,4 +1,4 @@
-package co.mcsky.vote.io.serializer;
+package co.mcsky.vote.file.serializer;
 
 import co.mcsky.vote.type.Vote;
 import co.mcsky.vote.type.Votes;

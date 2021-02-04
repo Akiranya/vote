@@ -1,4 +1,4 @@
-package co.mcsky.vote.io;
+package co.mcsky.vote.file;
 
 import co.mcsky.vote.type.Votes;
 import co.mcsky.vote.type.VotesPool;
@@ -13,24 +13,21 @@ import static co.mcsky.vote.VoteMain.plugin;
 /**
  * Manages all instances of {@link VoteStorage}.
  * <p>
- * Operation on this instance will reflect on the backed {@link #votesPool}.
+ * Operation on this instance should reflect on the backed {@link VotesPool}.
  */
 @SuppressWarnings("UnstableApiUsage")
-public class VoteStoragePool {
+public enum VoteStoragePool {
+
+    // singleton
+    INSTANCE;
 
     private static final File dataFolder = new File(plugin.getDataFolder(), "saves");
     private static final String fileExtension = ".yml";
 
-    private final VotesPool votesPool;
-    // Key is world name
+    // key is world name
     private final Map<String, VoteStorage> storageMap;
 
-    public static VoteStoragePool create(VotesPool votesPool) {
-        return new VoteStoragePool(votesPool);
-    }
-
-    private VoteStoragePool(VotesPool votesPool) {
-        this.votesPool = votesPool;
+    VoteStoragePool() {
         this.storageMap = new HashMap<>();
     }
 
@@ -38,12 +35,12 @@ public class VoteStoragePool {
         String world = Files.getNameWithoutExtension(filename);
         VoteStorage storage = storageMap.computeIfAbsent(world, k -> new VoteStorage(k, dataFolder));
         Votes data = storage.load().orElseThrow();
-        votesPool.register(data);
+        VotesPool.INSTANCE.register(data);
     }
 
     public void save(String filename) {
         String world = Files.getNameWithoutExtension(filename);
-        Votes data = votesPool.get(world).orElseThrow();
+        Votes data = VotesPool.INSTANCE.get(world).orElseThrow();
         VoteStorage storage = storageMap.computeIfAbsent(world, k -> new VoteStorage(k, dataFolder));
         storage.save(data);
     }
@@ -60,8 +57,8 @@ public class VoteStoragePool {
     }
 
     public void saveAll() {
-        for (Votes votes : votesPool) {
-           save(votes.getPlotWorld());
+        for (Votes votes : VotesPool.INSTANCE) {
+            save(votes.getWorld());
         }
     }
 

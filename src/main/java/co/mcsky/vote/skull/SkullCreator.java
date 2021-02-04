@@ -1,4 +1,4 @@
-package co.mcsky.vote.cache;
+package co.mcsky.vote.skull;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
