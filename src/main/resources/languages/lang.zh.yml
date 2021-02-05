@@ -59,6 +59,7 @@ chat-message:
   saved-all: "&6所有地皮的评分数据已保存."
   cannot-vote-for-work-undone: "&c未完成的作品不能参与投票."
   cannot-vote-for-game-not-ended: "&c比赛还未结束时不能投票."
+  cannot-done-for-game-not-ended: "&c比赛还未结束时不能提交评分."
   vote-system-not-available: "&c投票系统当前不可用, 请联系管理员."
   world-no-plots: "&c世界 {world} 里没有已声明的地皮."
   mark-vote-system: "&6已设置投票系统就绪状态为 [{state}]"

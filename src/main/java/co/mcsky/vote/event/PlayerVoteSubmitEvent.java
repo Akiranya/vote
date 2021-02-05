@@ -9,7 +9,7 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.player.PlayerEvent;
 
 @SuppressWarnings("NullableProblems")
-public class PlayerVoteEvent extends PlayerEvent implements Cancellable {
+public class PlayerVoteSubmitEvent extends PlayerEvent implements Cancellable {
 
     private static final HandlerList handlers = new HandlerList();
     private boolean cancelled;
@@ -18,7 +18,7 @@ public class PlayerVoteEvent extends PlayerEvent implements Cancellable {
 
     private final Votes votes;
 
-    public PlayerVoteEvent(Player who, Work work, Vote vote, Votes votes) {
+    public PlayerVoteSubmitEvent(Player who, Work work, Vote vote, Votes votes) {
         super(who);
         this.work = work;
         this.vote = vote;

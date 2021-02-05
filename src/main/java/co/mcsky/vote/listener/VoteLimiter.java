@@ -1,7 +1,8 @@
 package co.mcsky.vote.listener;
 
+import co.mcsky.vote.event.PlayerVoteDoneEvent;
 import co.mcsky.vote.type.Votes;
-import co.mcsky.vote.event.PlayerVoteEvent;
+import co.mcsky.vote.event.PlayerVoteSubmitEvent;
 import me.lucko.helper.Events;
 import me.lucko.helper.event.filter.EventFilters;
 import me.lucko.helper.terminable.TerminableConsumer;
@@ -24,8 +25,8 @@ public class VoteLimiter implements TerminableModule {
 
     @Override
     public void setup(@Nonnull TerminableConsumer consumer) {
-        // Don't allow to vote if the vote system is not ready yet
-        Events.subscribe(PlayerVoteEvent.class)
+        // Stop voting if the vote system is not ready yet
+        Events.subscribe(PlayerVoteSubmitEvent.class)
                 .filter(e -> votes.getWorld().equalsIgnoreCase(e.getVotes().getWorld()))
                 .filter(e -> !plugin.config.allowVoteWhenNotEnded)
                 .filter(e -> !votes.isReady())
@@ -35,8 +36,8 @@ public class VoteLimiter implements TerminableModule {
                 })
                 .bindWith(consumer);
 
-        // Don't allow to vote if the work is undone yet
-        Events.subscribe(PlayerVoteEvent.class)
+        // Stop voting if the work is undone yet
+        Events.subscribe(PlayerVoteSubmitEvent.class)
                 .filter(EventFilters.ignoreCancelled())
                 .filter(e -> votes.getWorld().equalsIgnoreCase(e.getVotes().getWorld()))
                 .filter(e -> !plugin.config.allowVoteWhenUndone)
@@ -46,6 +47,17 @@ public class VoteLimiter implements TerminableModule {
                     e.getPlayer().sendMessage(plugin.getMessage(e.getPlayer(), "chat-message.cannot-vote-for-work-undone"));
                 })
                 .bindWith(consumer);
+
+        // Stop use 'done' button if the game is not ended
+        Events.subscribe(PlayerVoteDoneEvent.class)
+                .filter(e -> votes.getWorld().equalsIgnoreCase(e.getVotes().getWorld()))
+                .filter(e -> !votes.isReady())
+                .handler(e -> {
+                    e.setCancelled(true);
+                    e.getPlayer().sendMessage(plugin.getMessage(e.getPlayer(), "chat-message.cannot-done-for-game-not-ended"));
+                })
+                .bindWith(consumer);
+
     }
 
 }

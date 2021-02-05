@@ -147,6 +147,7 @@ public class SkullCreator {
         state.update(false, false);
     }
 
+    @SuppressWarnings("deprecation")
     private static void setToSkull(Block block) {
         checkLegacy();
 
@@ -155,7 +156,6 @@ public class SkullCreator {
         } catch (IllegalArgumentException e) {
             block.setType(Material.valueOf("SKULL"), false);
             Skull state = (Skull) block.getState();
-            //noinspection deprecation
             state.setSkullType(SkullType.PLAYER);
             state.update(false, false);
         }

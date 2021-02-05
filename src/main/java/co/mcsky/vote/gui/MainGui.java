@@ -1,7 +1,8 @@
 package co.mcsky.vote.gui;
 
+import co.mcsky.vote.event.PlayerVoteDoneEvent;
 import co.mcsky.vote.skull.SkullCache;
-import co.mcsky.vote.event.PlayerVoteEvent;
+import co.mcsky.vote.event.PlayerVoteSubmitEvent;
 import co.mcsky.vote.type.Vote;
 import co.mcsky.vote.type.Votes;
 import co.mcsky.vote.type.Work;
@@ -173,6 +174,10 @@ public class MainGui extends VoicedGui {
                 .build(() -> {
                     boolean invalid = this.votes.getCalc().invalid(getPlayer().getUniqueId());
 
+                    if (Events.callAndReturn(new PlayerVoteDoneEvent(getPlayer(), this.votes)).isCancelled()) {
+                        return;
+                    }
+
                     // send prompts
                     if (invalid) {
                         // prompt the player that he has not finished the vote yet
@@ -281,7 +286,7 @@ public class MainGui extends VoicedGui {
                 .lore(plugin.getMessage(getPlayer(), "gui.vote-options.vote-work.lore2"))
                 .build(() -> {
                     Vote vote = Vote.create(rater).absent(false).build();
-                    if (!Events.callAndReturn(new PlayerVoteEvent(getPlayer(), this.work, vote, this.votes)).isCancelled()) {
+                    if (!Events.callAndReturn(new PlayerVoteSubmitEvent(getPlayer(), this.work, vote, this.votes)).isCancelled()) {
                         this.votes.vote(this.work.getOwner(), vote);
                         getPlayer().sendMessage(plugin.getMessage(getPlayer(), "gui-message.vote-work", "player", this.work.getOwnerName()));
                     }
@@ -292,7 +297,7 @@ public class MainGui extends VoicedGui {
                 .lore(plugin.getMessage(getPlayer(), "gui.vote-options.vote-work-absent.lore2"))
                 .build(() -> {
                     Vote vote = Vote.create(rater).absent(true).build();
-                    if (!Events.callAndReturn(new PlayerVoteEvent(getPlayer(), this.work, vote, this.votes)).isCancelled()) {
+                    if (!Events.callAndReturn(new PlayerVoteSubmitEvent(getPlayer(), this.work, vote, this.votes)).isCancelled()) {
                         this.votes.vote(this.work.getOwner(), vote);
                         getPlayer().sendMessage(plugin.getMessage(getPlayer(), "gui-message.vote-work-absent", "player", this.work.getOwnerName()));
                     }
