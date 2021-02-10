@@ -104,6 +104,10 @@
 ![](https://mimaru-jp.oss-ap-northeast-1.aliyuncs.com/imagesmain-gui.jpg)
 ![](https://mimaru-jp.oss-ap-northeast-1.aliyuncs.com/imagesback.jpg)
 
+![](https://mimaru-jp.oss-ap-northeast-1.aliyuncs.com/imagesvideo2.gif)
+![](https://mimaru-jp.oss-ap-northeast-1.aliyuncs.com/imagesvideo1.gif)
+
+
 # 项目依赖
 
 编译时依赖的API
@@ -121,7 +125,7 @@
 
 # TODO
 
-- [] 不直接依赖 PlotSquared，而是抽象出一个中间接口
+- [ ] 不直接依赖 PlotSquared，而是抽象出一个中间接口
 
 # 设计理念
 
