@@ -4,7 +4,7 @@ plugins {
 }
 
 ext.pluginNameUpper = "VotePlugin"
-ext.majorVersion = 3
+ext.majorVersion = 4
 ext.minorVersion = 22
 ext.minecraftVersion = "1.16.5"
 
