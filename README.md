@@ -89,7 +89,7 @@
 
 - /votes - 打开主 GUI
 - /votes pull <世界名> - 载入指定世界的地皮信息，呈现在主 GUI 中
-- /votes purge <世界名> - 删除指定世界的地皮信息（这不会删除地皮，而仅仅删除本系统中的地皮信息如评分数据）
+- /votes purge <世界名> - 删除指定世界的地皮信息（这不会删除地皮，而仅仅删除本系统中的地皮信息）
 - /votes ready
 - /votes stats - 查看统计概览
 - /votes stats rate <玩家名>
