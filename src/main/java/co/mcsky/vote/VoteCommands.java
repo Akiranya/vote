@@ -5,14 +5,13 @@ import co.aikar.commands.ConditionFailedException;
 import co.aikar.commands.PaperCommandManager;
 import co.aikar.commands.annotation.*;
 import co.mcsky.vote.skull.SkullCache;
-import co.mcsky.vote.file.VoteStoragePool;
+import co.mcsky.vote.pool.VoteStoragePool;
 import co.mcsky.vote.gui.MainGui;
-import co.mcsky.vote.type.VotesPool;
+import co.mcsky.vote.pool.VotesPool;
 import co.mcsky.vote.util.PlayerUtil;
 import co.mcsky.vote.type.VotesCalc;
 import co.mcsky.vote.type.Vote;
 import co.mcsky.vote.type.Work;
-import com.plotsquared.core.plot.Plot;
 import me.lucko.helper.promise.Promise;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -64,11 +63,12 @@ public class VoteCommands extends BaseCommand {
                 throw new ConditionFailedException(plugin.getMessage(c.getIssuer().getIssuer(), "chat-message.vote-system-not-available"));
             }
         });
-        commands.getCommandConditions().addCondition(World.class, "plotworld", (context, execContext, value) -> VoteMain.plotApi.getPlotSquared().getPlotAreas(value.getName()).parallelStream()
-                .flatMap(plotArea -> plotArea.getPlots().stream())
-                .map(Plot::hasOwner) // Only count owned plots
-                .findAny()
-                .orElseThrow(() -> new ConditionFailedException(plugin.getMessage(execContext.getSender(), "chat-message.world-no-plots", "world", value.getName()))));
+        commands.getCommandConditions().addCondition(World.class, "plotworld", (context, exec, world) -> {
+            if (!VoteMain.plotApi.isPlotWorld(world)) {
+                throw new ConditionFailedException(plugin.getMessage(exec.getSender(), "chat-message.world-no-plots", "world", world.getName()));
+            }
+        });
+
     }
 
     @Default

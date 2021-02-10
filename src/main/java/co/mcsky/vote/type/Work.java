@@ -1,17 +1,11 @@
 package co.mcsky.vote.type;
 
 import co.mcsky.vote.util.PlayerUtil;
-import com.plotsquared.core.events.TeleportCause;
-import com.plotsquared.core.player.PlotPlayer;
-import com.plotsquared.core.plot.Plot;
-import com.plotsquared.core.plot.flag.implementations.DoneFlag;
 import org.bukkit.entity.Player;
 
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
-
-import static co.mcsky.vote.VoteMain.plugin;
 
 /**
  * Represents an architecture work.
@@ -64,18 +58,14 @@ public class Work {
      * @return true, if this work is marked as done, otherwise false
      */
     public boolean isDone() {
-        return DoneFlag.isDone(this.plot);
+        return this.plot.isDone();
     }
 
     /**
      * @param player the player to be teleported to this work
      */
     public void teleport(Player player) {
-        this.plot.teleportPlayer(
-                PlotPlayer.wrap(player),
-                TeleportCause.PLUGIN,
-                b -> player.sendMessage(plugin.getMessage(player, "gui-message.teleport-to-plot", "player", getOwnerName()))
-        );
+        this.plot.teleport(player);
     }
 
     /**
@@ -129,20 +119,20 @@ public class Work {
                 .anyMatch(Vote::isAbsent);
     }
 
-    public static WorkBuilder create(UUID work, Plot plot) {
-        return new WorkBuilder(work, plot);
+    public static WorkBuilder create(UUID work, Plot Plot) {
+        return new WorkBuilder(work, Plot);
     }
 
     public static class WorkBuilder {
 
         private final UUID owner;
         private final Set<Vote> votes;
-        private Plot plot;
+        private Plot Plot;
 
-        private WorkBuilder(UUID owner, Plot plot) {
+        private WorkBuilder(UUID owner, Plot Plot) {
             this.owner = owner;
             this.votes = new HashSet<>();
-            this.plot = plot;
+            this.Plot = Plot;
         }
 
         public WorkBuilder vote(Vote vote) {
@@ -150,13 +140,13 @@ public class Work {
             return this;
         }
 
-        public WorkBuilder plot(Plot plot) {
-            this.plot = plot;
+        public WorkBuilder plot(Plot Plot) {
+            this.Plot = Plot;
             return this;
         }
 
         public Work build() {
-            return new Work(this.owner, this.votes, this.plot);
+            return new Work(this.owner, this.votes, this.Plot);
         }
 
     }

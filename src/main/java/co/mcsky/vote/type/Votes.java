@@ -2,8 +2,8 @@ package co.mcsky.vote.type;
 
 import co.mcsky.vote.listener.VoteLimiter;
 import co.mcsky.vote.listener.WorkUpdater;
+import co.mcsky.vote.pool.VotesPool;
 import com.google.common.base.Preconditions;
-import com.plotsquared.core.plot.Plot;
 import me.lucko.helper.terminable.Terminable;
 import me.lucko.helper.terminable.composite.CompositeTerminable;
 
@@ -12,8 +12,8 @@ import java.util.*;
 import static co.mcsky.vote.VoteMain.*;
 
 /**
- * Represents an entire vote for a building game. The design is that each instance of this class manages a distinct
- * plot world. That is, there is a one-to-one relationship between a instance of this class and a plot world.
+ * Represents an entire vote for a building game. The design is that each instance of this class manages a distinct plot
+ * world. That is, there is a one-to-one relationship between a instance of this class and a plot world.
  */
 public class Votes implements Terminable {
 

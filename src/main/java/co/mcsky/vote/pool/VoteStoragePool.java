@@ -1,7 +1,7 @@
-package co.mcsky.vote.file;
+package co.mcsky.vote.pool;
 
+import co.mcsky.vote.file.VoteStorage;
 import co.mcsky.vote.type.Votes;
-import co.mcsky.vote.type.VotesPool;
 import com.google.common.io.Files;
 
 import java.io.File;

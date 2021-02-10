@@ -1,5 +1,6 @@
 package co.mcsky.vote.listener;
 
+import co.mcsky.vote.type.plotsquared.PlotSquaredPlot;
 import co.mcsky.vote.type.Votes;
 import com.google.common.eventbus.Subscribe;
 import com.plotsquared.core.events.PlayerClaimPlotEvent;
@@ -26,7 +27,7 @@ public class WorkUpdater implements Terminable {
     public WorkUpdater(Votes votes) {
         this.votes = votes;
         this.logger = plugin.getLogger();
-        plotApi.registerListener(this);
+        plotApi.internal().registerListener(this);
     }
 
     // Warning: this event is fired before the plot is actually claimed by the player
@@ -41,8 +42,8 @@ public class WorkUpdater implements Terminable {
         // Check claimable and validate the world
         if (plot.canClaim(plotPlayer) && validateWorld(plot.getWorldName())) {
             UUID workOwner = plotPlayer.getUUID();
-            this.votes.createEntry(workOwner, plot);
-            logger.info("[VoteUpdater] Created : " + plotPlayer.getName());
+            this.votes.createEntry(workOwner, PlotSquaredPlot.of(plot));
+            logger.info("[VoteUpdater] created : " + plotPlayer.getName());
         }
     }
 
@@ -52,7 +53,7 @@ public class WorkUpdater implements Terminable {
         if (validateWorld(event.getWorld())) {
             Optional.ofNullable(event.getPlot().getOwnerAbs()).ifPresent(workOwner -> {
                 this.votes.deleteEntry(workOwner);
-                logger.info("[VoteUpdater] Removed : " + event.getPlotId().toString());
+                logger.info("[VoteUpdater] removed : " + event.getPlotId().toString());
             });
         }
     }
@@ -63,6 +64,6 @@ public class WorkUpdater implements Terminable {
 
     @Override
     public void close() {
-        plotApi.getPlotSquared().getEventDispatcher().unregisterListener(this);
+        plotApi.internal().getPlotSquared().getEventDispatcher().unregisterListener(this);
     }
 }
