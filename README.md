@@ -114,7 +114,7 @@
 一些辅助开发的库
 
 - [mojang/authlib](https://mvnrepository.com/artifact/com.mojang/authlib/1.5.25) - some useful stuff about minecraft authentication
-- [lucko/helper](https://github.com/lucko/helper) - A collection of utilities and extended APIs to support the rapid and easy development of Bukkit plugins.
+- [lucko/helper](https://github.com/lucko/helper) - A collection of utilities and extended APIs to support the rapid development of Bukkit plugins.
 - [SpongePowered/configurate](https://github.com/SpongePowered/Configurate) - A simple configuration library for Java applications
 - [Phoenix616/lang](https://github.com/Phoenix616/lang) - Language config framework for Bukkit, Bungee and standalone java programs
 - [aikar/commands](https://github.com/aikar/commands) - Java Command Dispatch Framework
