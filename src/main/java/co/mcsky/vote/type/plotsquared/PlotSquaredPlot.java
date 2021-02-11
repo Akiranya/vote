@@ -14,11 +14,7 @@ public class PlotSquaredPlot implements Plot {
 
     private final com.plotsquared.core.plot.Plot plot;
 
-    public static Plot of(com.plotsquared.core.plot.Plot plot) {
-        return new PlotSquaredPlot(plot);
-    }
-
-    private PlotSquaredPlot(com.plotsquared.core.plot.Plot plot) {
+    public PlotSquaredPlot(com.plotsquared.core.plot.Plot plot) {
         this.plot = plot;
     }
 

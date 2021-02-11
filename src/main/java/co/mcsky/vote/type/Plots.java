@@ -4,7 +4,10 @@ import org.bukkit.World;
 
 import java.util.Set;
 
-public interface PlotAPI<T> {
+/**
+ * Represents an abstract plot manager.
+ */
+public interface Plots {
 
     /**
      * Get all plots in this plot system.
@@ -21,12 +24,5 @@ public interface PlotAPI<T> {
      * @return true if the world is a plot world
      */
     boolean isPlotWorld(World world);
-
-    /**
-     * Gets the backed internal API.
-     *
-     * @return the backed internal API.
-     */
-    T internal();
 
 }

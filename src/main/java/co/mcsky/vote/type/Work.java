@@ -119,20 +119,20 @@ public class Work {
                 .anyMatch(Vote::isAbsent);
     }
 
-    public static WorkBuilder create(UUID work, Plot Plot) {
-        return new WorkBuilder(work, Plot);
+    public static WorkBuilder create(UUID work, Plot plot) {
+        return new WorkBuilder(work, plot);
     }
 
     public static class WorkBuilder {
 
         private final UUID owner;
         private final Set<Vote> votes;
-        private Plot Plot;
+        private Plot plot;
 
-        private WorkBuilder(UUID owner, Plot Plot) {
+        private WorkBuilder(UUID owner, Plot plot) {
             this.owner = owner;
             this.votes = new HashSet<>();
-            this.Plot = Plot;
+            this.plot = plot;
         }
 
         public WorkBuilder vote(Vote vote) {
@@ -140,13 +140,13 @@ public class Work {
             return this;
         }
 
-        public WorkBuilder plot(Plot Plot) {
-            this.Plot = Plot;
+        public WorkBuilder plot(Plot plot) {
+            this.plot = plot;
             return this;
         }
 
         public Work build() {
-            return new Work(this.owner, this.votes, this.Plot);
+            return new Work(this.owner, this.votes, this.plot);
         }
 
     }

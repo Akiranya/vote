@@ -64,7 +64,7 @@ public class VoteCommands extends BaseCommand {
             }
         });
         commands.getCommandConditions().addCondition(World.class, "plotworld", (context, exec, world) -> {
-            if (!VoteMain.plotApi.isPlotWorld(world)) {
+            if (!VoteMain.plots.isPlotWorld(world)) {
                 throw new ConditionFailedException(plugin.getMessage(exec.getSender(), "chat-message.world-no-plots", "world", world.getName()));
             }
         });

@@ -1,13 +1,14 @@
 package co.mcsky.vote.type.plotsquared;
 
 import co.mcsky.vote.type.Plot;
-import co.mcsky.vote.type.PlotAPI;
+import co.mcsky.vote.type.Plots;
+import co.mcsky.vote.type.PlotFactory;
 import org.bukkit.World;
 
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class PlotSquaredPlotAPI implements PlotAPI<com.plotsquared.core.api.PlotAPI> {
+public class PlotSquaredPlotAPI implements Plots {
 
     private final com.plotsquared.core.api.PlotAPI api;
 
@@ -18,7 +19,7 @@ public class PlotSquaredPlotAPI implements PlotAPI<com.plotsquared.core.api.Plot
     @Override
     public Set<Plot> getAllPlots() {
         return this.api.getAllPlots().stream()
-                .map(PlotSquaredPlot::of)
+                .map(PlotFactory::of)
                 .collect(Collectors.toSet());
     }
 
@@ -29,11 +30,6 @@ public class PlotSquaredPlotAPI implements PlotAPI<com.plotsquared.core.api.Plot
                 .map(com.plotsquared.core.plot.Plot::hasOwner) // only count owned plots
                 .findAny()
                 .isPresent();
-    }
-
-    @Override
-    public com.plotsquared.core.api.PlotAPI internal() {
-        return this.api;
     }
 
 }

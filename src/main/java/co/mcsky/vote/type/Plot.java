@@ -4,6 +4,9 @@ import org.bukkit.entity.Player;
 
 import java.util.UUID;
 
+/**
+ * Represents an abstract single plot.
+ */
 public interface Plot {
 
     /**

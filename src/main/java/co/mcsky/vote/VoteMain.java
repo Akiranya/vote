@@ -2,8 +2,8 @@ package co.mcsky.vote;
 
 import co.aikar.commands.PaperCommandManager;
 import co.mcsky.vote.pool.VoteStoragePool;
-import co.mcsky.vote.type.PlotAPI;
-import co.mcsky.vote.type.plotsquared.PlotSquaredPlotAPI;
+import co.mcsky.vote.type.Plots;
+import co.mcsky.vote.type.PlotsFactory;
 import de.themoep.utils.lang.bukkit.LanguageManager;
 import me.lucko.helper.plugin.ExtendedJavaPlugin;
 import org.bukkit.command.CommandSender;
@@ -17,7 +17,7 @@ import java.util.Arrays;
 public class VoteMain extends ExtendedJavaPlugin {
 
     public static VoteMain plugin;
-    public static PlotAPI<com.plotsquared.core.api.PlotAPI> plotApi;
+    public static Plots plots;
 
     public VoteConfig config;
     public LanguageManager lang;
@@ -31,7 +31,7 @@ public class VoteMain extends ExtendedJavaPlugin {
     @Override
     public void enable() {
         plugin = this;
-        plotApi = new PlotSquaredPlotAPI();
+        plots = PlotsFactory.create();
 
         this.config = new VoteConfig();
         this.config.load();

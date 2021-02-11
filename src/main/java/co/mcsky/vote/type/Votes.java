@@ -120,7 +120,7 @@ public class Votes implements Terminable {
      * Updates work entries from all legal plots.
      */
     public void pull() {
-        plotApi.getAllPlots().parallelStream()
+        plots.getAllPlots().parallelStream()
                 .filter(p -> p.hasOwner() && p.getWorldName().equalsIgnoreCase(plotWorld))
                 .forEach(p -> createEntry(p.getOwner(), p));
     }
