@@ -93,7 +93,7 @@ public abstract class PaginatedView implements GuiView {
         }
     }
 
-    public void refreshContent(List<Item> content) {
+    public void updateContent(List<Item> content) {
         this.content = ImmutableList.copyOf(content);
     }
 

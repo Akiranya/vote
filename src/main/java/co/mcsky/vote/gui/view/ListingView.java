@@ -85,7 +85,7 @@ public class ListingView extends PaginatedView {
                         player.sendMessage(plugin.getMessage(player, "gui-message.vote-not-done"));
                         player.sendMessage(plugin.getMessage(player, "gui-message.must-vote-filtered"));
                         // then filter content to only show the works he needs to vote for
-                        this.updateContent(WorkFilters.undone(player.getUniqueId()));
+                        this.updateListing(WorkFilters.undone(player.getUniqueId()));
                         this.gui.redraw();
                     } else {
                         // prompt the player that he has done
@@ -161,7 +161,7 @@ public class ListingView extends PaginatedView {
                 .getMaskedIndexesImmutable();
     }
 
-    public void updateContent() {
+    public void updateListing() {
         List<Item> content = this.votes.getWorkAll()
                 .stream()
                 .filter(this.filter)
@@ -178,12 +178,12 @@ public class ListingView extends PaginatedView {
                             this.gui.switchView(new OptionView(this.gui, this));
                         }))
                 .collect(Collectors.toUnmodifiableList());
-        refreshContent(content);
+        updateContent(content);
     }
 
-    private void updateContent(Predicate<Work> predicate) {
+    private void updateListing(Predicate<Work> predicate) {
         this.filter = predicate;
-        this.updateContent();
+        this.updateListing();
     }
 
     public Votes getVotes() {

@@ -1,9 +1,9 @@
 package co.mcsky.vote.file;
 
-import co.mcsky.vote.type.Vote;
-import co.mcsky.vote.type.Votes;
 import co.mcsky.vote.file.serializer.VoteSerializer;
 import co.mcsky.vote.file.serializer.VotesSerializer;
+import co.mcsky.vote.type.Vote;
+import co.mcsky.vote.type.Votes;
 import me.lucko.helper.serialize.FileStorageHandler;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.ConfigurateException;
@@ -13,7 +13,7 @@ import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 import java.io.File;
 import java.nio.file.Path;
 
-import static co.mcsky.vote.VoteMain.*;
+import static co.mcsky.vote.VoteMain.plugin;
 
 /**
  * Each instance of {@link VoteStorage} (can only) handles a file (a instance of {@link Votes}).

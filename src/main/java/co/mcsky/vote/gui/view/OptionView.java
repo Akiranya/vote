@@ -93,7 +93,7 @@ public class OptionView implements GuiView {
                 .lore(plugin.getMessage(this.gui.getPlayer(), "gui.vote-options.back.lore2"))
                 .build(() -> {
                     // update content before going back to the listing
-                    listingView.updateContent();
+                    listingView.updateListing();
                     // then switch back to the listing view to show updated content
                     this.gui.switchView(listingView);
                 }));

@@ -13,9 +13,9 @@ public class SeamlessGui extends Gui {
     private GuiView currentView;
 
     /**
-     * @param player the player
-     * @param lines the number of lines for this GUI
-     * @param title the title of this GUI
+     * @param player    the player
+     * @param lines     the number of lines for this GUI
+     * @param title     the title of this GUI
      * @param startView the starting view of this GUI
      */
     public SeamlessGui(Player player, int lines, String title, Function<SeamlessGui, GuiView> startView) {
@@ -30,6 +30,11 @@ public class SeamlessGui extends Gui {
         this.currentView.render();
     }
 
+    /**
+     * Switch from current view to another view.
+     *
+     * @param view the view to switch into.
+     */
     public void switchView(GuiView view) {
         this.currentView = view;
         redraw();

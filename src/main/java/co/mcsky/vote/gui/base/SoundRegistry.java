@@ -16,7 +16,7 @@ public class SoundRegistry {
 
 
     /**
-     * @param gui the GUI for which to add sound upon clicking an item
+     * @param gui   the GUI for which to add sound upon clicking an item
      * @param sound the sound to add
      */
     public static void bindClickingSound(Gui gui, Sound sound) {
@@ -31,7 +31,7 @@ public class SoundRegistry {
     }
 
     /**
-     * @param gui the GUI for which to add sound upon opening
+     * @param gui   the GUI for which to add sound upon opening
      * @param sound the sound to add
      */
     public static void bindOpeningSound(Gui gui, Sound sound) {
