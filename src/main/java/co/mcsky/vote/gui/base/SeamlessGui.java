@@ -3,6 +3,7 @@ package co.mcsky.vote.gui.base;
 import me.lucko.helper.menu.Gui;
 import org.bukkit.entity.Player;
 
+import javax.annotation.Nonnull;
 import java.util.Objects;
 import java.util.function.Function;
 
@@ -18,15 +19,15 @@ public class SeamlessGui extends Gui {
      * @param title     the title of this GUI
      * @param startView the starting view of this GUI
      */
-    public SeamlessGui(Player player, int lines, String title, Function<SeamlessGui, GuiView> startView) {
+    public SeamlessGui(Player player, int lines, String title, @Nonnull Function<SeamlessGui, GuiView> startView) {
         super(player, lines, title);
+        Objects.requireNonNull(currentView, "currentView");
         this.currentView = startView.apply(this);
     }
 
     @Override
     public final void redraw() {
         clearItems();
-        Objects.requireNonNull(currentView, "currentView");
         this.currentView.render();
     }
 
