@@ -4,9 +4,9 @@ import co.aikar.commands.BaseCommand;
 import co.aikar.commands.ConditionFailedException;
 import co.aikar.commands.PaperCommandManager;
 import co.aikar.commands.annotation.*;
+import co.mcsky.vote.gui.EntryGui;
 import co.mcsky.vote.skull.SkullCache;
 import co.mcsky.vote.pool.VoteStoragePool;
-import co.mcsky.vote.gui.MainGui;
 import co.mcsky.vote.pool.VotesPool;
 import co.mcsky.vote.util.PlayerUtil;
 import co.mcsky.vote.type.VotesCalc;
@@ -74,7 +74,7 @@ public class VoteCommands extends BaseCommand {
     @Default
     @Conditions("ready")
     public void open(Player player) {
-        new MainGui(player, VotesPool.INSTANCE.get()).open();
+        new EntryGui(player, VotesPool.INSTANCE.get()).open();
     }
 
     @SuppressWarnings("ConstantConditions")
