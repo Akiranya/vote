@@ -21,7 +21,7 @@ public class SeamlessGui extends Gui {
      */
     public SeamlessGui(Player player, int lines, String title, @Nonnull Function<SeamlessGui, GuiView> startView) {
         super(player, lines, title);
-        Objects.requireNonNull(currentView, "startView");
+        Objects.requireNonNull(startView, "startView");
         this.currentView = startView.apply(this);
     }
 
