@@ -136,7 +136,7 @@ public class ListingView extends PaginatedView {
     }
 
     @Override
-    public MenuScheme getBackgroundSchema() {
+    public MenuScheme backgroundSchema() {
         return new MenuScheme(StandardSchemeMappings.STAINED_GLASS)
                 .mask("111101111")
                 .mask("110000011")
@@ -151,7 +151,7 @@ public class ListingView extends PaginatedView {
     }
 
     @Override
-    public int getNextPageSlot() {
+    public int nextPageSlot() {
         return new MenuScheme()
                 .maskEmpty(4)
                 .mask("000000100")
@@ -159,7 +159,7 @@ public class ListingView extends PaginatedView {
     }
 
     @Override
-    public int getPreviousPageSlot() {
+    public int previousPageSlot() {
         return new MenuScheme()
                 .maskEmpty(4)
                 .mask("001000000")
@@ -167,7 +167,7 @@ public class ListingView extends PaginatedView {
     }
 
     @Override
-    public Function<PageInfo, ItemStack> getNextPageItem() {
+    public Function<PageInfo, ItemStack> nextPageItem() {
         return pageInfo -> ItemStackBuilder.of(Material.PAPER)
                 .name(plugin.getMessage(player, "gui.work-listing.next-page.name"))
                 .lore(plugin.getMessage(player, "gui.work-listing.next-page.lore1"))
@@ -176,7 +176,7 @@ public class ListingView extends PaginatedView {
     }
 
     @Override
-    public Function<PageInfo, ItemStack> getPreviousPageItem() {
+    public Function<PageInfo, ItemStack> previousPageItem() {
         return pageInfo -> ItemStackBuilder.of(Material.PAPER)
                 .name(plugin.getMessage(player, "gui.work-listing.previous-page.name"))
                 .lore(plugin.getMessage(player, "gui.work-listing.previous-page.lore1"))
@@ -185,7 +185,7 @@ public class ListingView extends PaginatedView {
     }
 
     @Override
-    public List<Integer> getItemSlots() {
+    public List<Integer> itemSlots() {
         return new MenuScheme()
                 .maskEmpty(1)
                 .mask("001111100")
