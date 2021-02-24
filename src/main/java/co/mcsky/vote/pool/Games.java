@@ -1,6 +1,6 @@
 package co.mcsky.vote.pool;
 
-import co.mcsky.vote.type.Votes;
+import co.mcsky.vote.type.Game;
 import me.lucko.helper.terminable.Terminable;
 import me.lucko.helper.terminable.composite.CompositeTerminable;
 
@@ -13,19 +13,19 @@ import java.util.function.Consumer;
  * <p>
  * "pool-design" is used because there are more than one building games.
  */
-public enum VotesPool implements Terminable, Iterable<Votes> {
+public enum Games implements Terminable, Iterable<Game> {
 
     // singleton
     INSTANCE;
 
-    // world name - votes
-    private final Map<String, Votes> votes;
+    // world name - game
+    private final Map<String, Game> gameMap;
     private final CompositeTerminable compositeTerminable;
 
     private String currentWorldName;
 
-    VotesPool() {
-        this.votes = new HashMap<>();
+    Games() {
+        this.gameMap = new HashMap<>();
         this.compositeTerminable = CompositeTerminable.create();
     }
 
@@ -36,13 +36,13 @@ public enum VotesPool implements Terminable, Iterable<Votes> {
      *
      * @param instance the instance to be added to the pool
      */
-    public void register(Votes instance) {
+    public void register(Game instance) {
         currentWorldName = instance.getWorld();
-        votes.put(currentWorldName, instance);
+        gameMap.put(currentWorldName, instance);
     }
 
     /**
-     * Registers a entire vote for the given world. This changes {@link VotesPool#currentWorldName} to the specified
+     * Registers a entire vote for the given world. This changes {@link Games#currentWorldName} to the specified
      * one, which changes the instance obtained from {@link #get()}. Registering the same world multiple times does not
      * overwrite anything. To delete/overwrite an existing instance, use {@link #unregister(String)} instead.
      *
@@ -51,22 +51,22 @@ public enum VotesPool implements Terminable, Iterable<Votes> {
      */
     public boolean register(String worldName) {
         currentWorldName = worldName;
-        if (votes.containsKey(worldName)) {
+        if (gameMap.containsKey(worldName)) {
             return false;
         }
-        votes.put(worldName, compositeTerminable.bind(new Votes(worldName)));
+        gameMap.put(worldName, compositeTerminable.bind(new Game(worldName)));
         return true;
     }
 
     /**
-     * Warning: this deletes all the votes for the given world in the memory.
+     * Warning: this deletes the whole game for the given world in the memory.
      *
      * @param worldName the world to be unregistered
      * @return true, if the world is unregistered successfully, otherwise false to indicate it already unregistered
      */
     public boolean unregister(String worldName) {
         try {
-            Votes removed = votes.remove(worldName);
+            Game removed = gameMap.remove(worldName);
             if (removed != null) {
                 removed.close();
                 return true;
@@ -78,25 +78,25 @@ public enum VotesPool implements Terminable, Iterable<Votes> {
     }
 
     /**
-     * @return the current {@link Votes} instance
+     * @return the current {@link Game} instance
      */
-    public Optional<Votes> peek() {
-        return Optional.ofNullable(votes.get(currentWorldName));
+    public Optional<Game> peek() {
+        return Optional.ofNullable(gameMap.get(currentWorldName));
     }
 
     /**
-     * @return the specified {@link Votes} instance
+     * @return the specified {@link Game} instance
      */
-    public Optional<Votes> get(String world) {
-        return Optional.ofNullable(votes.get(world));
+    public Optional<Game> get(String world) {
+        return Optional.ofNullable(gameMap.get(world));
     }
 
     /**
-     * @return the current {@link Votes} instance
+     * @return the current {@link Game} instance
      */
     @Nullable
-    public Votes get() {
-        return votes.get(currentWorldName);
+    public Game get() {
+        return gameMap.get(currentWorldName);
     }
 
     /**
@@ -104,14 +104,14 @@ public enum VotesPool implements Terminable, Iterable<Votes> {
      * @return true, if the plot world already registered, otherwise false
      */
     public boolean contains(String worldName) {
-        return votes.containsKey(worldName);
+        return gameMap.containsKey(worldName);
     }
 
     /**
-     * @return true, if there is at least one instance of Votes registered, otherwise false
+     * @return true, if there is at least one instance of {@link Game} registered, otherwise false
      */
     public boolean containsAny() {
-        return votes.keySet().stream().findAny().isPresent();
+        return gameMap.keySet().stream().findAny().isPresent();
     }
 
     /**
@@ -127,12 +127,12 @@ public enum VotesPool implements Terminable, Iterable<Votes> {
     }
 
     @Override
-    public Iterator<Votes> iterator() {
-        return votes.values().iterator();
+    public Iterator<Game> iterator() {
+        return gameMap.values().iterator();
     }
 
     @Override
-    public void forEach(Consumer<? super Votes> action) {
-        votes.values().forEach(action);
+    public void forEach(Consumer<? super Game> action) {
+        gameMap.values().forEach(action);
     }
 }

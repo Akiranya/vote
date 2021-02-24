@@ -1,7 +1,7 @@
 package co.mcsky.vote.file.serializer;
 
 import co.mcsky.vote.type.Vote;
-import co.mcsky.vote.type.Votes;
+import co.mcsky.vote.type.Game;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;
@@ -12,7 +12,7 @@ import java.util.UUID;
 import java.util.logging.Logger;
 
 /**
- * Handles de(serialization) for an instance of {@link Vote} (not {@link Votes})
+ * Handles de(serialization) for an instance of {@link Vote} (not {@link Game})
  */
 public class VoteSerializer implements TypeSerializer<Vote> {
 

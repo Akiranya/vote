@@ -1,11 +1,10 @@
-package co.mcsky.vote.gui.view;
+package co.mcsky.vote.gui;
 
 import co.mcsky.vote.event.PlayerVoteDoneEvent;
-import co.mcsky.vote.gui.WorkFilters;
 import co.mcsky.vote.gui.base.PaginatedView;
 import co.mcsky.vote.gui.base.SeamlessGui;
 import co.mcsky.vote.skull.SkullCache;
-import co.mcsky.vote.type.Votes;
+import co.mcsky.vote.type.Game;
 import co.mcsky.vote.type.Work;
 import me.lucko.helper.Events;
 import me.lucko.helper.item.ItemStackBuilder;
@@ -35,7 +34,7 @@ public class ListingView extends PaginatedView {
     private final Player player;
 
     // the backed instance
-    private final Votes votes;
+    private final Game game;
     // currently selected work
     private Work selectedWork;
 
@@ -49,11 +48,11 @@ public class ListingView extends PaginatedView {
             .mask("000010000")
             .getMaskedIndexesImmutable().get(0);
 
-    public ListingView(SeamlessGui gui, Votes votes) {
+    public ListingView(SeamlessGui gui, Game game) {
         super(gui);
         this.gui = gui;
         this.player = gui.getPlayer();
-        this.votes = votes;
+        this.game = game;
 
         // list all by default
         this.filter = WorkFilters.all();
@@ -62,10 +61,10 @@ public class ListingView extends PaginatedView {
     }
 
     public void updateListing() {
-        List<Item> content = this.votes.getWorkAll()
-                .stream()
-                .filter(this.filter)
-                .map(work -> ItemStackBuilder.of(Material.PLAYER_HEAD)
+        List<Item> content = this.game.getWorkAll()
+                                      .stream()
+                                      .filter(this.filter)
+                                      .map(work -> ItemStackBuilder.of(Material.PLAYER_HEAD)
                         .name(plugin.getMessage(player, "gui.work-listing.work-entry.name", "player", work.getOwnerName()))
                         .lore(plugin.getMessage(player, "gui.work-listing.work-entry.lore1"))
                         .lore(plugin.getMessage(player, "gui.work-listing.work-entry.lore2", "done", work.isDone() ? plugin.getMessage(player, "gui.work-listing.done") : plugin.getMessage(player, "gui.work-listing.undone")))
@@ -77,7 +76,7 @@ public class ListingView extends PaginatedView {
                             this.selectedWork = work;
                             this.gui.switchView(new OptionView(this.gui, this));
                         }))
-                .collect(Collectors.toUnmodifiableList());
+                                      .collect(Collectors.toUnmodifiableList());
         updateContent(content);
     }
 
@@ -105,9 +104,9 @@ public class ListingView extends PaginatedView {
                 .lore(plugin.getMessage(player, "gui.work-listing.submit.lore4"))
                 .lore(plugin.getMessage(player, "gui.work-listing.submit.lore5"))
                 .build(() -> {
-                    boolean invalid = this.votes.getCalc().invalid(player.getUniqueId());
+                    boolean invalid = this.game.getCalc().invalid(player.getUniqueId());
 
-                    if (Events.callAndReturn(new PlayerVoteDoneEvent(player, this.votes)).isCancelled()) {
+                    if (Events.callAndReturn(new PlayerVoteDoneEvent(player, this.game)).isCancelled()) {
                         return;
                     }
 
@@ -194,8 +193,8 @@ public class ListingView extends PaginatedView {
                 .getMaskedIndexesImmutable();
     }
 
-    public Votes getVotes() {
-        return votes;
+    public Game getGame() {
+        return game;
     }
 
     public Work getSelectedWork() {

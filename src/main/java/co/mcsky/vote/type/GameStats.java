@@ -4,7 +4,7 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Stream;
 
-public interface VotesStats {
+public interface GameStats {
     /**
      * @param rater the owner of the vote
      * @return set of works which have not been voted by the specified vote owner

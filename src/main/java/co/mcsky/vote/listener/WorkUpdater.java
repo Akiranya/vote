@@ -1,7 +1,7 @@
 package co.mcsky.vote.listener;
 
 import co.mcsky.vote.type.factory.PlotFactory;
-import co.mcsky.vote.type.Votes;
+import co.mcsky.vote.type.Game;
 import com.google.common.eventbus.Subscribe;
 import com.plotsquared.core.api.PlotAPI;
 import com.plotsquared.core.events.PlayerClaimPlotEvent;
@@ -17,17 +17,17 @@ import java.util.logging.Logger;
 import static co.mcsky.vote.VoteMain.*;
 
 /**
- * The {@link WorkUpdater} must associate with an instance of {@link Votes} (one-to-one relationship).
+ * The {@link WorkUpdater} must associate with an instance of {@link Game} (one-to-one relationship).
  */
 @SuppressWarnings("UnstableApiUsage")
 public class WorkUpdater implements Terminable {
 
-    private final Votes votes;
+    private final Game game;
     private final Logger logger;
     private final PlotAPI plotApi;
 
-    public WorkUpdater(Votes votes) {
-        this.votes = votes;
+    public WorkUpdater(Game game) {
+        this.game = game;
         this.logger = plugin.getLogger();
         this.plotApi = new PlotAPI();
         this.plotApi.registerListener(this);
@@ -45,7 +45,7 @@ public class WorkUpdater implements Terminable {
         // Check claimable and validate the world
         if (plot.canClaim(plotPlayer) && validateWorld(plot.getWorldName())) {
             UUID workOwner = plotPlayer.getUUID();
-            this.votes.createEntry(workOwner, PlotFactory.of(plot));
+            this.game.createEntry(workOwner, PlotFactory.of(plot));
             logger.info("[VoteUpdater] created : " + plotPlayer.getName());
         }
     }
@@ -55,14 +55,14 @@ public class WorkUpdater implements Terminable {
     public void onPlotDelete(PlotDeleteEvent event) {
         if (validateWorld(event.getWorld())) {
             Optional.ofNullable(event.getPlot().getOwnerAbs()).ifPresent(workOwner -> {
-                this.votes.deleteEntry(workOwner);
+                this.game.deleteEntry(workOwner);
                 logger.info("[VoteUpdater] removed : " + event.getPlotId().toString());
             });
         }
     }
 
     private boolean validateWorld(String plotWorld) {
-        return this.votes.getWorld().equalsIgnoreCase(plotWorld);
+        return this.game.getWorld().equalsIgnoreCase(plotWorld);
     }
 
     @Override

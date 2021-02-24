@@ -1,6 +1,6 @@
 package co.mcsky.vote.event;
 
-import co.mcsky.vote.type.Votes;
+import co.mcsky.vote.type.Game;
 import co.mcsky.vote.type.Vote;
 import co.mcsky.vote.type.Work;
 import org.bukkit.entity.Player;
@@ -16,9 +16,9 @@ public class PlayerVoteSubmitEvent extends PlayerEvent implements Cancellable {
     private final Work work;
     private final Vote vote;
 
-    private final Votes votes;
+    private final Game votes;
 
-    public PlayerVoteSubmitEvent(Player who, Work work, Vote vote, Votes votes) {
+    public PlayerVoteSubmitEvent(Player who, Work work, Vote vote, Game votes) {
         super(who);
         this.work = work;
         this.vote = vote;
@@ -33,7 +33,7 @@ public class PlayerVoteSubmitEvent extends PlayerEvent implements Cancellable {
         return vote;
     }
 
-    public Votes getVotes() {
+    public Game getVotes() {
         return votes;
     }
 

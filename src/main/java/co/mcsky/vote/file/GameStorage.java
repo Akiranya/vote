@@ -1,9 +1,9 @@
 package co.mcsky.vote.file;
 
 import co.mcsky.vote.file.serializer.VoteSerializer;
-import co.mcsky.vote.file.serializer.VotesSerializer;
+import co.mcsky.vote.file.serializer.GameSerializer;
 import co.mcsky.vote.type.Vote;
-import co.mcsky.vote.type.Votes;
+import co.mcsky.vote.type.Game;
 import me.lucko.helper.serialize.FileStorageHandler;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.ConfigurateException;
@@ -16,10 +16,10 @@ import java.nio.file.Path;
 import static co.mcsky.vote.VoteMain.plugin;
 
 /**
- * Each instance of {@link VoteStorage} (can only) handles a file (a instance of {@link Votes}).
+ * Each instance of {@link GameStorage} handles an instance of {@link Game}).
  */
 @SuppressWarnings("NullableProblems")
-public class VoteStorage extends FileStorageHandler<Votes> {
+public class GameStorage extends FileStorageHandler<Game> {
 
     private static final String fileExtension = ".yml";
 
@@ -29,11 +29,11 @@ public class VoteStorage extends FileStorageHandler<Votes> {
     /**
      * @param fileName should be the name of the plot world, without file extension
      */
-    public VoteStorage(String fileName, File dataFolder) {
+    public GameStorage(String fileName, File dataFolder) {
         super(fileName, fileExtension, dataFolder);
 
         TypeSerializerCollection serializers = TypeSerializerCollection.builder()
-                .register(Votes.class, new VotesSerializer(plugin.getLogger()))
+                .register(Game.class, new GameSerializer(plugin.getLogger()))
                 .register(Vote.class, new VoteSerializer(plugin.getLogger()))
                 .build();
         loader = YamlConfigurationLoader.builder()
@@ -49,9 +49,9 @@ public class VoteStorage extends FileStorageHandler<Votes> {
     }
 
     @Override
-    protected Votes readFromFile(Path path) {
+    protected Game readFromFile(Path path) {
         try {
-            return loader.load().get(Votes.class);
+            return loader.load().get(Game.class);
         } catch (ConfigurateException e) {
             e.printStackTrace();
             return null;
@@ -59,7 +59,7 @@ public class VoteStorage extends FileStorageHandler<Votes> {
     }
 
     @Override
-    protected void saveToFile(Path path, Votes votes) {
+    protected void saveToFile(Path path, Game votes) {
         try {
             loader.save(root.set(votes));
         } catch (ConfigurateException e) {

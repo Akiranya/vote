@@ -1,7 +1,7 @@
 package co.mcsky.vote.pool;
 
-import co.mcsky.vote.file.VoteStorage;
-import co.mcsky.vote.type.Votes;
+import co.mcsky.vote.file.GameStorage;
+import co.mcsky.vote.type.Game;
 import com.google.common.io.Files;
 
 import java.io.File;
@@ -11,12 +11,12 @@ import java.util.Map;
 import static co.mcsky.vote.VoteMain.plugin;
 
 /**
- * Manages all instances of {@link VoteStorage}.
+ * Manages all instances of {@link GameStorage}.
  * <p>
- * Operation on this instance should reflect on the backed {@link VotesPool}.
+ * Operation on this instance should reflect on the backed {@link Games}.
  */
 @SuppressWarnings("UnstableApiUsage")
-public enum VoteStoragePool {
+public enum GameStorages {
 
     // singleton
     INSTANCE;
@@ -25,23 +25,23 @@ public enum VoteStoragePool {
     private static final String fileExtension = ".yml";
 
     // key is world name
-    private final Map<String, VoteStorage> storageMap;
+    private final Map<String, GameStorage> storageMap;
 
-    VoteStoragePool() {
+    GameStorages() {
         this.storageMap = new HashMap<>();
     }
 
     public void read(String filename) {
         String world = Files.getNameWithoutExtension(filename);
-        VoteStorage storage = storageMap.computeIfAbsent(world, k -> new VoteStorage(k, dataFolder));
-        Votes data = storage.load().orElseThrow();
-        VotesPool.INSTANCE.register(data);
+        GameStorage storage = storageMap.computeIfAbsent(world, k -> new GameStorage(k, dataFolder));
+        Game data = storage.load().orElseThrow();
+        Games.INSTANCE.register(data);
     }
 
     public void save(String filename) {
         String world = Files.getNameWithoutExtension(filename);
-        Votes data = VotesPool.INSTANCE.get(world).orElseThrow();
-        VoteStorage storage = storageMap.computeIfAbsent(world, k -> new VoteStorage(k, dataFolder));
+        Game data = Games.INSTANCE.get(world).orElseThrow();
+        GameStorage storage = storageMap.computeIfAbsent(world, k -> new GameStorage(k, dataFolder));
         storage.save(data);
     }
 
@@ -57,8 +57,8 @@ public enum VoteStoragePool {
     }
 
     public void saveAll() {
-        for (Votes votes : VotesPool.INSTANCE) {
-            save(votes.getWorld());
+        for (Game game : Games.INSTANCE) {
+            save(game.getWorld());
         }
     }
 

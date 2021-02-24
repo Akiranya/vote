@@ -1,6 +1,6 @@
 package co.mcsky.vote.event;
 
-import co.mcsky.vote.type.Votes;
+import co.mcsky.vote.type.Game;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
@@ -12,14 +12,14 @@ public class PlayerVoteDoneEvent extends PlayerEvent implements Cancellable {
     private static final HandlerList handlers = new HandlerList();
     private boolean cancelled;
 
-    private final Votes votes;
+    private final Game votes;
 
-    public PlayerVoteDoneEvent(Player who, Votes votes) {
+    public PlayerVoteDoneEvent(Player who, Game votes) {
         super(who);
         this.votes = votes;
     }
 
-    public Votes getVotes() {
+    public Game getVotes() {
         return votes;
     }
 

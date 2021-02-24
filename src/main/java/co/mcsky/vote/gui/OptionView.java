@@ -1,10 +1,11 @@
-package co.mcsky.vote.gui.view;
+package co.mcsky.vote.gui;
 
 import co.mcsky.vote.event.PlayerVoteSubmitEvent;
+import co.mcsky.vote.gui.ListingView;
 import co.mcsky.vote.gui.base.SeamlessGui;
 import co.mcsky.vote.gui.base.GuiView;
 import co.mcsky.vote.type.Vote;
-import co.mcsky.vote.type.Votes;
+import co.mcsky.vote.type.Game;
 import co.mcsky.vote.type.Work;
 import me.lucko.helper.Events;
 import me.lucko.helper.item.ItemStackBuilder;
@@ -49,7 +50,7 @@ public class OptionView implements GuiView {
 
     @Override
     public void render() {
-        Votes votes = listingView.getVotes();
+        Game game = listingView.getGame();
         Work selectedWork = listingView.getSelectedWork();
 
         // place background
@@ -72,8 +73,8 @@ public class OptionView implements GuiView {
                 .lore(plugin.getMessage(this.gui.getPlayer(), "gui.vote-options.vote-work.lore2"))
                 .build(() -> {
                     Vote vote = new Vote(rater, false);
-                    if (!Events.callAndReturn(new PlayerVoteSubmitEvent(this.gui.getPlayer(), selectedWork, vote, votes)).isCancelled()) {
-                        votes.vote(selectedWork.getOwner(), vote);
+                    if (!Events.callAndReturn(new PlayerVoteSubmitEvent(this.gui.getPlayer(), selectedWork, vote, game)).isCancelled()) {
+                        game.vote(selectedWork.getOwner(), vote);
                         this.gui.getPlayer().sendMessage(plugin.getMessage(this.gui.getPlayer(), "gui-message.vote-work", "player", selectedWork.getOwnerName()));
                     }
                 }));
@@ -85,8 +86,8 @@ public class OptionView implements GuiView {
                 .lore(plugin.getMessage(this.gui.getPlayer(), "gui.vote-options.vote-work-absent.lore2"))
                 .build(() -> {
                     Vote vote = new Vote(rater, true);
-                    if (!Events.callAndReturn(new PlayerVoteSubmitEvent(this.gui.getPlayer(), selectedWork, vote, votes)).isCancelled()) {
-                        votes.vote(selectedWork.getOwner(), vote);
+                    if (!Events.callAndReturn(new PlayerVoteSubmitEvent(this.gui.getPlayer(), selectedWork, vote, game)).isCancelled()) {
+                        game.vote(selectedWork.getOwner(), vote);
                         this.gui.getPlayer().sendMessage(plugin.getMessage(this.gui.getPlayer(), "gui-message.vote-work-absent", "player", selectedWork.getOwnerName()));
                     }
                 }));

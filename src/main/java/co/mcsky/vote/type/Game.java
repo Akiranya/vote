@@ -2,7 +2,7 @@ package co.mcsky.vote.type;
 
 import co.mcsky.vote.listener.VoteLimiter;
 import co.mcsky.vote.listener.WorkUpdater;
-import co.mcsky.vote.pool.VotesPool;
+import co.mcsky.vote.pool.Games;
 import com.google.common.base.Preconditions;
 import me.lucko.helper.terminable.Terminable;
 import me.lucko.helper.terminable.composite.CompositeTerminable;
@@ -15,7 +15,7 @@ import static co.mcsky.vote.VoteMain.*;
  * Represents an entire vote for a building game. The design is that each instance of this class manages a distinct plot
  * world. That is, there is a one-to-one relationship between a instance of this class and a plot world.
  */
-public class Votes implements Terminable {
+public class Game implements Terminable {
 
     // The game world where this instance manages
     private final String plotWorld;
@@ -27,15 +27,15 @@ public class Votes implements Terminable {
     // The backing terminable registry
     private final CompositeTerminable terminableRegistry;
 
-    // A calculator to get statistics about this votes
-    private final VotesStats votesStats;
+    // A calculator to get statistics about this game
+    private final GameStats gameStats;
 
     /**
-     * Direct initialization is discouraged, instead use {@link VotesPool} to get an instance.
+     * Direct initialization is discouraged, instead use {@link Games} to get an instance.
      *
      * @param plotWorld the plot world this instance manages
      */
-    public Votes(String plotWorld) {
+    public Game(String plotWorld) {
         this.plotWorld = plotWorld;
         this.works = new LinkedHashMap<>();
         this.ready = false;
@@ -44,7 +44,7 @@ public class Votes implements Terminable {
         this.terminableRegistry.bind(new WorkUpdater(this));
         this.terminableRegistry.bindModule(new VoteLimiter(this));
 
-        this.votesStats = new VotesStatsImpl(this);
+        this.gameStats = new GameStatsImpl(this);
 
         // Pull plot information when initiated
         pull();
@@ -54,8 +54,8 @@ public class Votes implements Terminable {
         return plotWorld;
     }
 
-    public VotesStats getCalc() {
-        return votesStats;
+    public GameStats getCalc() {
+        return gameStats;
     }
 
     /**
@@ -129,8 +129,8 @@ public class Votes implements Terminable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Votes votes = (Votes) o;
-        return plotWorld.equals(votes.plotWorld);
+        Game game = (Game) o;
+        return plotWorld.equals(game.plotWorld);
     }
 
     @Override

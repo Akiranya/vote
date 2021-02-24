@@ -6,14 +6,14 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * Provides useful methods to get the statistics from the instance of {@link Votes}.
+ * Provides useful methods to get the statistics from the instance of {@link Game}.
  */
-public class VotesStatsImpl implements VotesStats {
+public class GameStatsImpl implements GameStats {
 
     // The instance of Votes from which the statistics is generated
-    private final Votes votes;
+    private final Game votes;
 
-    public VotesStatsImpl(Votes votes) {
+    public GameStatsImpl(Game votes) {
         this.votes = votes;
     }
 
