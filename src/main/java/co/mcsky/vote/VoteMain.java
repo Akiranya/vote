@@ -54,7 +54,7 @@ public class VoteMain extends ExtendedJavaPlugin {
         this.lang.setPlaceholderSuffix("}");
         this.lang.setProvider(sender -> {
             if (sender instanceof Player) {
-                return ((Player) sender).getLocale();
+                return ((Player) sender).locale().getLanguage();
             }
             return null;
         });

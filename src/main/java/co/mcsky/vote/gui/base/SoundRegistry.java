@@ -44,7 +44,6 @@ public class SoundRegistry {
                 .filter(e -> e.getInventory().getHolder() != null)
                 .filter(e -> e.getInventory().getHolder().equals(gui.getPlayer()))
                 .filter(e -> e.getCurrentItem() != null)
-                .filter(e -> !e.getCurrentItem().getItemMeta().getDisplayName().isBlank())
                 .handler(e -> gui.getPlayer().playSound(gui.getPlayer().getLocation(), sound, 1F, 1F))
                 .bindWith(gui);
     }

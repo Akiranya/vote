@@ -135,7 +135,7 @@ public class VoteCommands extends BaseCommand {
     @Conditions("ready")
     public class Stats extends BaseCommand {
         // Portable way to get the line separator
-        final String TITLE = ChatColor.translateAlternateColorCodes('&', "&8=-=-=-=-=-=-= &6比赛评分统计概览&8 =-=-=-=-=-=-=");
+        final String TITLE = ChatColor.translateAlternateColorCodes('&', "&8=-=-=-=-=-=-= &6Overview&8 =-=-=-=-=-=-=");
         final String LIST_SEPARATOR = ChatColor.translateAlternateColorCodes('&', " &8-&r ");
 
         final String LINE_SEPARATOR = System.lineSeparator();

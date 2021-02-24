@@ -7,18 +7,20 @@ import co.mcsky.vote.gui.base.SeamlessGui;
 import co.mcsky.vote.skull.SkullCache;
 import co.mcsky.vote.type.Votes;
 import co.mcsky.vote.type.Work;
-import com.destroystokyo.paper.Title;
 import me.lucko.helper.Events;
 import me.lucko.helper.item.ItemStackBuilder;
 import me.lucko.helper.menu.Item;
 import me.lucko.helper.menu.paginated.PageInfo;
 import me.lucko.helper.menu.scheme.MenuScheme;
 import me.lucko.helper.menu.scheme.StandardSchemeMappings;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.title.Title;
 import org.bukkit.EntityEffect;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -121,15 +123,16 @@ public class ListingView extends PaginatedView {
                         // prompt the player that he has done
                         player.sendMessage(plugin.getMessage(player, "gui-message.vote-all-done"));
                         player.playEffect(EntityEffect.TOTEM_RESURRECT);
-                        player.sendTitle(Title.builder()
-                                .title(plugin.getMessage(player, "title-message.vote-finished.title"))
-                                .subtitle(plugin.getMessage(player, "title-message.vote-finished.subtitle"))
-                                .fadeIn(20).fadeOut(20).stay(120)
-                                .build());
+                        player.showTitle(Title.title(
+                                Component.text(plugin.getMessage(player, "title-message.vote-finished.title")),
+                                Component.text(plugin.getMessage(player, "title-message.vote-finished.subtitle")),
+                                Title.Times.of(Duration.ofSeconds(1), Duration.ofSeconds(5), Duration.ofSeconds(1))
+                        ));
                         // simply close the GUI after the player has done the vote
                         this.gui.close();
                     }
                 }));
+
     }
 
     @Override
