@@ -52,6 +52,36 @@ public class ListingView extends PaginatedView {
         this.gui = gui;
         this.player = gui.getPlayer();
         this.votes = votes;
+
+        // list all by default
+        this.filter = WorkFilters.all();
+        // initialize listing content
+        this.updateListing();
+    }
+
+    public void updateListing() {
+        List<Item> content = this.votes.getWorkAll()
+                .stream()
+                .filter(this.filter)
+                .map(work -> ItemStackBuilder.of(Material.PLAYER_HEAD)
+                        .name(plugin.getMessage(player, "gui.work-listing.work-entry.name", "player", work.getOwnerName()))
+                        .lore(plugin.getMessage(player, "gui.work-listing.work-entry.lore1"))
+                        .lore(plugin.getMessage(player, "gui.work-listing.work-entry.lore2", "done", work.isDone() ? plugin.getMessage(player, "gui.work-listing.done") : plugin.getMessage(player, "gui.work-listing.undone")))
+                        .lore(plugin.getMessage(player, "gui.work-listing.work-entry.lore3", "done", work.voted(player.getUniqueId()) ? plugin.getMessage(player, "gui.work-listing.done") : plugin.getMessage(player, "gui.work-listing.undone")))
+                        .lore(plugin.getMessage(player, "gui.work-listing.work-entry.lore4"))
+                        .lore(plugin.getMessage(player, "gui.work-listing.work-entry.lore5"))
+                        .transform(item -> SkullCache.INSTANCE.itemWithUuid(item, work.getOwner()))
+                        .build(() -> {
+                            this.selectedWork = work;
+                            this.gui.switchView(new OptionView(this.gui, this));
+                        }))
+                .collect(Collectors.toUnmodifiableList());
+        updateContent(content);
+    }
+
+    private void updateListing(Predicate<Work> predicate) {
+        this.filter = predicate;
+        this.updateListing();
     }
 
     @Override
@@ -159,31 +189,6 @@ public class ListingView extends PaginatedView {
                 .mask("001111100")
                 .mask("001111100")
                 .getMaskedIndexesImmutable();
-    }
-
-    public void updateListing() {
-        List<Item> content = this.votes.getWorkAll()
-                .stream()
-                .filter(this.filter)
-                .map(work -> ItemStackBuilder.of(Material.PLAYER_HEAD)
-                        .name(plugin.getMessage(player, "gui.work-listing.work-entry.name", "player", work.getOwnerName()))
-                        .lore(plugin.getMessage(player, "gui.work-listing.work-entry.lore1"))
-                        .lore(plugin.getMessage(player, "gui.work-listing.work-entry.lore2", "done", work.isDone() ? plugin.getMessage(player, "gui.work-listing.done") : plugin.getMessage(player, "gui.work-listing.undone")))
-                        .lore(plugin.getMessage(player, "gui.work-listing.work-entry.lore3", "done", work.voted(player.getUniqueId()) ? plugin.getMessage(player, "gui.work-listing.done") : plugin.getMessage(player, "gui.work-listing.undone")))
-                        .lore(plugin.getMessage(player, "gui.work-listing.work-entry.lore4"))
-                        .lore(plugin.getMessage(player, "gui.work-listing.work-entry.lore5"))
-                        .transform(item -> SkullCache.INSTANCE.itemWithUuid(item, work.getOwner()))
-                        .build(() -> {
-                            this.selectedWork = work;
-                            this.gui.switchView(new OptionView(this.gui, this));
-                        }))
-                .collect(Collectors.toUnmodifiableList());
-        updateContent(content);
-    }
-
-    private void updateListing(Predicate<Work> predicate) {
-        this.filter = predicate;
-        this.updateListing();
     }
 
     public Votes getVotes() {
