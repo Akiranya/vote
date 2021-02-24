@@ -8,42 +8,31 @@ import java.util.stream.Stream;
 /**
  * Provides useful methods to get the statistics from the instance of {@link Votes}.
  */
-public class VotesCalc {
+public class VotesStatsImpl implements VotesStats {
 
     // The instance of Votes from which the statistics is generated
     private final Votes votes;
 
-    public VotesCalc(Votes votes) {
+    public VotesStatsImpl(Votes votes) {
         this.votes = votes;
     }
 
-    /**
-     * @param rater the owner of the vote
-     * @return set of works which have not been voted by the specified vote owner
-     */
+    @Override
     public Stream<Work> missed(UUID rater) {
         return votes.getWorkAll().stream().filter(work -> work.invoted(rater));
     }
 
-    /**
-     * @param rater the owner of a vote
-     * @return true, if the owner has voted all works which are done, otherwise false
-     */
+    @Override
     public boolean valid(UUID rater) {
         return missed(rater).noneMatch(Work::isDone);
     }
 
-    /**
-     * @param rater the owner of a vote
-     * @return true, if the owner has NOT voted all works which are done, otherwise false
-     */
+    @Override
     public boolean invalid(UUID rater) {
         return missed(rater).anyMatch(Work::isDone);
     }
 
-    /**
-     * @return stream of UUIDs of players who have participated the vote, regardless of the raters are valid or not
-     */
+    @Override
     public Stream<UUID> rawRaters() {
         return votes.getWorkAll().stream()
                 .flatMap(w -> w.getVotes().stream())
@@ -51,24 +40,17 @@ public class VotesCalc {
                 .distinct();
     }
 
-    /**
-     * @return set of UUIDs of valid raters
-     */
+    @Override
     public Set<UUID> validRaters() {
         return rawRaters().filter(this::valid).collect(Collectors.toSet());
     }
 
-    /**
-     * @return set of UUIDs of invalid raters
-     */
+    @Override
     public Set<UUID> invalidRaters() {
         return rawRaters().filter(this::invalid).collect(Collectors.toSet());
     }
 
-    /**
-     * @param work the owner of a work
-     * @return stream of all valid votes of the given work
-     */
+    @Override
     public Stream<Vote> validVotes(UUID work) {
         return votes.getWork(work)
                 .map(Work::getVotes)
@@ -76,28 +58,17 @@ public class VotesCalc {
                 .filter(vote -> valid(vote.getRater()));
     }
 
-    /**
-     * @param work the owner of the work
-     * @return set of valid red votes of the given work
-     */
+    @Override
     public Set<Vote> redVotes(UUID work) {
         return validVotes(work).filter(Vote::isAbsent).collect(Collectors.toSet());
     }
 
-    /**
-     * @param work the owner of the work
-     * @return set of valid green votes of the given work
-     */
+    @Override
     public Set<Vote> greenVotes(UUID work) {
         return validVotes(work).filter(Vote::isPresent).collect(Collectors.toSet());
     }
 
-    /**
-     * This statistics neglects whether the rater is valid or not.
-     *
-     * @param rater the rater
-     * @return set of works which the rater gave a green vote
-     */
+    @Override
     public Set<Work> greenWorks(UUID rater) {
         return votes.getWorkAll().stream()
                 .filter(work -> work.voted(rater))
@@ -105,12 +76,7 @@ public class VotesCalc {
                 .collect(Collectors.toUnmodifiableSet());
     }
 
-    /**
-     * This statistics neglects whether the rater is valid or not.
-     *
-     * @param rater the rater
-     * @return set of works which the rater gave a red vote
-     */
+    @Override
     public Set<Work> redWorks(UUID rater) {
         return votes.getWorkAll().stream()
                 .filter(work -> work.voted(rater))

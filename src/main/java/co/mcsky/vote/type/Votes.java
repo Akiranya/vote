@@ -28,7 +28,7 @@ public class Votes implements Terminable {
     private final CompositeTerminable terminableRegistry;
 
     // A calculator to get statistics about this votes
-    private final VotesCalc votesCalc;
+    private final VotesStats votesStats;
 
     /**
      * Direct initialization is discouraged, instead use {@link VotesPool} to get an instance.
@@ -44,7 +44,7 @@ public class Votes implements Terminable {
         this.terminableRegistry.bind(new WorkUpdater(this));
         this.terminableRegistry.bindModule(new VoteLimiter(this));
 
-        this.votesCalc = new VotesCalc(this);
+        this.votesStats = new VotesStatsImpl(this);
 
         // Pull plot information when initiated
         pull();
@@ -54,8 +54,8 @@ public class Votes implements Terminable {
         return plotWorld;
     }
 
-    public VotesCalc getCalc() {
-        return votesCalc;
+    public VotesStats getCalc() {
+        return votesStats;
     }
 
     /**

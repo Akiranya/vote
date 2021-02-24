@@ -8,8 +8,8 @@ import co.mcsky.vote.gui.EntryGui;
 import co.mcsky.vote.skull.SkullCache;
 import co.mcsky.vote.pool.VoteStoragePool;
 import co.mcsky.vote.pool.VotesPool;
+import co.mcsky.vote.type.VotesStats;
 import co.mcsky.vote.util.PlayerUtil;
-import co.mcsky.vote.type.VotesCalc;
 import co.mcsky.vote.type.Vote;
 import co.mcsky.vote.type.Work;
 import me.lucko.helper.promise.Promise;
@@ -145,7 +145,7 @@ public class VoteCommands extends BaseCommand {
         @Default
         public void overview(CommandSender sender) {
             Promise.start().thenApplyAsync(n -> {
-                VotesCalc calc = VotesPool.INSTANCE.get().getCalc();
+                VotesStats calc = VotesPool.INSTANCE.get().getCalc();
 
                 int validRatersCount = calc.validRaters().size();
                 long invalidRatersCount = calc.invalidRaters().size();
@@ -175,7 +175,7 @@ public class VoteCommands extends BaseCommand {
         @CommandCompletion("@work")
         public void work(CommandSender sender, OfflinePlayer work) {
             Promise.start().thenApplyAsync(n -> {
-                VotesCalc calc = VotesPool.INSTANCE.get().getCalc();
+                VotesStats calc = VotesPool.INSTANCE.get().getCalc();
 
                 UUID workOwner = work.getUniqueId();
                 long greenRatersCount = calc.greenVotes(workOwner).size();
@@ -203,7 +203,7 @@ public class VoteCommands extends BaseCommand {
         @CommandCompletion("@rate")
         public void rater(CommandSender sender, OfflinePlayer rater) {
             Promise.start().thenApplyAsync(n -> {
-                VotesCalc calc = VotesPool.INSTANCE.get().getCalc();
+                VotesStats calc = VotesPool.INSTANCE.get().getCalc();
 
                 UUID raterUuid = rater.getUniqueId();
                 long greenWorksCount = calc.greenWorks(raterUuid).size();
