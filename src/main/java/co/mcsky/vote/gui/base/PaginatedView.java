@@ -27,9 +27,6 @@ public abstract class PaginatedView implements GuiView {
     @SuppressWarnings("ConstantConditions")
     @Override
     public final void render() {
-        // draw the subview
-        renderSubview();
-
         // draw background schema
         getBackgroundSchema().apply(this.gui);
 
@@ -91,6 +88,9 @@ public abstract class PaginatedView implements GuiView {
             int index = slots.remove(0);
             this.gui.setItem(index, item);
         }
+
+        // draw the subview lastly (to override background if there is any)
+        renderSubview();
     }
 
     public void updateContent(List<Item> content) {
