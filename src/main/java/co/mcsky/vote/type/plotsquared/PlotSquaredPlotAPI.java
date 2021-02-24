@@ -2,7 +2,7 @@ package co.mcsky.vote.type.plotsquared;
 
 import co.mcsky.vote.type.Plot;
 import co.mcsky.vote.type.Plots;
-import co.mcsky.vote.type.PlotFactory;
+import co.mcsky.vote.type.factory.PlotFactory;
 import org.bukkit.World;
 
 import java.util.Set;

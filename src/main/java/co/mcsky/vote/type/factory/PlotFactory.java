@@ -1,5 +1,6 @@
-package co.mcsky.vote.type;
+package co.mcsky.vote.type.factory;
 
+import co.mcsky.vote.type.Plot;
 import co.mcsky.vote.type.plotsquared.PlotSquaredPlot;
 
 public class PlotFactory {

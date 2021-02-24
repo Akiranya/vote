@@ -1,6 +1,6 @@
 package co.mcsky.vote.listener;
 
-import co.mcsky.vote.type.PlotFactory;
+import co.mcsky.vote.type.factory.PlotFactory;
 import co.mcsky.vote.type.Votes;
 import com.google.common.eventbus.Subscribe;
 import com.plotsquared.core.api.PlotAPI;

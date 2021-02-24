@@ -20,9 +20,9 @@ public class Work {
     // The plot related to this work
     private final Plot plot;
 
-    private Work(UUID owner, Set<Vote> votes, Plot plot) {
+    public Work(UUID owner, Plot plot) {
         this.owner = owner;
-        this.votes = votes;
+        this.votes = new HashSet<>();
         this.plot = plot;
     }
 
@@ -118,37 +118,4 @@ public class Work {
                 .filter(vote -> vote.getRater().equals(rater))
                 .anyMatch(Vote::isAbsent);
     }
-
-    public static WorkBuilder create(UUID work, Plot plot) {
-        return new WorkBuilder(work, plot);
-    }
-
-    public static class WorkBuilder {
-
-        private final UUID owner;
-        private final Set<Vote> votes;
-        private Plot plot;
-
-        private WorkBuilder(UUID owner, Plot plot) {
-            this.owner = owner;
-            this.votes = new HashSet<>();
-            this.plot = plot;
-        }
-
-        public WorkBuilder vote(Vote vote) {
-            this.votes.add(vote);
-            return this;
-        }
-
-        public WorkBuilder plot(Plot plot) {
-            this.plot = plot;
-            return this;
-        }
-
-        public Work build() {
-            return new Work(this.owner, this.votes, this.plot);
-        }
-
-    }
-
 }

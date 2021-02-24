@@ -71,7 +71,7 @@ public class OptionView implements GuiView {
                 .lore(plugin.getMessage(this.gui.getPlayer(), "gui.vote-options.vote-work.lore1"))
                 .lore(plugin.getMessage(this.gui.getPlayer(), "gui.vote-options.vote-work.lore2"))
                 .build(() -> {
-                    Vote vote = Vote.create(rater).absent(false).build();
+                    Vote vote = new Vote(rater, false);
                     if (!Events.callAndReturn(new PlayerVoteSubmitEvent(this.gui.getPlayer(), selectedWork, vote, votes)).isCancelled()) {
                         votes.vote(selectedWork.getOwner(), vote);
                         this.gui.getPlayer().sendMessage(plugin.getMessage(this.gui.getPlayer(), "gui-message.vote-work", "player", selectedWork.getOwnerName()));
@@ -84,7 +84,7 @@ public class OptionView implements GuiView {
                 .lore(plugin.getMessage(this.gui.getPlayer(), "gui.vote-options.vote-work-absent.lore1"))
                 .lore(plugin.getMessage(this.gui.getPlayer(), "gui.vote-options.vote-work-absent.lore2"))
                 .build(() -> {
-                    Vote vote = Vote.create(rater).absent(true).build();
+                    Vote vote = new Vote(rater, true);
                     if (!Events.callAndReturn(new PlayerVoteSubmitEvent(this.gui.getPlayer(), selectedWork, vote, votes)).isCancelled()) {
                         votes.vote(selectedWork.getOwner(), vote);
                         this.gui.getPlayer().sendMessage(plugin.getMessage(this.gui.getPlayer(), "gui-message.vote-work-absent", "player", selectedWork.getOwnerName()));

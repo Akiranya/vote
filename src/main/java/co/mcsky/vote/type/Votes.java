@@ -106,7 +106,7 @@ public class Votes implements Terminable {
      * @param plot  the plot in which the work is located
      */
     public void createEntry(UUID owner, Plot plot) {
-        works.put(owner, Work.create(owner, plot).build());
+        works.put(owner, new Work(owner, plot));
     }
 
     /**

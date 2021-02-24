@@ -3,7 +3,7 @@ package co.mcsky.vote;
 import co.aikar.commands.PaperCommandManager;
 import co.mcsky.vote.pool.VoteStoragePool;
 import co.mcsky.vote.type.Plots;
-import co.mcsky.vote.type.PlotsFactory;
+import co.mcsky.vote.type.factory.PlotsFactory;
 import de.themoep.utils.lang.bukkit.LanguageManager;
 import me.lucko.helper.plugin.ExtendedJavaPlugin;
 import org.bukkit.command.CommandSender;
