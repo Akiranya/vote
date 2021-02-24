@@ -55,13 +55,16 @@ public class OptionView implements GuiView {
         // place background
         this.voteBackground.apply(this.gui);
 
-        // place options
         MenuPopulator optionPopulator = this.voteOptionScheme.newPopulator(this.gui);
+
+        // place option: teleport
         optionPopulator.accept(ItemStackBuilder.of(Material.MINECART)
                 .name(plugin.getMessage(this.gui.getPlayer(), "gui.vote-options.teleport-to-plot.name"))
                 .lore(plugin.getMessage(this.gui.getPlayer(), "gui.vote-options.teleport-to-plot.lore1"))
                 .lore(plugin.getMessage(this.gui.getPlayer(), "gui.vote-options.teleport-to-plot.lore2"))
                 .build(() -> selectedWork.teleport(this.gui.getPlayer())));
+
+        // place option: rate green
         UUID rater = this.gui.getPlayer().getUniqueId();
         optionPopulator.accept(ItemStackBuilder.of(Material.GREEN_WOOL)
                 .name(plugin.getMessage(this.gui.getPlayer(), "gui.vote-options.vote-work.name"))
@@ -74,6 +77,8 @@ public class OptionView implements GuiView {
                         this.gui.getPlayer().sendMessage(plugin.getMessage(this.gui.getPlayer(), "gui-message.vote-work", "player", selectedWork.getOwnerName()));
                     }
                 }));
+
+        // place option: rate red
         optionPopulator.accept(ItemStackBuilder.of(Material.RED_WOOL)
                 .name(plugin.getMessage(this.gui.getPlayer(), "gui.vote-options.vote-work-absent.name"))
                 .lore(plugin.getMessage(this.gui.getPlayer(), "gui.vote-options.vote-work-absent.lore1"))
