@@ -1,9 +1,9 @@
 package co.mcsky.vote.file;
 
-import co.mcsky.vote.file.serializer.VoteSerializer;
 import co.mcsky.vote.file.serializer.GameSerializer;
-import co.mcsky.vote.type.Vote;
+import co.mcsky.vote.file.serializer.VoteSerializer;
 import co.mcsky.vote.type.Game;
+import co.mcsky.vote.type.Vote;
 import me.lucko.helper.serialize.FileStorageHandler;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.ConfigurateException;

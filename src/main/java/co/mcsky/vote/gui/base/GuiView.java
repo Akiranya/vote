@@ -8,7 +8,7 @@ import me.lucko.helper.menu.Gui;
 public interface GuiView {
     /**
      * Draws the view for the GUI.
-     *
+     * <p>
      * It should be called within {@link Gui#redraw()}.
      */
     void render();

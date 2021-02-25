@@ -62,9 +62,9 @@ public class ListingView extends PaginatedView {
 
     public void updateListing() {
         List<Item> content = this.game.getWorkAll()
-                                      .stream()
-                                      .filter(this.filter)
-                                      .map(work -> ItemStackBuilder.of(Material.PLAYER_HEAD)
+                .stream()
+                .filter(this.filter)
+                .map(work -> ItemStackBuilder.of(Material.PLAYER_HEAD)
                         .name(plugin.getMessage(player, "gui.work-listing.work-entry.name", "player", work.getOwnerName()))
                         .lore(plugin.getMessage(player, "gui.work-listing.work-entry.lore1"))
                         .lore(plugin.getMessage(player, "gui.work-listing.work-entry.lore2", "done", work.isDone() ? plugin.getMessage(player, "gui.work-listing.done") : plugin.getMessage(player, "gui.work-listing.undone")))
@@ -76,7 +76,7 @@ public class ListingView extends PaginatedView {
                             this.selectedWork = work;
                             this.gui.switchView(new OptionView(this.gui, this));
                         }))
-                                      .collect(Collectors.toUnmodifiableList());
+                .collect(Collectors.toUnmodifiableList());
         updateContent(content);
     }
 

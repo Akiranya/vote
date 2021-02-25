@@ -1,11 +1,10 @@
 package co.mcsky.vote.gui;
 
 import co.mcsky.vote.event.PlayerVoteSubmitEvent;
-import co.mcsky.vote.gui.ListingView;
-import co.mcsky.vote.gui.base.SeamlessGui;
 import co.mcsky.vote.gui.base.GuiView;
-import co.mcsky.vote.type.Vote;
+import co.mcsky.vote.gui.base.SeamlessGui;
 import co.mcsky.vote.type.Game;
+import co.mcsky.vote.type.Vote;
 import co.mcsky.vote.type.Work;
 import me.lucko.helper.Events;
 import me.lucko.helper.item.ItemStackBuilder;

@@ -9,7 +9,7 @@ import me.lucko.helper.terminable.composite.CompositeTerminable;
 
 import java.util.*;
 
-import static co.mcsky.vote.VoteMain.*;
+import static co.mcsky.vote.VoteMain.plots;
 
 /**
  * Represents an entire vote for a building game. The design is that each instance of this class manages a distinct plot

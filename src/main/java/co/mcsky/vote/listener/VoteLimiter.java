@@ -1,8 +1,8 @@
 package co.mcsky.vote.listener;
 
 import co.mcsky.vote.event.PlayerVoteDoneEvent;
-import co.mcsky.vote.type.Game;
 import co.mcsky.vote.event.PlayerVoteSubmitEvent;
+import co.mcsky.vote.type.Game;
 import me.lucko.helper.Events;
 import me.lucko.helper.event.filter.EventFilters;
 import me.lucko.helper.terminable.TerminableConsumer;
@@ -10,7 +10,7 @@ import me.lucko.helper.terminable.module.TerminableModule;
 
 import javax.annotation.Nonnull;
 
-import static co.mcsky.vote.VoteMain.*;
+import static co.mcsky.vote.VoteMain.plugin;
 
 /**
  * The {@link VoteLimiter} must associate with an instance of {@link Game} (one-to-one relationship).

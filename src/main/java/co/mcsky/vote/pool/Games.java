@@ -5,7 +5,10 @@ import me.lucko.helper.terminable.Terminable;
 import me.lucko.helper.terminable.composite.CompositeTerminable;
 
 import javax.annotation.Nullable;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 /**
@@ -42,8 +45,8 @@ public enum Games implements Terminable, Iterable<Game> {
     }
 
     /**
-     * Registers a entire vote for the given world. This changes {@link Games#currentWorldName} to the specified
-     * one, which changes the instance obtained from {@link #get()}. Registering the same world multiple times does not
+     * Registers a entire vote for the given world. This changes {@link Games#currentWorldName} to the specified one,
+     * which changes the instance obtained from {@link #get()}. Registering the same world multiple times does not
      * overwrite anything. To delete/overwrite an existing instance, use {@link #unregister(String)} instead.
      *
      * @param worldName the name of plot world

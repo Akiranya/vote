@@ -15,7 +15,7 @@ import java.util.function.Function;
 
 /**
  * An abstraction of paginated view.
- *
+ * <p>
  * The abstract methods define the necessary components of the paginated view.
  */
 public abstract class PaginatedView implements GuiView {

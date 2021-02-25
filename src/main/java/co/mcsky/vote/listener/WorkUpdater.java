@@ -1,7 +1,7 @@
 package co.mcsky.vote.listener;
 
-import co.mcsky.vote.type.factory.PlotFactory;
 import co.mcsky.vote.type.Game;
+import co.mcsky.vote.type.factory.PlotFactory;
 import com.google.common.eventbus.Subscribe;
 import com.plotsquared.core.api.PlotAPI;
 import com.plotsquared.core.events.PlayerClaimPlotEvent;
@@ -14,7 +14,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.logging.Logger;
 
-import static co.mcsky.vote.VoteMain.*;
+import static co.mcsky.vote.VoteMain.plugin;
 
 /**
  * The {@link WorkUpdater} must associate with an instance of {@link Game} (one-to-one relationship).
