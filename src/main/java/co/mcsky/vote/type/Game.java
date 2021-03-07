@@ -105,7 +105,7 @@ public class Game implements Terminable {
      * @param owner the owner of the work
      * @param plot  the plot in which the work is located
      */
-    public void createEntry(UUID owner, Plot plot) {
+    public void createEntry(UUID owner, GamePlot plot) {
         works.put(owner, new Work(owner, plot));
     }
 

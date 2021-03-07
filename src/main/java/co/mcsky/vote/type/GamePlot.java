@@ -7,7 +7,7 @@ import java.util.UUID;
 /**
  * Represents an abstract single plot.
  */
-public interface Plot {
+public interface GamePlot {
 
     /**
      * Teleports the player to this plot.

@@ -7,14 +7,14 @@ import java.util.Set;
 /**
  * Represents an abstract plot manager.
  */
-public interface Plots {
+public interface GamePlots {
 
     /**
      * Get all plots in this plot system.
      *
      * @return all plots in this plot system.
      */
-    Set<Plot> getAllPlots();
+    Set<GamePlot> getAllPlots();
 
     /**
      * Check if the world is a plot world. A world is a plot world if and only if the world has at least one plot which

@@ -1,23 +1,25 @@
 package co.mcsky.vote.type.plotsquared;
 
-import co.mcsky.vote.type.Plot;
-import co.mcsky.vote.type.Plots;
+import co.mcsky.vote.type.GamePlot;
+import co.mcsky.vote.type.GamePlots;
 import co.mcsky.vote.type.factory.PlotFactory;
+import com.plotsquared.core.api.PlotAPI;
+import com.plotsquared.core.plot.Plot;
 import org.bukkit.World;
 
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class PlotSquaredPlotAPI implements Plots {
+public class PlotSquaredPlotAPI implements GamePlots {
 
-    private final com.plotsquared.core.api.PlotAPI api;
+    private final PlotAPI api;
 
     public PlotSquaredPlotAPI() {
-        this.api = new com.plotsquared.core.api.PlotAPI();
+        this.api = new PlotAPI();
     }
 
     @Override
-    public Set<Plot> getAllPlots() {
+    public Set<GamePlot> getAllPlots() {
         return this.api.getAllPlots().stream()
                 .map(PlotFactory::of)
                 .collect(Collectors.toSet());
@@ -27,7 +29,7 @@ public class PlotSquaredPlotAPI implements Plots {
     public boolean isPlotWorld(World world) {
         return this.api.getPlotSquared().getPlotAreas(world.getName()).stream()
                 .flatMap(plotArea -> plotArea.getPlots().stream())
-                .map(com.plotsquared.core.plot.Plot::hasOwner) // only count owned plots
+                .map(Plot::hasOwner) // only count owned plots
                 .findAny()
                 .isPresent();
     }

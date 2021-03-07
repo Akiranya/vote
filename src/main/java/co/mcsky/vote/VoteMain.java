@@ -2,7 +2,7 @@ package co.mcsky.vote;
 
 import co.aikar.commands.PaperCommandManager;
 import co.mcsky.vote.pool.GameStorages;
-import co.mcsky.vote.type.Plots;
+import co.mcsky.vote.type.GamePlots;
 import co.mcsky.vote.type.factory.PlotsFactory;
 import de.themoep.utils.lang.bukkit.LanguageManager;
 import me.lucko.helper.plugin.ExtendedJavaPlugin;
@@ -17,7 +17,7 @@ import java.util.Arrays;
 public class VoteMain extends ExtendedJavaPlugin {
 
     public static VoteMain plugin;
-    public static Plots plots;
+    public static GamePlots plots;
 
     public VoteConfig config;
     public LanguageManager lang;

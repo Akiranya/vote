@@ -18,9 +18,9 @@ public class Work {
     private final Set<Vote> votes;
 
     // The plot related to this work
-    private final Plot plot;
+    private final GamePlot plot;
 
-    public Work(UUID owner, Plot plot) {
+    public Work(UUID owner, GamePlot plot) {
         this.owner = owner;
         this.votes = new HashSet<>();
         this.plot = plot;
@@ -43,7 +43,7 @@ public class Work {
     /**
      * @return the plot related to this work
      */
-    public Plot getPlot() {
+    public GamePlot getPlot() {
         return this.plot;
     }
 

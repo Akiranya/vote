@@ -1,7 +1,7 @@
 package co.mcsky.vote.type.plotsquared;
 
 import co.mcsky.vote.VoteMain;
-import co.mcsky.vote.type.Plot;
+import co.mcsky.vote.type.GamePlot;
 import co.mcsky.vote.util.PlayerUtil;
 import com.plotsquared.core.events.TeleportCause;
 import com.plotsquared.core.player.PlotPlayer;
@@ -10,7 +10,7 @@ import org.bukkit.entity.Player;
 
 import java.util.UUID;
 
-public class PlotSquaredPlot implements Plot {
+public class PlotSquaredPlot implements GamePlot {
 
     private final com.plotsquared.core.plot.Plot plot;
 
