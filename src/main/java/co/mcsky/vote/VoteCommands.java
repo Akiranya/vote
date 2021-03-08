@@ -45,7 +45,7 @@ public class VoteCommands extends BaseCommand {
                 .map(World::getName)
                 .collect(Collectors.toUnmodifiableList()));
         commands.getCommandCompletions().registerCompletion("rate", c -> Games.INSTANCE.peek()
-                .map(game -> game.getCalc().rawRaters()
+                .map(game -> game.getCalc().raters()
                         .map(PlayerUtil::getName)
                         .collect(Collectors.toUnmodifiableList()))
                 .orElse(List.of("none")));

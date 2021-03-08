@@ -9,7 +9,7 @@ public interface GameStats {
      * @param rater the owner of the vote
      * @return set of works which have not been voted by the specified vote owner
      */
-    Stream<Work> missed(UUID rater);
+    Stream<Work> missedWorks(UUID rater);
 
     /**
      * @param rater the owner of a vote
@@ -26,7 +26,7 @@ public interface GameStats {
     /**
      * @return stream of UUIDs of players who have participated the vote, regardless of the raters are valid or not
      */
-    Stream<UUID> rawRaters();
+    Stream<UUID> raters();
 
     /**
      * @return set of UUIDs of valid raters
@@ -60,15 +60,15 @@ public interface GameStats {
      * This statistics neglects whether the rater is valid or not.
      *
      * @param rater the rater
-     * @return set of works which the rater gave a green vote
+     * @return set of works which the rater gave a red vote
      */
-    Set<Work> greenWorks(UUID rater);
+    Set<Work> redWorks(UUID rater);
 
     /**
      * This statistics neglects whether the rater is valid or not.
      *
      * @param rater the rater
-     * @return set of works which the rater gave a red vote
+     * @return set of works which the rater gave a green vote
      */
-    Set<Work> redWorks(UUID rater);
+    Set<Work> greenWorks(UUID rater);
 }
