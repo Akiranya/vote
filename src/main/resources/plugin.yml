@@ -5,4 +5,4 @@ api-version: 1.13
 author: Nailm
 prefix: Vote
 website: https://mimaru.me
-depend: [helper, PlotSquared]
+depend: [MoeLibrary, helper, PlotSquared]

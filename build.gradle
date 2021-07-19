@@ -1,6 +1,5 @@
 plugins {
     id 'java-library'
-    id 'com.github.johnrengelman.shadow' version '7.0.0'
 }
 
 ext.pluginNameUpper = "VotePlugin"
@@ -72,10 +71,6 @@ dependencies {
 
     // Mojang API to access to skins
     compileOnly('com.mojang:authlib:1.5.25')
-}
-
-shadowJar {
-    minimize()
 }
 
 test {
