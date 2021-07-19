@@ -33,7 +33,7 @@ public class GameStatsImpl implements GameStats {
     }
 
     @Override
-    public Stream<UUID> rawRaters() {
+    public Stream<UUID> raters() {
         return votes.getWorkAll().stream()
                 .flatMap(w -> w.getVotes().stream())
                 .map(Vote::getRater)
@@ -42,12 +42,12 @@ public class GameStatsImpl implements GameStats {
 
     @Override
     public Set<UUID> validRaters() {
-        return rawRaters().filter(this::valid).collect(Collectors.toSet());
+        return raters().filter(this::valid).collect(Collectors.toSet());
     }
 
     @Override
     public Set<UUID> invalidRaters() {
-        return rawRaters().filter(this::invalid).collect(Collectors.toSet());
+        return raters().filter(this::invalid).collect(Collectors.toSet());
     }
 
     @Override

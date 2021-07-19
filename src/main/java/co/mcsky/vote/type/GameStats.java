@@ -26,7 +26,7 @@ public interface GameStats {
     /**
      * @return stream of UUIDs of players who have participated the vote, regardless of the raters are valid or not
      */
-    Stream<UUID> rawRaters();
+    Stream<UUID> raters();
 
     /**
      * @return set of UUIDs of valid raters
