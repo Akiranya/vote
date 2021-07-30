@@ -23,7 +23,6 @@ import java.time.Duration;
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 import static co.mcsky.vote.VoteMain.plugin;
 
@@ -75,8 +74,7 @@ public class ListingView extends PaginatedView {
                         .build(() -> {
                             this.selectedWork = work;
                             this.gui.switchView(new OptionView(this.gui, this));
-                        }))
-                .collect(Collectors.toUnmodifiableList());
+                        })).toList();
         updateContent(content);
     }
 

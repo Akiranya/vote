@@ -32,7 +32,7 @@ repositories {
     maven { url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/' }
     // paper
     maven { url = 'https://papermc.io/repo/repository/maven-public/' }
-    // languages
+    // lang
     maven { url = 'https://repo.minebench.de/' }
     // commands
     maven { url = 'https://repo.aikar.co/content/groups/aikar/' }

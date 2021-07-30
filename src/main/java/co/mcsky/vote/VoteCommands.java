@@ -42,25 +42,22 @@ public class VoteCommands extends BaseCommand {
 
     private void registerCompletions() {
         commands.getCommandCompletions().registerCompletion("world", c -> Bukkit.getWorlds().stream()
-                .map(World::getName)
-                .collect(Collectors.toUnmodifiableList()));
+                .map(World::getName).toList());
         commands.getCommandCompletions().registerCompletion("rate", c -> Games.INSTANCE.peek()
                 .map(game -> game.getCalc().raters()
-                        .map(PlayerUtil::getName)
-                        .collect(Collectors.toUnmodifiableList()))
+                        .map(PlayerUtil::getName).toList())
                 .orElse(List.of("none")));
         commands.getCommandCompletions().registerCompletion("work", c -> Games.INSTANCE.peek()
                 .map(game -> game.getWorkAll().stream()
                         .map(Work::getOwner)
-                        .map(PlayerUtil::getName)
-                        .collect(Collectors.toUnmodifiableList()))
+                        .map(PlayerUtil::getName).toList())
                 .orElse(List.of("none")));
     }
 
     private void registerConditions() {
         commands.getCommandConditions().addCondition("ready", c -> {
             if (!Games.INSTANCE.containsAny()) {
-                throw new ConditionFailedException(plugin.getMessage(c.getIssuer().getIssuer(), "chat-message.vote-system-not-available"));
+                throw new ConditionFailedException(plugin.getMessage(c.getIssuer().getPlayer(), "chat-message.vote-system-not-available"));
             }
         });
         commands.getCommandConditions().addCondition(World.class, "plotworld", (context, exec, world) -> {
