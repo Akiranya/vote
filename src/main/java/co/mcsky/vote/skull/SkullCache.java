@@ -1,6 +1,8 @@
 package co.mcsky.vote.skull;
 
+import me.lucko.helper.Events;
 import me.lucko.helper.Schedulers;
+import me.lucko.helper.cooldown.Cooldown;
 import me.lucko.helper.promise.Promise;
 import me.lucko.helper.terminable.Terminable;
 import org.bukkit.inventory.ItemStack;
@@ -27,10 +29,14 @@ public enum SkullCache implements Terminable {
     // uuids which are already scheduled tasks to fetch skin
     private final Set<UUID> fetching;
 
+    // cooldown to fire the fetch complete event
+    private final Cooldown eventFireCooldown;
+
     SkullCache() {
         this.cache = new HashMap<>();
         this.fetching = new HashSet<>();
         this.scheduledTasks = new HashSet<>();
+        this.eventFireCooldown = Cooldown.of(1, TimeUnit.SECONDS);
 
         // refresh the cache at certain interval
         Schedulers.builder()
@@ -100,7 +106,14 @@ public enum SkullCache implements Terminable {
                         cache.put(id, fetched);
                         mutateProfile(item, id);
 
-                        // fetched, unmark the id
+                        // call event so that GUIs containing skull items
+                        // may be able to refresh the skull textures automatically
+                        // if they listen to this event
+                        if (eventFireCooldown.test()) {
+                            Events.call(new SkinFetchCompleteEvent());
+                        }
+
+                        // fetched, un-mark the id
                         fetching.remove(id);
                     });
 

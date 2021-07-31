@@ -130,6 +130,7 @@ public class VoteCommands extends BaseCommand {
     @SuppressWarnings("StringBufferReplaceableByString ConstantConditions")
     @Subcommand("stats")
     @Conditions("ready")
+    @CommandPermission("votes.admin")
     public class Stats extends BaseCommand {
 
         // Portable way to get the line separator
