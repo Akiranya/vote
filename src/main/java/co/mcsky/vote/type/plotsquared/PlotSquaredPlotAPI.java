@@ -3,7 +3,7 @@ package co.mcsky.vote.type.plotsquared;
 import co.mcsky.vote.type.GamePlot;
 import co.mcsky.vote.type.GamePlots;
 import co.mcsky.vote.type.factory.PlotFactory;
-import com.plotsquared.core.api.PlotAPI;
+import com.plotsquared.core.PlotAPI;
 import com.plotsquared.core.plot.Plot;
 import org.bukkit.World;
 
@@ -27,7 +27,7 @@ public class PlotSquaredPlotAPI implements GamePlots {
 
     @Override
     public boolean isPlotWorld(World world) {
-        return this.api.getPlotSquared().getPlotAreas(world.getName()).stream()
+        return this.api.getPlotAreas(world.getName()).stream()
                 .flatMap(plotArea -> plotArea.getPlots().stream())
                 .map(Plot::hasOwner) // only count owned plots
                 .findAny()

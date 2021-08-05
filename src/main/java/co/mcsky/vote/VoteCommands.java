@@ -86,6 +86,7 @@ public class VoteCommands extends BaseCommand {
     @Subcommand("reload")
     @CommandPermission("votes.admin")
     public void reload(CommandSender sender) {
+        // TODO support reload config / language / database independently
         this.plugin.loadLanguages();
         this.plugin.config.load();
         sender.sendMessage(plugin.getMessage(sender, "chat-message.plugin-reloaded"));
