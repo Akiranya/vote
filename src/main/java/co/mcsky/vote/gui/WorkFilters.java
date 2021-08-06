@@ -1,6 +1,6 @@
 package co.mcsky.vote.gui;
 
-import co.mcsky.vote.type.Work;
+import co.mcsky.vote.object.Work;
 import me.lucko.helper.function.Predicates;
 
 import java.util.UUID;

@@ -1,9 +1,9 @@
 package co.mcsky.vote;
 
 import co.aikar.commands.PaperCommandManager;
-import co.mcsky.vote.pool.GameFileHandlerPool;
-import co.mcsky.vote.type.GamePlots;
-import co.mcsky.vote.type.factory.PlotsFactory;
+import co.mcsky.vote.file.GameFileHandlerPool;
+import co.mcsky.vote.object.GamePlots;
+import co.mcsky.vote.object.factory.PlotsFactory;
 import de.themoep.utils.lang.bukkit.LanguageManager;
 import me.lucko.helper.plugin.ExtendedJavaPlugin;
 import org.bukkit.command.CommandSender;

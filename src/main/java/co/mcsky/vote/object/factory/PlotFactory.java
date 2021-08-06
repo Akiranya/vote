@@ -1,7 +1,7 @@
-package co.mcsky.vote.type.factory;
+package co.mcsky.vote.object.factory;
 
-import co.mcsky.vote.type.GamePlot;
-import co.mcsky.vote.type.plotsquared.PlotSquaredPlot;
+import co.mcsky.vote.object.GamePlot;
+import co.mcsky.vote.object.plotsquared.PlotSquaredPlot;
 import com.plotsquared.core.plot.Plot;
 
 public class PlotFactory {

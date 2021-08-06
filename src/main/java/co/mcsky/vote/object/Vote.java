@@ -1,4 +1,4 @@
-package co.mcsky.vote.type;
+package co.mcsky.vote.object;
 
 import co.mcsky.vote.util.MainUtil;
 

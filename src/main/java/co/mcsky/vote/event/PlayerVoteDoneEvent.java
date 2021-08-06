@@ -1,6 +1,6 @@
 package co.mcsky.vote.event;
 
-import co.mcsky.vote.type.Game;
+import co.mcsky.vote.object.Game;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;

@@ -1,6 +1,5 @@
-package co.mcsky.vote.pool;
+package co.mcsky.vote.object;
 
-import co.mcsky.vote.type.Game;
 import me.lucko.helper.terminable.Terminable;
 import me.lucko.helper.terminable.composite.CompositeTerminable;
 

@@ -1,8 +1,7 @@
-package co.mcsky.vote.type;
+package co.mcsky.vote.object;
 
 import co.mcsky.vote.listener.VoteLimiter;
 import co.mcsky.vote.listener.WorkUpdater;
-import co.mcsky.vote.pool.GamePool;
 import com.google.common.base.Preconditions;
 import me.lucko.helper.terminable.Terminable;
 import me.lucko.helper.terminable.composite.CompositeTerminable;

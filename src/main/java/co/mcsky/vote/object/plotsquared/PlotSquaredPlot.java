@@ -1,7 +1,7 @@
-package co.mcsky.vote.type.plotsquared;
+package co.mcsky.vote.object.plotsquared;
 
 import co.mcsky.vote.VoteMain;
-import co.mcsky.vote.type.GamePlot;
+import co.mcsky.vote.object.GamePlot;
 import co.mcsky.vote.util.MainUtil;
 import com.plotsquared.core.events.TeleportCause;
 import com.plotsquared.core.player.PlotPlayer;

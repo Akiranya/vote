@@ -1,8 +1,8 @@
-package co.mcsky.vote.type.plotsquared;
+package co.mcsky.vote.object.plotsquared;
 
-import co.mcsky.vote.type.GamePlot;
-import co.mcsky.vote.type.GamePlots;
-import co.mcsky.vote.type.factory.PlotFactory;
+import co.mcsky.vote.object.GamePlot;
+import co.mcsky.vote.object.GamePlots;
+import co.mcsky.vote.object.factory.PlotFactory;
 import com.plotsquared.core.PlotAPI;
 import com.plotsquared.core.plot.Plot;
 import org.bukkit.World;

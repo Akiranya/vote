@@ -1,7 +1,7 @@
 package co.mcsky.vote.listener;
 
-import co.mcsky.vote.type.Game;
-import co.mcsky.vote.type.factory.PlotFactory;
+import co.mcsky.vote.object.Game;
+import co.mcsky.vote.object.factory.PlotFactory;
 import com.google.common.eventbus.Subscribe;
 import com.plotsquared.core.PlotAPI;
 import com.plotsquared.core.events.PlayerClaimPlotEvent;

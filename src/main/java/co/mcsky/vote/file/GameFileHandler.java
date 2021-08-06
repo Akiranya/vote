@@ -1,9 +1,10 @@
 package co.mcsky.vote.file;
 
+import co.mcsky.moecore.config.YamlConfigFactory;
 import co.mcsky.vote.file.serializer.GameSerializer;
 import co.mcsky.vote.file.serializer.VoteSerializer;
-import co.mcsky.vote.type.Game;
-import co.mcsky.vote.type.Vote;
+import co.mcsky.vote.object.Game;
+import co.mcsky.vote.object.Vote;
 import me.lucko.helper.serialize.FileStorageHandler;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.ConfigurateException;
@@ -18,7 +19,6 @@ import static co.mcsky.vote.VoteMain.plugin;
 /**
  * Each instance of {@link GameFileHandler} handles an instance of {@link Game}).
  */
-@SuppressWarnings("NullableProblems")
 public class GameFileHandler extends FileStorageHandler<Game> {
 
     private static final String fileExtension = ".yml";
@@ -32,26 +32,20 @@ public class GameFileHandler extends FileStorageHandler<Game> {
     public GameFileHandler(String fileName, File dataFolder) {
         super(fileName, fileExtension, dataFolder);
 
-        TypeSerializerCollection serializers = TypeSerializerCollection.builder()
+        TypeSerializerCollection serializers = YamlConfigFactory.typeSerializers().childBuilder()
                 .register(Game.class, new GameSerializer(plugin.getLogger()))
                 .register(Vote.class, new VoteSerializer(plugin.getLogger()))
                 .build();
         loader = YamlConfigurationLoader.builder()
-                .path(new File(dataFolder, fileName + fileExtension).toPath())
-                .defaultOptions(opts -> opts.serializers(builder -> builder.registerAll(serializers)))
+                .file(new File(dataFolder, fileName + fileExtension))
+                .defaultOptions(opts -> opts.serializers(serializers))
                 .build();
-
-        try {
-            root = loader.load();
-        } catch (ConfigurateException e) {
-            e.printStackTrace();
-        }
     }
 
     @Override
     protected Game readFromFile(Path path) {
         try {
-            return loader.load().get(Game.class);
+            return (root = loader.load()).get(Game.class);
         } catch (ConfigurateException e) {
             e.printStackTrace();
             return null;

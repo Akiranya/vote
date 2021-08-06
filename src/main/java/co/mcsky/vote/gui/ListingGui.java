@@ -2,7 +2,7 @@ package co.mcsky.vote.gui;
 
 import co.mcsky.moecore.gui.SeamlessGui;
 import co.mcsky.moecore.gui.SoundRegistry;
-import co.mcsky.vote.type.Game;
+import co.mcsky.vote.object.Game;
 import org.bukkit.entity.Player;
 
 import static co.mcsky.vote.VoteMain.plugin;

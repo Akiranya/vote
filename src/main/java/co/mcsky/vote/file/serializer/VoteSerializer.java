@@ -1,7 +1,7 @@
 package co.mcsky.vote.file.serializer;
 
-import co.mcsky.vote.type.Game;
-import co.mcsky.vote.type.Vote;
+import co.mcsky.vote.object.Game;
+import co.mcsky.vote.object.Vote;
 import org.checkerframework.checker.nullness.qual.Nullable;
 import org.spongepowered.configurate.ConfigurationNode;
 import org.spongepowered.configurate.serialize.SerializationException;

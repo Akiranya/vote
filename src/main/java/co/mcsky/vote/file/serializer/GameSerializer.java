@@ -1,8 +1,8 @@
 package co.mcsky.vote.file.serializer;
 
-import co.mcsky.vote.type.Game;
-import co.mcsky.vote.type.Vote;
-import co.mcsky.vote.type.Work;
+import co.mcsky.vote.object.Game;
+import co.mcsky.vote.object.Vote;
+import co.mcsky.vote.object.Work;
 import me.lucko.helper.utils.Players;
 import org.bukkit.OfflinePlayer;
 import org.checkerframework.checker.nullness.qual.Nullable;
