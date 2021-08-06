@@ -17,11 +17,12 @@ import java.util.Arrays;
 public class VoteMain extends ExtendedJavaPlugin {
 
     public static VoteMain plugin;
-    public static GamePlots plots;
 
     public VoteConfig config;
     public LanguageManager lang;
     public PaperCommandManager commands;
+
+    private GamePlots plots;
 
     @Override
     public void disable() {
@@ -41,6 +42,10 @@ public class VoteMain extends ExtendedJavaPlugin {
 
         loadLanguages();
         registerCommands();
+    }
+
+    public GamePlots getPlots() {
+        return plots;
     }
 
     public void registerCommands() {

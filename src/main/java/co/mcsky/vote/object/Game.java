@@ -1,5 +1,6 @@
 package co.mcsky.vote.object;
 
+import co.mcsky.vote.VoteMain;
 import co.mcsky.vote.listener.VoteLimiter;
 import co.mcsky.vote.listener.WorkUpdater;
 import com.google.common.base.Preconditions;
@@ -8,26 +9,22 @@ import me.lucko.helper.terminable.composite.CompositeTerminable;
 
 import java.util.*;
 
-import static co.mcsky.vote.VoteMain.plots;
-
 /**
  * Represents an entire vote for a building game. The design is that each instance of this class manages a distinct plot
  * world. That is, there is a one-to-one relationship between a instance of this class and a plot world.
  */
 public class Game implements Terminable {
 
-    // The game world where this instance manages
+    // the game world where this instance manages
     private final String plotWorld;
-    // All works in this entire vote, where key is the UUID of owner of work
+    // all works in this entire vote, where key is the UUID of owner of work
     private final LinkedHashMap<UUID, Work> works;
-    // True, if the vote system is ready (available), otherwise false
-    private boolean ready;
-
-    // The backing terminable registry
+    // the backing terminable registry
     private final CompositeTerminable terminableRegistry;
-
-    // A calculator to get statistics about this game
+    // a class to get statistics about this game
     private final GameStats gameStats;
+    // true, if the vote system is ready (available), otherwise false
+    private boolean ready;
 
     /**
      * Direct initialization is discouraged, instead use {@link GamePool} to get an instance.
@@ -119,7 +116,7 @@ public class Game implements Terminable {
      * Updates work entries from all legal plots.
      */
     public void pull() {
-        plots.getAllPlots().parallelStream()
+        VoteMain.plugin.getPlots().getAllPlots().parallelStream()
                 .filter(p -> p.hasOwner() && p.getWorldName().equalsIgnoreCase(plotWorld))
                 .forEach(p -> createEntry(p.getOwner(), p));
     }
