@@ -23,7 +23,7 @@ public class PlotSquaredPlot implements GamePlot {
         this.plot.teleportPlayer(
                 PlotPlayer.from(player),
                 TeleportCause.PLUGIN,
-                b -> player.sendMessage(VoteMain.plugin.getMessage(player, "gui-message.teleport-to-plot", "player", getOwnerName()))
+                b -> player.sendMessage(VoteMain.plugin.message(player, "gui-message.teleport-to-plot", "player", getOwnerName()))
         );
     }
 

@@ -70,7 +70,7 @@ public class VoteMain extends ExtendedJavaPlugin {
      * @return The string from the config which matches the sender's language (or the default one) with the replacements
      * replaced (or an error message, never null)
      */
-    public String getMessage(CommandSender sender, String key, Object... replacements) {
+    public String message(CommandSender sender, String key, Object... replacements) {
         if (replacements.length == 0) {
             return lang.getConfig(sender).get(key);
         } else {

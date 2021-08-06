@@ -57,12 +57,12 @@ public class VoteCommands extends BaseCommand {
     private void registerConditions() {
         commands.getCommandConditions().addCondition("ready", c -> {
             if (!GamePool.INSTANCE.containsAny()) {
-                throw new ConditionFailedException(plugin.getMessage(c.getIssuer().getPlayer(), "chat-message.vote-system-not-available"));
+                throw new ConditionFailedException(plugin.message(c.getIssuer().getPlayer(), "chat-message.vote-system-not-available"));
             }
         });
         commands.getCommandConditions().addCondition(World.class, "plotworld", (context, exec, world) -> {
             if (!VoteMain.plots.isPlotWorld(world)) {
-                throw new ConditionFailedException(plugin.getMessage(exec.getSender(), "chat-message.world-no-plots", "world", world.getName()));
+                throw new ConditionFailedException(plugin.message(exec.getSender(), "chat-message.world-no-plots", "world", world.getName()));
             }
         });
 
@@ -80,7 +80,7 @@ public class VoteCommands extends BaseCommand {
     @CommandPermission("votes.admin")
     public void ready(CommandSender sender) {
         GamePool.INSTANCE.get().setReady(!GamePool.INSTANCE.get().isReady());
-        sender.sendMessage(plugin.getMessage(sender, "chat-message.mark-vote-system", "state", GamePool.INSTANCE.get().isReady()));
+        sender.sendMessage(plugin.message(sender, "chat-message.mark-vote-system", "state", GamePool.INSTANCE.get().isReady()));
     }
 
     @Subcommand("reload")
@@ -89,7 +89,7 @@ public class VoteCommands extends BaseCommand {
         // TODO support reload config / language / database independently
         this.plugin.loadLanguages();
         this.plugin.config.load();
-        sender.sendMessage(plugin.getMessage(sender, "chat-message.plugin-reloaded"));
+        sender.sendMessage(plugin.message(sender, "chat-message.plugin-reloaded"));
     }
 
     @Subcommand("pull")
@@ -97,9 +97,9 @@ public class VoteCommands extends BaseCommand {
     @CommandPermission("votes.admin")
     public void pull(CommandSender sender, @Conditions("plotworld") World world) {
         if (GamePool.INSTANCE.register(world.getName())) {
-            sender.sendMessage(plugin.getMessage(sender, "chat-message.plot-information-pulled"));
+            sender.sendMessage(plugin.message(sender, "chat-message.plot-information-pulled"));
         } else {
-            sender.sendMessage(plugin.getMessage(sender, "chat-message.plot-information-pulled-already"));
+            sender.sendMessage(plugin.message(sender, "chat-message.plot-information-pulled-already"));
         }
     }
 
@@ -108,9 +108,9 @@ public class VoteCommands extends BaseCommand {
     @CommandPermission("votes.admin")
     public void purge(CommandSender sender, @Conditions("plotworld") World world) {
         if (GamePool.INSTANCE.unregister(world.getName())) {
-            sender.sendMessage(plugin.getMessage(sender, "chat-message.plot-information-deleted"));
+            sender.sendMessage(plugin.message(sender, "chat-message.plot-information-deleted"));
         } else {
-            sender.sendMessage(plugin.getMessage(sender, "chat-message.plot-information-deleted-already"));
+            sender.sendMessage(plugin.message(sender, "chat-message.plot-information-deleted-already"));
         }
     }
 
@@ -118,14 +118,14 @@ public class VoteCommands extends BaseCommand {
     @CommandPermission("votes.admin")
     public void save(CommandSender sender) {
         GameFileHandlerPool.INSTANCE.saveAll();
-        sender.sendMessage(plugin.getMessage(sender, "chat-message.saved-all"));
+        sender.sendMessage(plugin.message(sender, "chat-message.saved-all"));
     }
 
     @Subcommand("cache clear")
     @CommandPermission("votes.admin")
     public void clear(CommandSender sender) {
         SkullCache.INSTANCE.clear();
-        sender.sendMessage(plugin.getMessage(sender, "chat-message.skin-cache-cleared"));
+        sender.sendMessage(plugin.message(sender, "chat-message.skin-cache-cleared"));
     }
 
     @SuppressWarnings("StringBufferReplaceableByString ConstantConditions")
@@ -155,15 +155,15 @@ public class VoteCommands extends BaseCommand {
 
                 StringBuilder sb = new StringBuilder()
                         .append(TITLE).append(LINE_SEPARATOR)
-                        .append(plugin.getMessage(sender, "chat-message.invalid-rater-list", "count", invalidRatersCount, "list", invalidRaters)).append(LINE_SEPARATOR)
-                        .append(plugin.getMessage(sender, "chat-message.valid-rater-list", "count", validRatersCount, "list", validRaters)).append(LINE_SEPARATOR);
+                        .append(plugin.message(sender, "chat-message.invalid-rater-list", "count", invalidRatersCount, "list", invalidRaters)).append(LINE_SEPARATOR)
+                        .append(plugin.message(sender, "chat-message.valid-rater-list", "count", validRatersCount, "list", validRaters)).append(LINE_SEPARATOR);
 
                 sb.append(TITLE).append(LINE_SEPARATOR);
                 GamePool.INSTANCE.get().getWorkAll().stream().map(Work::getOwner).forEach(uuid -> {
                     int redVotesCount = calc.redVotes(uuid).size();
                     int greenVotesCount = calc.greenVotes(uuid).size();
                     float greenVoteProportion = 100F * greenVotesCount / validRatersCount;
-                    sb.append(String.format(plugin.getMessage(sender, "chat-message.work-information-line"), greenVotesCount, redVotesCount, validRatersCount, greenVoteProportion, MainUtil.getPlayerName(uuid)));
+                    sb.append(String.format(plugin.message(sender, "chat-message.work-information-line"), greenVotesCount, redVotesCount, validRatersCount, greenVoteProportion, MainUtil.getPlayerName(uuid)));
                     sb.append(LINE_SEPARATOR);
                 });
 
@@ -192,8 +192,8 @@ public class VoteCommands extends BaseCommand {
 
                 StringBuilder sb = new StringBuilder()
                         .append(TITLE).append(LINE_SEPARATOR)
-                        .append(plugin.getMessage(sender, "chat-message.green-rater-list", "count", greenRatersCount, "list", greenRaters)).append(LINE_SEPARATOR)
-                        .append(plugin.getMessage(sender, "chat-message.red-rater-list", "count", redRatersCount, "list", redRaters)).append(LINE_SEPARATOR);
+                        .append(plugin.message(sender, "chat-message.green-rater-list", "count", greenRatersCount, "list", greenRaters)).append(LINE_SEPARATOR)
+                        .append(plugin.message(sender, "chat-message.red-rater-list", "count", redRatersCount, "list", redRaters)).append(LINE_SEPARATOR);
 
                 return sb.toString();
             }).thenAcceptSync(sender::sendMessage);
@@ -214,8 +214,8 @@ public class VoteCommands extends BaseCommand {
 
                 StringBuilder sb = new StringBuilder()
                         .append(TITLE).append(LINE_SEPARATOR)
-                        .append(plugin.getMessage(sender, "chat-message.green-work-list", "count", greenWorksCount, "list", greenWorks)).append(LINE_SEPARATOR)
-                        .append(plugin.getMessage(sender, "chat-message.red-work-list", "count", redWorksCount, "list", redWorks)).append(LINE_SEPARATOR);
+                        .append(plugin.message(sender, "chat-message.green-work-list", "count", greenWorksCount, "list", greenWorks)).append(LINE_SEPARATOR)
+                        .append(plugin.message(sender, "chat-message.red-work-list", "count", redWorksCount, "list", redWorks)).append(LINE_SEPARATOR);
 
                 return sb.toString();
             }).thenAcceptSync(sender::sendMessage);

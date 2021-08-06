@@ -59,43 +59,43 @@ public class OptionView implements GuiView {
 
         // place option: teleport
         optionPopulator.accept(ItemStackBuilder.of(Material.MINECART)
-                .name(plugin.getMessage(this.gui.getPlayer(), "gui.vote-options.teleport-to-plot.name"))
-                .lore(plugin.getMessage(this.gui.getPlayer(), "gui.vote-options.teleport-to-plot.lore1"))
-                .lore(plugin.getMessage(this.gui.getPlayer(), "gui.vote-options.teleport-to-plot.lore2"))
+                .name(plugin.message(this.gui.getPlayer(), "gui.vote-options.teleport-to-plot.name"))
+                .lore(plugin.message(this.gui.getPlayer(), "gui.vote-options.teleport-to-plot.lore1"))
+                .lore(plugin.message(this.gui.getPlayer(), "gui.vote-options.teleport-to-plot.lore2"))
                 .build(() -> selectedWork.teleport(this.gui.getPlayer())));
 
         // place option: rate green
         UUID rater = this.gui.getPlayer().getUniqueId();
         optionPopulator.accept(ItemStackBuilder.of(Material.GREEN_WOOL)
-                .name(plugin.getMessage(this.gui.getPlayer(), "gui.vote-options.vote-work.name"))
-                .lore(plugin.getMessage(this.gui.getPlayer(), "gui.vote-options.vote-work.lore1"))
-                .lore(plugin.getMessage(this.gui.getPlayer(), "gui.vote-options.vote-work.lore2"))
+                .name(plugin.message(this.gui.getPlayer(), "gui.vote-options.vote-work.name"))
+                .lore(plugin.message(this.gui.getPlayer(), "gui.vote-options.vote-work.lore1"))
+                .lore(plugin.message(this.gui.getPlayer(), "gui.vote-options.vote-work.lore2"))
                 .build(() -> {
                     Vote vote = new Vote(rater, false);
                     if (!Events.callAndReturn(new PlayerVoteSubmitEvent(this.gui.getPlayer(), selectedWork, vote, game)).isCancelled()) {
                         game.vote(selectedWork.getOwner(), vote);
-                        this.gui.getPlayer().sendMessage(plugin.getMessage(this.gui.getPlayer(), "gui-message.vote-work", "player", selectedWork.getOwnerName()));
+                        this.gui.getPlayer().sendMessage(plugin.message(this.gui.getPlayer(), "gui-message.vote-work", "player", selectedWork.getOwnerName()));
                     }
                 }));
 
         // place option: rate red
         optionPopulator.accept(ItemStackBuilder.of(Material.RED_WOOL)
-                .name(plugin.getMessage(this.gui.getPlayer(), "gui.vote-options.vote-work-absent.name"))
-                .lore(plugin.getMessage(this.gui.getPlayer(), "gui.vote-options.vote-work-absent.lore1"))
-                .lore(plugin.getMessage(this.gui.getPlayer(), "gui.vote-options.vote-work-absent.lore2"))
+                .name(plugin.message(this.gui.getPlayer(), "gui.vote-options.vote-work-absent.name"))
+                .lore(plugin.message(this.gui.getPlayer(), "gui.vote-options.vote-work-absent.lore1"))
+                .lore(plugin.message(this.gui.getPlayer(), "gui.vote-options.vote-work-absent.lore2"))
                 .build(() -> {
                     Vote vote = new Vote(rater, true);
                     if (!Events.callAndReturn(new PlayerVoteSubmitEvent(this.gui.getPlayer(), selectedWork, vote, game)).isCancelled()) {
                         game.vote(selectedWork.getOwner(), vote);
-                        this.gui.getPlayer().sendMessage(plugin.getMessage(this.gui.getPlayer(), "gui-message.vote-work-absent", "player", selectedWork.getOwnerName()));
+                        this.gui.getPlayer().sendMessage(plugin.message(this.gui.getPlayer(), "gui-message.vote-work-absent", "player", selectedWork.getOwnerName()));
                     }
                 }));
 
         // place back button
         this.backScheme.newPopulator(this.gui).accept(ItemStackBuilder.of(Material.REDSTONE)
-                .name(plugin.getMessage(this.gui.getPlayer(), "gui.vote-options.back.name"))
-                .lore(plugin.getMessage(this.gui.getPlayer(), "gui.vote-options.back.lore1"))
-                .lore(plugin.getMessage(this.gui.getPlayer(), "gui.vote-options.back.lore2"))
+                .name(plugin.message(this.gui.getPlayer(), "gui.vote-options.back.name"))
+                .lore(plugin.message(this.gui.getPlayer(), "gui.vote-options.back.lore1"))
+                .lore(plugin.message(this.gui.getPlayer(), "gui.vote-options.back.lore2"))
                 .build(() -> {
                     // update content before going back to the listing
                     listingView.updateListing();

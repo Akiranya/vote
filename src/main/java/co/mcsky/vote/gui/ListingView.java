@@ -62,12 +62,12 @@ public class ListingView extends PaginatedView {
                 .stream()
                 .filter(this.filter)
                 .map(work -> ItemStackBuilder.of(Material.PLAYER_HEAD)
-                        .name(plugin.getMessage(player, "gui.work-listing.work-entry.name", "player", work.getOwnerName()))
-                        .lore(plugin.getMessage(player, "gui.work-listing.work-entry.lore1"))
-                        .lore(plugin.getMessage(player, "gui.work-listing.work-entry.lore2", "done", work.isDone() ? plugin.getMessage(player, "gui.work-listing.done") : plugin.getMessage(player, "gui.work-listing.undone")))
-                        .lore(plugin.getMessage(player, "gui.work-listing.work-entry.lore3", "done", work.voted(player.getUniqueId()) ? plugin.getMessage(player, "gui.work-listing.done") : plugin.getMessage(player, "gui.work-listing.undone")))
-                        .lore(plugin.getMessage(player, "gui.work-listing.work-entry.lore4"))
-                        .lore(plugin.getMessage(player, "gui.work-listing.work-entry.lore5"))
+                        .name(plugin.message(player, "gui.work-listing.work-entry.name", "player", work.getOwnerName()))
+                        .lore(plugin.message(player, "gui.work-listing.work-entry.lore1"))
+                        .lore(plugin.message(player, "gui.work-listing.work-entry.lore2", "done", work.isDone() ? plugin.message(player, "gui.work-listing.done") : plugin.message(player, "gui.work-listing.undone")))
+                        .lore(plugin.message(player, "gui.work-listing.work-entry.lore3", "done", work.voted(player.getUniqueId()) ? plugin.message(player, "gui.work-listing.done") : plugin.message(player, "gui.work-listing.undone")))
+                        .lore(plugin.message(player, "gui.work-listing.work-entry.lore4"))
+                        .lore(plugin.message(player, "gui.work-listing.work-entry.lore5"))
                         .transform(item -> SkullCache.INSTANCE.itemWithUuid(item, work.getOwner()))
                         .build(() -> {
                             this.selectedWork = work;
@@ -85,20 +85,20 @@ public class ListingView extends PaginatedView {
     public void renderSubview() {
         // place the poster
         this.poster.newPopulator(this.gui).accept(ItemStackBuilder.of(Material.BOOK)
-                .name(plugin.getMessage(player, "gui.work-listing.menu-tips.name"))
-                .lore(plugin.getMessage(player, "gui.work-listing.menu-tips.lore1"))
-                .lore(plugin.getMessage(player, "gui.work-listing.menu-tips.lore2"))
-                .lore(plugin.getMessage(player, "gui.work-listing.menu-tips.lore3"))
+                .name(plugin.message(player, "gui.work-listing.menu-tips.name"))
+                .lore(plugin.message(player, "gui.work-listing.menu-tips.lore1"))
+                .lore(plugin.message(player, "gui.work-listing.menu-tips.lore2"))
+                .lore(plugin.message(player, "gui.work-listing.menu-tips.lore3"))
                 .buildItem().build());
 
         // place the done button
         this.gui.setItem(this.doneSlot, ItemStackBuilder.of(Material.APPLE)
-                .name(plugin.getMessage(player, "gui.work-listing.submit.name"))
-                .lore(plugin.getMessage(player, "gui.work-listing.submit.lore1"))
-                .lore(plugin.getMessage(player, "gui.work-listing.submit.lore2"))
-                .lore(plugin.getMessage(player, "gui.work-listing.submit.lore3"))
-                .lore(plugin.getMessage(player, "gui.work-listing.submit.lore4"))
-                .lore(plugin.getMessage(player, "gui.work-listing.submit.lore5"))
+                .name(plugin.message(player, "gui.work-listing.submit.name"))
+                .lore(plugin.message(player, "gui.work-listing.submit.lore1"))
+                .lore(plugin.message(player, "gui.work-listing.submit.lore2"))
+                .lore(plugin.message(player, "gui.work-listing.submit.lore3"))
+                .lore(plugin.message(player, "gui.work-listing.submit.lore4"))
+                .lore(plugin.message(player, "gui.work-listing.submit.lore5"))
                 .build(() -> {
                     boolean invalid = this.game.getCalc().invalid(player.getUniqueId());
 
@@ -109,18 +109,18 @@ public class ListingView extends PaginatedView {
                     // send prompts
                     if (invalid) {
                         // prompt the player that he has not finished the vote yet
-                        player.sendMessage(plugin.getMessage(player, "gui-message.vote-not-done"));
-                        player.sendMessage(plugin.getMessage(player, "gui-message.must-vote-filtered"));
+                        player.sendMessage(plugin.message(player, "gui-message.vote-not-done"));
+                        player.sendMessage(plugin.message(player, "gui-message.must-vote-filtered"));
                         // then filter content to only show the works he needs to vote for
                         this.updateListing(WorkFilters.UNDONE(player.getUniqueId()));
                         this.gui.redraw();
                     } else {
                         // prompt the player that he has done
-                        player.sendMessage(plugin.getMessage(player, "gui-message.vote-all-done"));
+                        player.sendMessage(plugin.message(player, "gui-message.vote-all-done"));
                         player.playEffect(EntityEffect.TOTEM_RESURRECT);
                         player.showTitle(Title.title(
-                                Component.text(plugin.getMessage(player, "title-message.vote-finished.title")),
-                                Component.text(plugin.getMessage(player, "title-message.vote-finished.subtitle")),
+                                Component.text(plugin.message(player, "title-message.vote-finished.title")),
+                                Component.text(plugin.message(player, "title-message.vote-finished.subtitle")),
                                 Title.Times.of(Duration.ofSeconds(1), Duration.ofSeconds(5), Duration.ofSeconds(1))
                         ));
                         // simply close the GUI after the player has done the vote
@@ -164,18 +164,18 @@ public class ListingView extends PaginatedView {
     @Override
     public Function<PageInfo, ItemStack> nextPageItem() {
         return pageInfo -> ItemStackBuilder.of(Material.PAPER)
-                .name(plugin.getMessage(player, "gui.work-listing.next-page.name"))
-                .lore(plugin.getMessage(player, "gui.work-listing.next-page.lore1"))
-                .lore(plugin.getMessage(player, "gui.work-listing.next-page.lore2", "current-page", pageInfo.getCurrent(), "total-page", pageInfo.getSize()))
+                .name(plugin.message(player, "gui.work-listing.next-page.name"))
+                .lore(plugin.message(player, "gui.work-listing.next-page.lore1"))
+                .lore(plugin.message(player, "gui.work-listing.next-page.lore2", "current-page", pageInfo.getCurrent(), "total-page", pageInfo.getSize()))
                 .build();
     }
 
     @Override
     public Function<PageInfo, ItemStack> previousPageItem() {
         return pageInfo -> ItemStackBuilder.of(Material.PAPER)
-                .name(plugin.getMessage(player, "gui.work-listing.previous-page.name"))
-                .lore(plugin.getMessage(player, "gui.work-listing.previous-page.lore1"))
-                .lore(plugin.getMessage(player, "gui.work-listing.previous-page.lore2", "current-page", pageInfo.getCurrent(), "total-page", pageInfo.getSize()))
+                .name(plugin.message(player, "gui.work-listing.previous-page.name"))
+                .lore(plugin.message(player, "gui.work-listing.previous-page.lore1"))
+                .lore(plugin.message(player, "gui.work-listing.previous-page.lore2", "current-page", pageInfo.getCurrent(), "total-page", pageInfo.getSize()))
                 .build();
     }
 

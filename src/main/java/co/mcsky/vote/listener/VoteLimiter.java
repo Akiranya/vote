@@ -32,7 +32,7 @@ public class VoteLimiter implements TerminableModule {
                 .filter(e -> !game.isReady())
                 .handler(e -> {
                     e.setCancelled(true);
-                    e.getPlayer().sendMessage(plugin.getMessage(e.getPlayer(), "chat-message.cannot-vote-for-game-not-ended"));
+                    e.getPlayer().sendMessage(plugin.message(e.getPlayer(), "chat-message.cannot-vote-for-game-not-ended"));
                 })
                 .bindWith(consumer);
 
@@ -44,7 +44,7 @@ public class VoteLimiter implements TerminableModule {
                 .filter(e -> !e.getWork().isDone())
                 .handler(e -> {
                     e.setCancelled(true);
-                    e.getPlayer().sendMessage(plugin.getMessage(e.getPlayer(), "chat-message.cannot-vote-for-work-undone"));
+                    e.getPlayer().sendMessage(plugin.message(e.getPlayer(), "chat-message.cannot-vote-for-work-undone"));
                 })
                 .bindWith(consumer);
 
@@ -54,7 +54,7 @@ public class VoteLimiter implements TerminableModule {
                 .filter(e -> !game.isReady())
                 .handler(e -> {
                     e.setCancelled(true);
-                    e.getPlayer().sendMessage(plugin.getMessage(e.getPlayer(), "chat-message.cannot-done-for-game-not-ended"));
+                    e.getPlayer().sendMessage(plugin.message(e.getPlayer(), "chat-message.cannot-done-for-game-not-ended"));
                 })
                 .bindWith(consumer);
 
