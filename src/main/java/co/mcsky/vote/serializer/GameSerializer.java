@@ -1,4 +1,4 @@
-package co.mcsky.vote.file.serializer;
+package co.mcsky.vote.serializer;
 
 import co.mcsky.vote.object.Game;
 import co.mcsky.vote.object.Vote;

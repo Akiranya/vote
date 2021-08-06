@@ -1,8 +1,8 @@
 package co.mcsky.vote.file;
 
 import co.mcsky.moecore.config.YamlConfigFactory;
-import co.mcsky.vote.file.serializer.GameSerializer;
-import co.mcsky.vote.file.serializer.VoteSerializer;
+import co.mcsky.vote.serializer.GameSerializer;
+import co.mcsky.vote.serializer.VoteSerializer;
 import co.mcsky.vote.object.Game;
 import co.mcsky.vote.object.Vote;
 import me.lucko.helper.serialize.FileStorageHandler;
