@@ -159,11 +159,17 @@ public class VoteCommands extends BaseCommand {
 
                 // show details of work ratings
                 sb.append(TITLE).append(LINE_SEPARATOR);
-                GamePool.INSTANCE.get().getWorks().stream().map(Work::getOwner).forEach(uuid -> {
-                    int redVotesCount = stats.ofRedVotes(uuid).size();
-                    int greenVotesCount = stats.ofGreenVotes(uuid).size();
-                    double greenVoteProportion = 100D * greenVotesCount / validRatersCount;
-                    sb.append(plugin.message(sender, "chat-message.work-information-line").formatted(greenVotesCount, redVotesCount, validRatersCount, greenVoteProportion, MainUtil.getPlayerName(uuid)));
+                GamePool.INSTANCE.get().getWorks().forEach(work -> {
+                    var uuid = work.getOwner();
+                    var redVotesCount = stats.ofRedVotes(uuid).size();
+                    var greenVotesCount = stats.ofGreenVotes(uuid).size();
+                    var totalVotesCount = greenVotesCount + redVotesCount; // only the votes on this work
+                    var greenVoteProportion = 100D * greenVotesCount / totalVotesCount;
+                    sb.append(plugin.message(sender, "chat-message.work-information-line").formatted(
+                            greenVotesCount, redVotesCount, totalVotesCount,
+                            greenVoteProportion, MainUtil.getPlayerName(uuid), work.isDone()
+                                    ? plugin.message(sender, "gui.work-listing.done")
+                                    : plugin.message(sender, "gui.work-listing.undone")));
                     sb.append(LINE_SEPARATOR);
                 });
 
@@ -193,9 +199,12 @@ public class VoteCommands extends BaseCommand {
                         .collect(joining);
 
                 var sb = new StringBuilder()
-                        .append(TITLE).append(LINE_SEPARATOR)
-                        .append(plugin.message(sender, "chat-message.green-rater-list", "count", greenRatersCount, "list", greenRaters)).append(LINE_SEPARATOR)
-                        .append(plugin.message(sender, "chat-message.red-rater-list", "count", redRatersCount, "list", redRaters)).append(LINE_SEPARATOR);
+                        .append(TITLE)
+                        .append(LINE_SEPARATOR)
+                        .append(plugin.message(sender, "chat-message.green-rater-list", "count", greenRatersCount, "list", greenRaters))
+                        .append(LINE_SEPARATOR)
+                        .append(plugin.message(sender, "chat-message.red-rater-list", "count", redRatersCount, "list", redRaters))
+                        .append(LINE_SEPARATOR);
 
                 return sb.toString();
             }).thenAcceptSync(sender::sendMessage);
@@ -217,9 +226,12 @@ public class VoteCommands extends BaseCommand {
                 var redWorks = stats.ofRedWorks(raterUuid).stream().map(Work::getOwnerName).collect(joining);
 
                 var sb = new StringBuilder()
-                        .append(TITLE).append(LINE_SEPARATOR)
-                        .append(plugin.message(sender, "chat-message.green-work-list", "count", greenWorksCount, "list", greenWorks)).append(LINE_SEPARATOR)
-                        .append(plugin.message(sender, "chat-message.red-work-list", "count", redWorksCount, "list", redWorks)).append(LINE_SEPARATOR);
+                        .append(TITLE)
+                        .append(LINE_SEPARATOR)
+                        .append(plugin.message(sender, "chat-message.green-work-list", "count", greenWorksCount, "list", greenWorks))
+                        .append(LINE_SEPARATOR)
+                        .append(plugin.message(sender, "chat-message.red-work-list", "count", redWorksCount, "list", redWorks))
+                        .append(LINE_SEPARATOR);
 
                 return sb.toString();
             }).thenAcceptSync(sender::sendMessage);

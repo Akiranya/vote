@@ -78,7 +78,7 @@ dependencies {
     compileOnly('com.mojang:authlib:1.5.25')
 
     // MoeCore
-    compileOnly('com.github.Akiranya:MoeCore:0.2')
+    compileOnly('com.github.Akiranya:MoeCore:0.3')
 }
 
 test {

@@ -5,8 +5,7 @@ import co.mcsky.vote.object.GamePool;
 import com.google.common.io.Files;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static co.mcsky.vote.VoteMain.plugin;
 
@@ -48,8 +47,8 @@ public enum GameFileHandlerPool {
     public void readAll() {
         File[] files = DATA_FOLDER.listFiles(f -> f.getName().endsWith(FILE_EXTENSION));
         if (files != null) {
-            for (File file : files) {
-                String filename = file.getName();
+            for (int i = files.length - 1; i >= 0; i--) {
+                String filename = files[i].getName();
                 plugin.getLogger().info("Loading file " + filename);
                 read(filename);
             }

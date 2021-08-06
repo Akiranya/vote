@@ -13,6 +13,9 @@ import me.lucko.helper.menu.Item;
 import me.lucko.helper.menu.paginated.PageInfo;
 import me.lucko.helper.menu.scheme.MenuScheme;
 import me.lucko.helper.menu.scheme.StandardSchemeMappings;
+import me.lucko.helper.metadata.Metadata;
+import me.lucko.helper.metadata.MetadataKey;
+import me.lucko.helper.metadata.MetadataMap;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;
 import org.bukkit.EntityEffect;
@@ -29,20 +32,23 @@ import static co.mcsky.vote.VoteMain.plugin;
 
 public class ListingView extends PaginatedView {
 
-    // the backed GUI
-    private final SeamlessGui gui;
-    private final Player player;
+    // metadata key for selected work
+    public static final MetadataKey<Work> selectedKey = MetadataKey.create("selected-work", Work.class);
 
-    // the backed instance
-    private final Game game;
-    private final MenuScheme poster = new MenuScheme()
+    // menu schemes
+    private static final MenuScheme POSTER = new MenuScheme()
             .mask("000010000");
-    private final int doneSlot = new MenuScheme()
+    private static final int DONE_SLOT = new MenuScheme()
             .maskEmpty(4)
             .mask("000010000")
             .getMaskedIndexesImmutable().get(0);
-    // currently selected work
-    private Work selectedWork;
+
+    // the backed GUI
+    private final SeamlessGui gui;
+    // the player who is looking at this GUI
+    private final Player player;
+    // the backed instance
+    private final Game game;
     // currently applied filter
     private Predicate<Work> filter;
 
@@ -76,7 +82,11 @@ public class ListingView extends PaginatedView {
                         .lore(plugin.message(player, "gui.work-listing.work-entry.lore5"))
                         .transform(item -> SkullCache.INSTANCE.itemWithUuid(item, work.getOwner()))
                         .build(() -> {
-                            this.selectedWork = work;
+                            // use metadata to record which work the rater is looking at
+                            final MetadataKey<Work> key = MetadataKey.create("selected-work", Work.class);
+                            final MetadataMap metadataMap = Metadata.provideForPlayer(gui.getPlayer());
+                            metadataMap.put(key, work);
+
                             this.gui.switchView(new OptionView(this.gui, this));
                         })).toList();
         updateContent(content);
@@ -90,7 +100,7 @@ public class ListingView extends PaginatedView {
     @Override
     public void renderSubview() {
         // place the poster
-        this.poster.newPopulator(this.gui).accept(ItemStackBuilder.of(Material.BOOK)
+        POSTER.newPopulator(this.gui).accept(ItemStackBuilder.of(Material.BOOK)
                 .name(plugin.message(player, "gui.work-listing.menu-tips.name"))
                 .lore(plugin.message(player, "gui.work-listing.menu-tips.lore1"))
                 .lore(plugin.message(player, "gui.work-listing.menu-tips.lore2"))
@@ -98,7 +108,7 @@ public class ListingView extends PaginatedView {
                 .buildItem().build());
 
         // place the done button
-        this.gui.setItem(this.doneSlot, ItemStackBuilder.of(Material.APPLE)
+        this.gui.setItem(DONE_SLOT, ItemStackBuilder.of(Material.APPLE)
                 .name(plugin.message(player, "gui.work-listing.submit.name"))
                 .lore(plugin.message(player, "gui.work-listing.submit.lore1"))
                 .lore(plugin.message(player, "gui.work-listing.submit.lore2"))
@@ -199,7 +209,4 @@ public class ListingView extends PaginatedView {
         return game;
     }
 
-    public Work getSelectedWork() {
-        return selectedWork;
-    }
 }
