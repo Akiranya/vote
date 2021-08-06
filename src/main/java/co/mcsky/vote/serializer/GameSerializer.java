@@ -48,7 +48,7 @@ public record GameSerializer(Logger logger) implements TypeSerializer<Game> {
 
         node.node("world").set(votes.getWorld());
 
-        for (Work work : votes.getWorkAll()) {
+        for (Work work : votes.getWorks()) {
             ConfigurationNode ownerUuid = node.node("works", work.getOwner().toString());
             ownerUuid.node("raters").setList(Vote.class, new ArrayList<>(work.getVotes()));
 

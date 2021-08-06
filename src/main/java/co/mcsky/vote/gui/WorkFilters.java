@@ -13,7 +13,7 @@ public final class WorkFilters {
     }
 
     public static Predicate<Work> UNDONE(UUID player) {
-        return work -> work.isDone() && work.invoted(player);
+        return work -> work.isDone() && work.hasNotVoted(player);
     }
 
 }

@@ -16,9 +16,9 @@ import java.util.*;
 public class Game implements Terminable {
 
     // the game world where this instance manages
-    private final String plotWorld;
+    private final String gameWorld;
     // all works in this entire vote, where key is the UUID of owner of work
-    private final LinkedHashMap<UUID, Work> works;
+    private final LinkedHashMap<UUID, Work> workList;
     // the backing terminable registry
     private final CompositeTerminable terminableRegistry;
     // a class to get statistics about this game
@@ -29,11 +29,11 @@ public class Game implements Terminable {
     /**
      * Direct initialization is discouraged, instead use {@link GamePool} to get an instance.
      *
-     * @param plotWorld the plot world this instance manages
+     * @param gameWorld the plot world this instance manages
      */
-    public Game(String plotWorld) {
-        this.plotWorld = plotWorld;
-        this.works = new LinkedHashMap<>();
+    public Game(String gameWorld) {
+        this.gameWorld = gameWorld;
+        this.workList = new LinkedHashMap<>();
         this.ready = false;
 
         this.terminableRegistry = CompositeTerminable.create();
@@ -47,7 +47,7 @@ public class Game implements Terminable {
     }
 
     public String getWorld() {
-        return plotWorld;
+        return gameWorld;
     }
 
     public GameStats getStatistics() {
@@ -73,14 +73,14 @@ public class Game implements Terminable {
      * @return the work of the owner
      */
     public Optional<Work> getWork(UUID owner) {
-        return Optional.ofNullable(works.get(owner));
+        return Optional.ofNullable(workList.get(owner));
     }
 
     /**
      * @return all works
      */
-    public Collection<Work> getWorkAll() {
-        return works.values();
+    public Collection<Work> getWorks() {
+        return workList.values();
     }
 
     /**
@@ -90,8 +90,8 @@ public class Game implements Terminable {
      * @param vote  the vote for this work
      */
     public void vote(UUID owner, Vote vote) {
-        Preconditions.checkArgument(works.containsKey(owner), "null work entry");
-        works.get(owner).vote(vote);
+        Preconditions.checkArgument(workList.containsKey(owner), "null work entry");
+        workList.get(owner).vote(vote);
     }
 
     /**
@@ -102,14 +102,14 @@ public class Game implements Terminable {
      * @param plot  the plot in which the work is located
      */
     public void createEntry(UUID owner, GamePlot plot) {
-        works.put(owner, new Work(owner, plot));
+        workList.put(owner, new Work(owner, plot));
     }
 
     /**
      * @param owner the owner of the work to be deleted
      */
     public void deleteEntry(UUID owner) {
-        works.remove(owner);
+        workList.remove(owner);
     }
 
     /**
@@ -117,7 +117,7 @@ public class Game implements Terminable {
      */
     public void pull() {
         VoteMain.plugin.getPlots().getAllPlots().parallelStream()
-                .filter(p -> p.hasOwner() && p.getWorldName().equalsIgnoreCase(plotWorld))
+                .filter(p -> p.hasOwner() && p.getWorldName().equalsIgnoreCase(gameWorld))
                 .forEach(p -> createEntry(p.getOwner(), p));
     }
 
@@ -126,12 +126,12 @@ public class Game implements Terminable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Game game = (Game) o;
-        return plotWorld.equals(game.plotWorld);
+        return gameWorld.equals(game.gameWorld);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(plotWorld);
+        return Objects.hash(gameWorld);
     }
 
     @Override

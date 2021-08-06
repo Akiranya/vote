@@ -2,6 +2,7 @@ package co.mcsky.vote.gui;
 
 import co.mcsky.moecore.gui.PaginatedView;
 import co.mcsky.moecore.gui.SeamlessGui;
+import co.mcsky.moecore.skull.SkinFetchCompleteEvent;
 import co.mcsky.moecore.skull.SkullCache;
 import co.mcsky.vote.event.PlayerVoteDoneEvent;
 import co.mcsky.vote.object.Game;
@@ -55,17 +56,22 @@ public class ListingView extends PaginatedView {
         this.filter = WorkFilters.ALL();
         // initialize listing content
         this.updateListing();
+
+        // refresh the GUI when a skin is fetched
+        Events.subscribe(SkinFetchCompleteEvent.class)
+                .handler(e -> gui.redraw())
+                .bindWith(gui);
     }
 
     public void updateListing() {
-        List<Item> content = this.game.getWorkAll()
+        List<Item> content = this.game.getWorks()
                 .stream()
                 .filter(this.filter)
                 .map(work -> ItemStackBuilder.of(Material.PLAYER_HEAD)
                         .name(plugin.message(player, "gui.work-listing.work-entry.name", "player", work.getOwnerName()))
                         .lore(plugin.message(player, "gui.work-listing.work-entry.lore1"))
                         .lore(plugin.message(player, "gui.work-listing.work-entry.lore2", "done", work.isDone() ? plugin.message(player, "gui.work-listing.done") : plugin.message(player, "gui.work-listing.undone")))
-                        .lore(plugin.message(player, "gui.work-listing.work-entry.lore3", "done", work.voted(player.getUniqueId()) ? plugin.message(player, "gui.work-listing.done") : plugin.message(player, "gui.work-listing.undone")))
+                        .lore(plugin.message(player, "gui.work-listing.work-entry.lore3", "done", work.hasVoted(player.getUniqueId()) ? plugin.message(player, "gui.work-listing.done") : plugin.message(player, "gui.work-listing.undone")))
                         .lore(plugin.message(player, "gui.work-listing.work-entry.lore4"))
                         .lore(plugin.message(player, "gui.work-listing.work-entry.lore5"))
                         .transform(item -> SkullCache.INSTANCE.itemWithUuid(item, work.getOwner()))
@@ -100,7 +106,7 @@ public class ListingView extends PaginatedView {
                 .lore(plugin.message(player, "gui.work-listing.submit.lore4"))
                 .lore(plugin.message(player, "gui.work-listing.submit.lore5"))
                 .build(() -> {
-                    boolean invalid = this.game.getStatistics().invalid(player.getUniqueId());
+                    boolean invalid = this.game.getStatistics().isInvalidRater(player.getUniqueId());
 
                     if (Events.callAndReturn(new PlayerVoteDoneEvent(player, this.game)).isCancelled()) {
                         return;

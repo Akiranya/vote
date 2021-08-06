@@ -1,80 +1,80 @@
 package co.mcsky.vote.object;
 
-import java.util.Set;
+import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
  * Provides useful methods to get the statistics from the instance of {@link Game}.
  */
-public record GameStatsImpl(Game votes) implements GameStats {
+public record GameStatsImpl(Game game) implements GameStats {
 
     @Override
-    public Stream<Work> missed(UUID rater) {
-        return votes.getWorkAll().stream().filter(work -> work.invoted(rater));
+    public Stream<Work> ofMissedWorks(UUID rater) {
+        return game.getWorks().stream().filter(work -> work.hasNotVoted(rater));
     }
 
     @Override
-    public boolean valid(UUID rater) {
-        return missed(rater).noneMatch(Work::isDone);
+    public boolean isValidRater(UUID rater) {
+        return ofMissedWorks(rater).noneMatch(Work::isDone);
     }
 
     @Override
-    public boolean invalid(UUID rater) {
-        return missed(rater).anyMatch(Work::isDone);
+    public boolean isInvalidRater(UUID rater) {
+        return ofMissedWorks(rater).anyMatch(Work::isDone);
     }
 
     @Override
-    public Stream<UUID> raters() {
-        return votes.getWorkAll().stream()
+    public Stream<UUID> getRaters() {
+        return game.getWorks()
+                .stream()
+                .flatMap(work -> work.getVotes().stream())
+                .distinct()
+                .map(Vote::getRater);
+    }
+
+    @Override
+    public List<UUID> getValidRaters() {
+        return getRaters().filter(this::isValidRater).toList();
+    }
+
+    @Override
+    public List<UUID> getInvalidRaters() {
+        return getRaters().filter(this::isInvalidRater).toList();
+    }
+
+    @Override
+    public Stream<Vote> ofValidVotes(UUID work) {
+        return game.getWork(work)
+                .stream()
                 .flatMap(w -> w.getVotes().stream())
-                .map(Vote::getRater)
-                .distinct();
+                .filter(v -> isValidRater(v.getRater()));
     }
 
     @Override
-    public Set<UUID> validRaters() {
-        return raters().filter(this::valid).collect(Collectors.toSet());
+    public List<Vote> ofRedVotes(UUID work) {
+        return ofValidVotes(work).filter(Vote::isAbsent).toList();
     }
 
     @Override
-    public Set<UUID> invalidRaters() {
-        return raters().filter(this::invalid).collect(Collectors.toSet());
+    public List<Vote> ofGreenVotes(UUID work) {
+        return ofValidVotes(work).filter(Vote::isPresent).toList();
     }
 
     @Override
-    public Stream<Vote> validVotes(UUID work) {
-        return votes.getWork(work)
-                .map(Work::getVotes)
-                .orElse(Set.of()).stream()
-                .filter(vote -> valid(vote.getRater()));
+    public List<Work> ofGreenWorks(UUID rater) {
+        return game.getWorks()
+                .stream()
+                .filter(work -> work.hasVoted(rater) && work.isPresent(rater))
+                .toList();
     }
 
     @Override
-    public Set<Vote> redVotes(UUID work) {
-        return validVotes(work).filter(Vote::isAbsent).collect(Collectors.toSet());
-    }
-
-    @Override
-    public Set<Vote> greenVotes(UUID work) {
-        return validVotes(work).filter(Vote::isPresent).collect(Collectors.toSet());
-    }
-
-    @Override
-    public Set<Work> greenWorks(UUID rater) {
-        return votes.getWorkAll().stream()
-                .filter(work -> work.voted(rater))
-                .filter(work -> work.present(rater))
-                .collect(Collectors.toUnmodifiableSet());
-    }
-
-    @Override
-    public Set<Work> redWorks(UUID rater) {
-        return votes.getWorkAll().stream()
-                .filter(work -> work.voted(rater))
-                .filter(work -> work.absent(rater))
-                .collect(Collectors.toUnmodifiableSet());
+    public List<Work> ofRedWorks(UUID rater) {
+        return game.getWorks()
+                .stream()
+                .filter(work -> work.hasVoted(rater) && work.isAbsent(rater))
+                .toList();
     }
 
 }

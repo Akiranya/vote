@@ -8,6 +8,7 @@ import java.util.UUID;
  * Represents a single vote.
  */
 public class Vote {
+
     // The UUID of the owner of this vote
     private final UUID rater;
 

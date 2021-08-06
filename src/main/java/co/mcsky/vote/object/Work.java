@@ -83,7 +83,7 @@ public class Work {
      * @param rater the owner of the vote
      * @return true, if the given vote owner already voted this work, otherwise false
      */
-    public boolean voted(UUID rater) {
+    public boolean hasVoted(UUID rater) {
         return this.votes.stream()
                 .map(Vote::getRater)
                 .anyMatch(owner -> owner.equals(rater));
@@ -93,7 +93,7 @@ public class Work {
      * @param rater the owner of the vote
      * @return true, if the given vote owner did not vote this work, otherwise false
      */
-    public boolean invoted(UUID rater) {
+    public boolean hasNotVoted(UUID rater) {
         return this.votes.stream()
                 .map(Vote::getRater)
                 .noneMatch(owner -> owner.equals(rater));
@@ -101,9 +101,9 @@ public class Work {
 
     /**
      * @param rater the owner of the vote
-     * @return true, if the given vote owner gave a green vote (present vote) for this work, otherwise false
+     * @return true, if the specific rater gave a green vote (present vote) for this work, otherwise false
      */
-    public boolean present(UUID rater) {
+    public boolean isPresent(UUID rater) {
         return this.votes.stream()
                 .filter(vote -> vote.getRater().equals(rater))
                 .anyMatch(Vote::isPresent);
@@ -111,9 +111,9 @@ public class Work {
 
     /**
      * @param rater the owner of the vote
-     * @return true, if the given vote owner gave a red vote (absent vote) for this work, otherwise false
+     * @return true, if the specific rater gave a red vote (absent vote) for this work, otherwise false
      */
-    public boolean absent(UUID rater) {
+    public boolean isAbsent(UUID rater) {
         return this.votes.stream()
                 .filter(vote -> vote.getRater().equals(rater))
                 .anyMatch(Vote::isAbsent);

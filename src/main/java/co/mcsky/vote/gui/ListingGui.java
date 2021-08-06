@@ -10,6 +10,7 @@ import static co.mcsky.vote.VoteMain.plugin;
 public class ListingGui extends SeamlessGui {
 
     public ListingGui(Player player, Game game) {
+        // TODO retain history
         super(player, 5, plugin.message(player, "gui.work-listing.title"), gui -> new ListingView(gui, game));
         SoundRegistry.bindClickingSound(this);
         SoundRegistry.bindOpeningSound(this);

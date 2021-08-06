@@ -1,74 +1,74 @@
 package co.mcsky.vote.object;
 
-import java.util.Set;
+import java.util.List;
 import java.util.UUID;
 import java.util.stream.Stream;
 
 public interface GameStats {
     /**
      * @param rater the owner of the vote
-     * @return set of works which have not been voted by the specified vote owner
+     * @return stream of works which have not been voted by the specified vote owner
      */
-    Stream<Work> missed(UUID rater);
+    Stream<Work> ofMissedWorks(UUID rater);
 
     /**
      * @param rater the owner of a vote
      * @return true, if the owner has voted all works which are done, otherwise false
      */
-    boolean valid(UUID rater);
+    boolean isValidRater(UUID rater);
 
     /**
      * @param rater the owner of a vote
      * @return true, if the owner has NOT voted all works which are done, otherwise false
      */
-    boolean invalid(UUID rater);
+    boolean isInvalidRater(UUID rater);
 
     /**
      * @return stream of UUIDs of players who have participated the vote, regardless of the raters are valid or not
      */
-    Stream<UUID> raters();
+    Stream<UUID> getRaters();
 
     /**
-     * @return set of UUIDs of valid raters
+     * @return list of UUIDs of valid raters
      */
-    Set<UUID> validRaters();
+    List<UUID> getValidRaters();
 
     /**
-     * @return set of UUIDs of invalid raters
+     * @return list of UUIDs of invalid raters
      */
-    Set<UUID> invalidRaters();
+    List<UUID> getInvalidRaters();
 
     /**
      * @param work the owner of a work
      * @return stream of all valid votes of the given work
      */
-    Stream<Vote> validVotes(UUID work);
+    Stream<Vote> ofValidVotes(UUID work);
 
     /**
      * @param work the owner of the work
-     * @return set of valid red votes of the given work
+     * @return list of valid red votes of the given work
      */
-    Set<Vote> redVotes(UUID work);
+    List<Vote> ofRedVotes(UUID work);
 
     /**
      * @param work the owner of the work
-     * @return set of valid green votes of the given work
+     * @return list of valid green votes of the given work
      */
-    Set<Vote> greenVotes(UUID work);
+    List<Vote> ofGreenVotes(UUID work);
 
     /**
      * This statistics neglects whether the rater is valid or not.
      *
      * @param rater the rater
-     * @return set of works which the rater gave a green vote
+     * @return list of works which the rater gave a green vote
      */
-    Set<Work> greenWorks(UUID rater);
+    List<Work> ofGreenWorks(UUID rater);
 
     /**
      * This statistics neglects whether the rater is valid or not.
      *
      * @param rater the rater
-     * @return set of works which the rater gave a red vote
+     * @return list of works which the rater gave a red vote
      */
-    Set<Work> redWorks(UUID rater);
+    List<Work> ofRedWorks(UUID rater);
 }
