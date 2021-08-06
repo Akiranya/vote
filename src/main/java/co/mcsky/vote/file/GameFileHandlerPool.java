@@ -1,7 +1,7 @@
 package co.mcsky.vote.file;
 
-import co.mcsky.vote.object.GamePool;
 import co.mcsky.vote.object.Game;
+import co.mcsky.vote.object.GamePool;
 import com.google.common.io.Files;
 
 import java.io.File;
@@ -21,8 +21,8 @@ public enum GameFileHandlerPool {
     // singleton
     INSTANCE;
 
-    private static final File dataFolder = new File(plugin.getDataFolder(), "saves");
-    private static final String fileExtension = ".yml";
+    private static final File DATA_FOLDER = new File(plugin.getDataFolder(), "saves");
+    private static final String FILE_EXTENSION = ".yml";
 
     // key is world name
     private final Map<String, GameFileHandler> storageMap;
@@ -33,7 +33,7 @@ public enum GameFileHandlerPool {
 
     public void read(String filename) {
         String world = Files.getNameWithoutExtension(filename);
-        GameFileHandler storage = storageMap.computeIfAbsent(world, k -> new GameFileHandler(k, dataFolder));
+        GameFileHandler storage = storageMap.computeIfAbsent(world, k -> new GameFileHandler(k, DATA_FOLDER));
         Game data = storage.load().orElseThrow();
         GamePool.INSTANCE.register(data);
     }
@@ -41,12 +41,12 @@ public enum GameFileHandlerPool {
     public void save(String filename) {
         String world = Files.getNameWithoutExtension(filename);
         Game data = GamePool.INSTANCE.get(world).orElseThrow();
-        GameFileHandler storage = storageMap.computeIfAbsent(world, k -> new GameFileHandler(k, dataFolder));
+        GameFileHandler storage = storageMap.computeIfAbsent(world, k -> new GameFileHandler(k, DATA_FOLDER));
         storage.save(data);
     }
 
     public void readAll() {
-        File[] files = dataFolder.listFiles(f -> f.getName().endsWith(fileExtension));
+        File[] files = DATA_FOLDER.listFiles(f -> f.getName().endsWith(FILE_EXTENSION));
         if (files != null) {
             for (File file : files) {
                 String filename = file.getName();

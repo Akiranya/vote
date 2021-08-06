@@ -21,7 +21,7 @@ import static co.mcsky.vote.VoteMain.plugin;
  */
 public class GameFileHandler extends FileStorageHandler<Game> {
 
-    private static final String fileExtension = ".yml";
+    private static final String FILE_EXTENSION = ".yml";
 
     private final YamlConfigurationLoader loader;
     private CommentedConfigurationNode root;
@@ -30,14 +30,14 @@ public class GameFileHandler extends FileStorageHandler<Game> {
      * @param fileName should be the name of the plot world, without file extension
      */
     public GameFileHandler(String fileName, File dataFolder) {
-        super(fileName, fileExtension, dataFolder);
+        super(fileName, FILE_EXTENSION, dataFolder);
 
         TypeSerializerCollection serializers = YamlConfigFactory.typeSerializers().childBuilder()
                 .register(Game.class, new GameSerializer(plugin.getLogger()))
                 .register(Vote.class, new VoteSerializer(plugin.getLogger()))
                 .build();
         loader = YamlConfigurationLoader.builder()
-                .file(new File(dataFolder, fileName + fileExtension))
+                .file(new File(dataFolder, fileName + FILE_EXTENSION))
                 .defaultOptions(opts -> opts.serializers(serializers))
                 .build();
     }
