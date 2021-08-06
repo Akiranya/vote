@@ -53,7 +53,7 @@ public class Game implements Terminable {
         return plotWorld;
     }
 
-    public GameStats getCalc() {
+    public GameStats getStatistics() {
         return gameStats;
     }
 

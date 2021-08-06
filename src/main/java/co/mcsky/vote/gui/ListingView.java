@@ -100,7 +100,7 @@ public class ListingView extends PaginatedView {
                 .lore(plugin.message(player, "gui.work-listing.submit.lore4"))
                 .lore(plugin.message(player, "gui.work-listing.submit.lore5"))
                 .build(() -> {
-                    boolean invalid = this.game.getCalc().invalid(player.getUniqueId());
+                    boolean invalid = this.game.getStatistics().invalid(player.getUniqueId());
 
                     if (Events.callAndReturn(new PlayerVoteDoneEvent(player, this.game)).isCancelled()) {
                         return;

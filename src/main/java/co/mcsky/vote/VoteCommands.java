@@ -5,8 +5,8 @@ import co.aikar.commands.ConditionFailedException;
 import co.aikar.commands.PaperCommandManager;
 import co.aikar.commands.annotation.*;
 import co.mcsky.moecore.skull.SkullCache;
-import co.mcsky.vote.gui.ListingGui;
 import co.mcsky.vote.file.GameFileHandlerPool;
+import co.mcsky.vote.gui.ListingGui;
 import co.mcsky.vote.object.GamePool;
 import co.mcsky.vote.object.GameStats;
 import co.mcsky.vote.object.Vote;
@@ -44,8 +44,7 @@ public class VoteCommands extends BaseCommand {
         commands.getCommandCompletions().registerCompletion("world", c -> Bukkit.getWorlds().stream()
                 .map(World::getName).toList());
         commands.getCommandCompletions().registerCompletion("rate", c -> GamePool.INSTANCE.peek()
-                .map(game -> game.getCalc().raters()
-                        .map(MainUtil::getPlayerName).toList())
+                .map(game -> game.getStatistics().raters().map(MainUtil::getPlayerName).toList())
                 .orElse(List.of("none")));
         commands.getCommandCompletions().registerCompletion("work", c -> GamePool.INSTANCE.peek()
                 .map(game -> game.getWorkAll().stream()
@@ -145,13 +144,13 @@ public class VoteCommands extends BaseCommand {
         @Default
         public void overview(CommandSender sender) {
             Promise.start().thenApplyAsync(n -> {
-                GameStats calc = GamePool.INSTANCE.get().getCalc();
+                GameStats statistics = GamePool.INSTANCE.get().getStatistics();
 
-                int validRatersCount = calc.validRaters().size();
-                long invalidRatersCount = calc.invalidRaters().size();
+                int validRatersCount = statistics.validRaters().size();
+                long invalidRatersCount = statistics.invalidRaters().size();
                 Collector<CharSequence, ?, String> joining = Collectors.joining(LIST_SEPARATOR);
-                String invalidRaters = calc.invalidRaters().stream().map(MainUtil::getPlayerName).collect(joining);
-                String validRaters = calc.validRaters().stream().map(MainUtil::getPlayerName).collect(joining);
+                String invalidRaters = statistics.invalidRaters().stream().map(MainUtil::getPlayerName).collect(joining);
+                String validRaters = statistics.validRaters().stream().map(MainUtil::getPlayerName).collect(joining);
 
                 StringBuilder sb = new StringBuilder()
                         .append(TITLE).append(LINE_SEPARATOR)
@@ -160,8 +159,8 @@ public class VoteCommands extends BaseCommand {
 
                 sb.append(TITLE).append(LINE_SEPARATOR);
                 GamePool.INSTANCE.get().getWorkAll().stream().map(Work::getOwner).forEach(uuid -> {
-                    int redVotesCount = calc.redVotes(uuid).size();
-                    int greenVotesCount = calc.greenVotes(uuid).size();
+                    int redVotesCount = statistics.redVotes(uuid).size();
+                    int greenVotesCount = statistics.greenVotes(uuid).size();
                     float greenVoteProportion = 100F * greenVotesCount / validRatersCount;
                     sb.append(String.format(plugin.message(sender, "chat-message.work-information-line"), greenVotesCount, redVotesCount, validRatersCount, greenVoteProportion, MainUtil.getPlayerName(uuid)));
                     sb.append(LINE_SEPARATOR);
@@ -175,17 +174,17 @@ public class VoteCommands extends BaseCommand {
         @CommandCompletion("@work")
         public void work(CommandSender sender, OfflinePlayer work) {
             Promise.start().thenApplyAsync(n -> {
-                GameStats calc = GamePool.INSTANCE.get().getCalc();
+                GameStats statistics = GamePool.INSTANCE.get().getStatistics();
 
                 UUID workOwner = work.getUniqueId();
-                long greenRatersCount = calc.greenVotes(workOwner).size();
-                long redRatersCount = calc.redVotes(workOwner).size();
+                long greenRatersCount = statistics.greenVotes(workOwner).size();
+                long redRatersCount = statistics.redVotes(workOwner).size();
                 Collector<CharSequence, ?, String> joining = Collectors.joining(LIST_SEPARATOR);
-                String greenRaters = calc.greenVotes(workOwner).stream()
+                String greenRaters = statistics.greenVotes(workOwner).stream()
                         .map(Vote::getRater)
                         .map(MainUtil::getPlayerName)
                         .collect(joining);
-                String redRaters = calc.redVotes(workOwner).stream()
+                String redRaters = statistics.redVotes(workOwner).stream()
                         .map(Vote::getRater)
                         .map(MainUtil::getPlayerName)
                         .collect(joining);
@@ -203,14 +202,14 @@ public class VoteCommands extends BaseCommand {
         @CommandCompletion("@rate")
         public void rater(CommandSender sender, OfflinePlayer rater) {
             Promise.start().thenApplyAsync(n -> {
-                GameStats calc = GamePool.INSTANCE.get().getCalc();
+                GameStats statistics = GamePool.INSTANCE.get().getStatistics();
 
                 UUID raterUuid = rater.getUniqueId();
-                long greenWorksCount = calc.greenWorks(raterUuid).size();
-                long redWorksCount = calc.redWorks(raterUuid).size();
+                long greenWorksCount = statistics.greenWorks(raterUuid).size();
+                long redWorksCount = statistics.redWorks(raterUuid).size();
                 Collector<CharSequence, ?, String> joining = Collectors.joining(LIST_SEPARATOR);
-                String greenWorks = calc.greenWorks(raterUuid).stream().map(Work::getOwnerName).collect(joining);
-                String redWorks = calc.redWorks(raterUuid).stream().map(Work::getOwnerName).collect(joining);
+                String greenWorks = statistics.greenWorks(raterUuid).stream().map(Work::getOwnerName).collect(joining);
+                String redWorks = statistics.redWorks(raterUuid).stream().map(Work::getOwnerName).collect(joining);
 
                 StringBuilder sb = new StringBuilder()
                         .append(TITLE).append(LINE_SEPARATOR)
