@@ -73,7 +73,7 @@ public class VoteCommands extends BaseCommand {
     @SuppressWarnings("ConstantConditions")
     @Subcommand("ready")
     @Conditions("ready")
-    @CommandPermission("votes.admin")
+    @CommandPermission("votes.host")
     public void ready(CommandSender sender) {
         GamePool.INSTANCE.get().setReady(!GamePool.INSTANCE.get().isReady());
         sender.sendMessage(plugin.message(sender, "chat-message.mark-vote-system", "state", GamePool.INSTANCE.get().isReady()));
@@ -137,7 +137,7 @@ public class VoteCommands extends BaseCommand {
     @SuppressWarnings("StringBufferReplaceableByString ConstantConditions")
     @Subcommand("stats")
     @Conditions("ready")
-    @CommandPermission("votes.admin")
+    @CommandPermission("votes.host")
     public class StatisticsCommand extends BaseCommand {
 
         // Portable way to get the line separator
