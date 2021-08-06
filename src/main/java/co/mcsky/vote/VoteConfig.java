@@ -1,8 +1,8 @@
 package co.mcsky.vote;
 
+import co.mcsky.moecore.config.YamlConfigFactory;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.ConfigurateException;
-import org.spongepowered.configurate.yaml.NodeStyle;
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 
 import java.io.File;
@@ -11,19 +11,20 @@ import static co.mcsky.vote.VoteMain.plugin;
 
 public final class VoteConfig {
 
-    private static final String configFileName = "config.yml";
+    private static final String FILENAME = "config.yml";
 
-    private final YamlConfigurationLoader loader;
+    /* config starts */
+
+    public boolean allow_vote_when_undone;
+    public boolean allow_vote_when_not_ended;
+
+    /* config ends */
+
+    private YamlConfigurationLoader loader;
     private CommentedConfigurationNode root;
 
-    public boolean allowVoteWhenUndone;
-    public boolean allowVoteWhenNotEnded;
-
     public VoteConfig() {
-        loader = YamlConfigurationLoader.builder()
-                .path(new File(plugin.getDataFolder(), configFileName).toPath())
-                .nodeStyle(NodeStyle.BLOCK)
-                .build();
+        loader = YamlConfigFactory.loader(new File(plugin.getDataFolder(), FILENAME));
     }
 
     public void load() {
@@ -34,8 +35,8 @@ public final class VoteConfig {
             plugin.getServer().getPluginManager().disablePlugin(plugin);
         }
 
-        allowVoteWhenUndone = root.node("allow-vote-when-undone").comment("Whether allow to vote when the work is not done yet").getBoolean(false);
-        allowVoteWhenNotEnded = root.node("allow-vote-when-not-ended").comment("Whether allow to vote the game is not ended yet").getBoolean(false);
+        allow_vote_when_undone = root.node("allow-vote-when-undone").getBoolean(false);
+        allow_vote_when_not_ended = root.node("allow-vote-when-not-ended").getBoolean(false);
     }
 
     public void save() {
@@ -44,10 +45,6 @@ public final class VoteConfig {
         } catch (ConfigurateException e) {
             plugin.getLogger().severe(e.getMessage());
         }
-    }
-
-    public CommentedConfigurationNode root() {
-        return root;
     }
 
 }
