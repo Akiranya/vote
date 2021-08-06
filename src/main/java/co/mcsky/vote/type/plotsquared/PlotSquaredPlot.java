@@ -2,7 +2,7 @@ package co.mcsky.vote.type.plotsquared;
 
 import co.mcsky.vote.VoteMain;
 import co.mcsky.vote.type.GamePlot;
-import co.mcsky.vote.util.PlayerUtil;
+import co.mcsky.vote.util.MainUtil;
 import com.plotsquared.core.events.TeleportCause;
 import com.plotsquared.core.player.PlotPlayer;
 import com.plotsquared.core.plot.flag.implementations.DoneFlag;
@@ -34,7 +34,7 @@ public class PlotSquaredPlot implements GamePlot {
 
     @Override
     public String getOwnerName() {
-        return PlayerUtil.getName(this.getOwner());
+        return MainUtil.getPlayerName(this.getOwner());
     }
 
     @Override

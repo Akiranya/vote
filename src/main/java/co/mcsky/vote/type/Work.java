@@ -1,6 +1,6 @@
 package co.mcsky.vote.type;
 
-import co.mcsky.vote.util.PlayerUtil;
+import co.mcsky.vote.util.MainUtil;
 import org.bukkit.entity.Player;
 
 import java.util.HashSet;
@@ -37,7 +37,7 @@ public class Work {
      * @return the name of this work owner
      */
     public String getOwnerName() {
-        return PlayerUtil.getName(this.owner);
+        return MainUtil.getPlayerName(this.owner);
     }
 
     /**

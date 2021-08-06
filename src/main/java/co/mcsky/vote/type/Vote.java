@@ -1,6 +1,6 @@
 package co.mcsky.vote.type;
 
-import co.mcsky.vote.util.PlayerUtil;
+import co.mcsky.vote.util.MainUtil;
 
 import java.util.UUID;
 
@@ -30,7 +30,7 @@ public class Vote {
      * @return the name of this vote owner
      */
     public String getRaterName() {
-        return PlayerUtil.getName(this.rater);
+        return MainUtil.getPlayerName(this.rater);
     }
 
     /**

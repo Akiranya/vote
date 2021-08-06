@@ -1,7 +1,7 @@
 package co.mcsky.vote;
 
 import co.aikar.commands.PaperCommandManager;
-import co.mcsky.vote.pool.GameStorages;
+import co.mcsky.vote.pool.GameFileHandlerPool;
 import co.mcsky.vote.type.GamePlots;
 import co.mcsky.vote.type.factory.PlotsFactory;
 import de.themoep.utils.lang.bukkit.LanguageManager;
@@ -25,7 +25,7 @@ public class VoteMain extends ExtendedJavaPlugin {
 
     @Override
     public void disable() {
-        GameStorages.INSTANCE.saveAll();
+        GameFileHandlerPool.INSTANCE.saveAll();
     }
 
     @Override
@@ -37,7 +37,7 @@ public class VoteMain extends ExtendedJavaPlugin {
         this.config.load();
         this.config.save();
 
-        GameStorages.INSTANCE.readAll();
+        GameFileHandlerPool.INSTANCE.readAll();
 
         loadLanguages();
         registerCommands();

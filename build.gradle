@@ -3,9 +3,9 @@ plugins {
 }
 
 ext.pluginNameUpper = "VotePlugin"
-ext.majorVersion = 4
+ext.majorVersion = 5
 ext.minorVersion = 25
-ext.minecraftVersion = "1.16.5"
+ext.minecraftVersion = "1.17.1"
 sourceCompatibility = JavaVersion.VERSION_16
 targetCompatibility = JavaVersion.VERSION_16
 
@@ -44,6 +44,8 @@ repositories {
     maven { url = "https://maven.enginehub.org/repo/" }
     maven { url = "https://oss.sonatype.org/content/repositories/snapshots/" }
     maven { url = "https://mvn.intellectualsites.com/content/groups/public/" }
+    // moecore
+    maven { url = 'https://jitpack.io' }
 
 }
 
@@ -74,6 +76,9 @@ dependencies {
 
     // Mojang API to access to skins
     compileOnly('com.mojang:authlib:1.5.25')
+
+    // MoeCore
+    compileOnly('com.github.Akiranya:MoeCore:0.2')
 }
 
 test {

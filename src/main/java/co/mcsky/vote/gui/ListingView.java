@@ -1,9 +1,9 @@
 package co.mcsky.vote.gui;
 
+import co.mcsky.moecore.gui.PaginatedView;
+import co.mcsky.moecore.gui.SeamlessGui;
+import co.mcsky.moecore.skull.SkullCache;
 import co.mcsky.vote.event.PlayerVoteDoneEvent;
-import co.mcsky.vote.gui.base.PaginatedView;
-import co.mcsky.vote.gui.base.SeamlessGui;
-import co.mcsky.vote.skull.SkullCache;
 import co.mcsky.vote.type.Game;
 import co.mcsky.vote.type.Work;
 import me.lucko.helper.Events;
@@ -34,18 +34,16 @@ public class ListingView extends PaginatedView {
 
     // the backed instance
     private final Game game;
-    // currently selected work
-    private Work selectedWork;
-
-    // currently applied filter
-    private Predicate<Work> filter;
-
     private final MenuScheme poster = new MenuScheme()
             .mask("000010000");
     private final int doneSlot = new MenuScheme()
             .maskEmpty(4)
             .mask("000010000")
             .getMaskedIndexesImmutable().get(0);
+    // currently selected work
+    private Work selectedWork;
+    // currently applied filter
+    private Predicate<Work> filter;
 
     public ListingView(SeamlessGui gui, Game game) {
         super(gui);
@@ -54,7 +52,7 @@ public class ListingView extends PaginatedView {
         this.game = game;
 
         // list all by default
-        this.filter = WorkFilters.all();
+        this.filter = WorkFilters.ALL();
         // initialize listing content
         this.updateListing();
     }
@@ -114,7 +112,7 @@ public class ListingView extends PaginatedView {
                         player.sendMessage(plugin.getMessage(player, "gui-message.vote-not-done"));
                         player.sendMessage(plugin.getMessage(player, "gui-message.must-vote-filtered"));
                         // then filter content to only show the works he needs to vote for
-                        this.updateListing(WorkFilters.undone(player.getUniqueId()));
+                        this.updateListing(WorkFilters.UNDONE(player.getUniqueId()));
                         this.gui.redraw();
                     } else {
                         // prompt the player that he has done

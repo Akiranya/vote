@@ -1,6 +1,6 @@
 package co.mcsky.vote.pool;
 
-import co.mcsky.vote.file.GameStorage;
+import co.mcsky.vote.file.GameFileHandler;
 import co.mcsky.vote.type.Game;
 import com.google.common.io.Files;
 
@@ -11,12 +11,12 @@ import java.util.Map;
 import static co.mcsky.vote.VoteMain.plugin;
 
 /**
- * Manages all instances of {@link GameStorage}.
+ * Manages all instances of {@link GameFileHandler}.
  * <p>
- * Operation on this instance should reflect on the backed {@link Games}.
+ * Operation on this instance should reflect on the backed {@link GamePool}.
  */
 @SuppressWarnings("UnstableApiUsage")
-public enum GameStorages {
+public enum GameFileHandlerPool {
 
     // singleton
     INSTANCE;
@@ -25,23 +25,23 @@ public enum GameStorages {
     private static final String fileExtension = ".yml";
 
     // key is world name
-    private final Map<String, GameStorage> storageMap;
+    private final Map<String, GameFileHandler> storageMap;
 
-    GameStorages() {
+    GameFileHandlerPool() {
         this.storageMap = new HashMap<>();
     }
 
     public void read(String filename) {
         String world = Files.getNameWithoutExtension(filename);
-        GameStorage storage = storageMap.computeIfAbsent(world, k -> new GameStorage(k, dataFolder));
+        GameFileHandler storage = storageMap.computeIfAbsent(world, k -> new GameFileHandler(k, dataFolder));
         Game data = storage.load().orElseThrow();
-        Games.INSTANCE.register(data);
+        GamePool.INSTANCE.register(data);
     }
 
     public void save(String filename) {
         String world = Files.getNameWithoutExtension(filename);
-        Game data = Games.INSTANCE.get(world).orElseThrow();
-        GameStorage storage = storageMap.computeIfAbsent(world, k -> new GameStorage(k, dataFolder));
+        Game data = GamePool.INSTANCE.get(world).orElseThrow();
+        GameFileHandler storage = storageMap.computeIfAbsent(world, k -> new GameFileHandler(k, dataFolder));
         storage.save(data);
     }
 
@@ -57,7 +57,7 @@ public enum GameStorages {
     }
 
     public void saveAll() {
-        for (Game game : Games.INSTANCE) {
+        for (Game game : GamePool.INSTANCE) {
             save(game.getWorld());
         }
     }

@@ -2,7 +2,7 @@ package co.mcsky.vote.type;
 
 import co.mcsky.vote.listener.VoteLimiter;
 import co.mcsky.vote.listener.WorkUpdater;
-import co.mcsky.vote.pool.Games;
+import co.mcsky.vote.pool.GamePool;
 import com.google.common.base.Preconditions;
 import me.lucko.helper.terminable.Terminable;
 import me.lucko.helper.terminable.composite.CompositeTerminable;
@@ -31,7 +31,7 @@ public class Game implements Terminable {
     private final GameStats gameStats;
 
     /**
-     * Direct initialization is discouraged, instead use {@link Games} to get an instance.
+     * Direct initialization is discouraged, instead use {@link GamePool} to get an instance.
      *
      * @param plotWorld the plot world this instance manages
      */

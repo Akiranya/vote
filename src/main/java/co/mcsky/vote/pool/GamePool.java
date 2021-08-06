@@ -16,7 +16,7 @@ import java.util.function.Consumer;
  * <p>
  * "pool-design" is used because there are more than one building games.
  */
-public enum Games implements Terminable, Iterable<Game> {
+public enum GamePool implements Terminable, Iterable<Game> {
 
     // singleton
     INSTANCE;
@@ -27,7 +27,7 @@ public enum Games implements Terminable, Iterable<Game> {
 
     private String currentWorldName;
 
-    Games() {
+    GamePool() {
         this.gameMap = new HashMap<>();
         this.compositeTerminable = CompositeTerminable.create();
     }
@@ -45,7 +45,7 @@ public enum Games implements Terminable, Iterable<Game> {
     }
 
     /**
-     * Registers a entire vote for the given world. This changes {@link Games#currentWorldName} to the specified one,
+     * Registers a entire vote for the given world. This changes {@link GamePool#currentWorldName} to the specified one,
      * which changes the instance obtained from {@link #get()}. Registering the same world multiple times does not
      * overwrite anything. To delete/overwrite an existing instance, use {@link #unregister(String)} instead.
      *

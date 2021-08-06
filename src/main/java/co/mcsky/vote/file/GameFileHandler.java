@@ -16,10 +16,10 @@ import java.nio.file.Path;
 import static co.mcsky.vote.VoteMain.plugin;
 
 /**
- * Each instance of {@link GameStorage} handles an instance of {@link Game}).
+ * Each instance of {@link GameFileHandler} handles an instance of {@link Game}).
  */
 @SuppressWarnings("NullableProblems")
-public class GameStorage extends FileStorageHandler<Game> {
+public class GameFileHandler extends FileStorageHandler<Game> {
 
     private static final String fileExtension = ".yml";
 
@@ -29,7 +29,7 @@ public class GameStorage extends FileStorageHandler<Game> {
     /**
      * @param fileName should be the name of the plot world, without file extension
      */
-    public GameStorage(String fileName, File dataFolder) {
+    public GameFileHandler(String fileName, File dataFolder) {
         super(fileName, fileExtension, dataFolder);
 
         TypeSerializerCollection serializers = TypeSerializerCollection.builder()

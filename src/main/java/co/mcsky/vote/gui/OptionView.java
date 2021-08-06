@@ -1,8 +1,8 @@
 package co.mcsky.vote.gui;
 
+import co.mcsky.moecore.gui.GuiView;
+import co.mcsky.moecore.gui.SeamlessGui;
 import co.mcsky.vote.event.PlayerVoteSubmitEvent;
-import co.mcsky.vote.gui.base.GuiView;
-import co.mcsky.vote.gui.base.SeamlessGui;
 import co.mcsky.vote.type.Game;
 import co.mcsky.vote.type.Vote;
 import co.mcsky.vote.type.Work;

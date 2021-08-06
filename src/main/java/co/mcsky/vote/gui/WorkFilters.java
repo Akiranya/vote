@@ -8,11 +8,11 @@ import java.util.function.Predicate;
 
 public final class WorkFilters {
 
-    public static Predicate<Work> all() {
+    public static Predicate<Work> ALL() {
         return Predicates.alwaysTrue();
     }
 
-    public static Predicate<Work> undone(UUID player) {
+    public static Predicate<Work> UNDONE(UUID player) {
         return work -> work.isDone() && work.invoted(player);
     }
 
