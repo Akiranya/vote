@@ -1,10 +1,10 @@
 package co.mcsky.vote.file;
 
 import co.mcsky.moecore.config.YamlConfigFactory;
-import co.mcsky.vote.serializer.GameSerializer;
-import co.mcsky.vote.serializer.VoteSerializer;
 import co.mcsky.vote.object.Game;
 import co.mcsky.vote.object.Vote;
+import co.mcsky.vote.serializer.GameSerializer;
+import co.mcsky.vote.serializer.VoteSerializer;
 import me.lucko.helper.serialize.FileStorageHandler;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.ConfigurateException;
@@ -40,6 +40,7 @@ public class GameFileHandler extends FileStorageHandler<Game> {
                 .file(new File(dataFolder, fileName + FILE_EXTENSION))
                 .defaultOptions(opts -> opts.serializers(serializers))
                 .build();
+        root = loader.createNode();
     }
 
     @Override

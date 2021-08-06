@@ -32,16 +32,16 @@ public enum GameFileHandlerPool {
 
     public void read(String filename) {
         String world = Files.getNameWithoutExtension(filename);
-        GameFileHandler storage = storageMap.computeIfAbsent(world, k -> new GameFileHandler(k, DATA_FOLDER));
-        Game data = storage.load().orElseThrow();
+        GameFileHandler fileHandler = storageMap.computeIfAbsent(world, k -> new GameFileHandler(k, DATA_FOLDER));
+        Game data = fileHandler.load().orElseThrow();
         GamePool.INSTANCE.register(data);
     }
 
     public void save(String filename) {
         String world = Files.getNameWithoutExtension(filename);
         Game data = GamePool.INSTANCE.get(world).orElseThrow();
-        GameFileHandler storage = storageMap.computeIfAbsent(world, k -> new GameFileHandler(k, DATA_FOLDER));
-        storage.save(data);
+        GameFileHandler fileHandler = storageMap.computeIfAbsent(world, k -> new GameFileHandler(k, DATA_FOLDER));
+        fileHandler.save(data);
     }
 
     public void readAll() {
