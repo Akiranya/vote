@@ -59,6 +59,7 @@ gui-message:
 chat-message:
   skin-cache-cleared: "&6玩家头颅缓存已清空."
   saved-all: "&6所有地皮的评分数据已保存."
+  read-all: "&6已从文件重新载入所有地皮的评分数据."
   cannot-vote-for-work-undone: "&c未提交的作品不能参与评分."
   cannot-vote-for-game-not-ended: "&c现在还不能投票."
   cannot-done-for-game-not-ended: "&c现在还不能提交评分."

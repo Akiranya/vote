@@ -82,7 +82,6 @@ public class VoteCommands extends BaseCommand {
     @Subcommand("reload")
     @CommandPermission("votes.admin")
     public void reload(CommandSender sender) {
-        // TODO support reload config / language / database independently
         this.plugin.loadLanguages();
         this.plugin.config.load();
         sender.sendMessage(plugin.message(sender, "chat-message.plugin-reloaded"));
@@ -110,19 +109,30 @@ public class VoteCommands extends BaseCommand {
         }
     }
 
-    @Subcommand("save")
-    @CommandPermission("votes.admin")
-    public void save(CommandSender sender) {
-        GameFileHandlerPool.INSTANCE.saveAll();
-        sender.sendMessage(plugin.message(sender, "chat-message.saved-all"));
-    }
-
     @Subcommand("cache clear")
     @CommandPermission("votes.admin")
     public void clear(CommandSender sender) {
         SkullCache.INSTANCE.clear();
         sender.sendMessage(plugin.message(sender, "chat-message.skin-cache-cleared"));
     }
+
+    @Subcommand("datasource")
+    @CommandPermission("votes.admin")
+    public class DatasourceCommand extends BaseCommand {
+
+        @Subcommand("load")
+        public void load(CommandSender sender) {
+            GameFileHandlerPool.INSTANCE.readAll();
+            sender.sendMessage(plugin.message(sender, "chat-message.read-all"));
+        }
+
+        @Subcommand("save")
+        public void save(CommandSender sender) {
+            GameFileHandlerPool.INSTANCE.saveAll();
+            sender.sendMessage(plugin.message(sender, "chat-message.saved-all"));
+        }
+    }
+
 
     @SuppressWarnings("StringBufferReplaceableByString ConstantConditions")
     @Subcommand("stats")
