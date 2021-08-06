@@ -17,13 +17,7 @@ import java.util.logging.Logger;
 /**
  * Handles de(serialization) for an instance of {@link Game}
  */
-public class GameSerializer implements TypeSerializer<Game> {
-
-    private final Logger logger;
-
-    public GameSerializer(Logger logger) {
-        this.logger = logger;
-    }
+public record GameSerializer(Logger logger) implements TypeSerializer<Game> {
 
     @Override
     public Game deserialize(Type type, ConfigurationNode node) throws SerializationException {

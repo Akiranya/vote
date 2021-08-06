@@ -14,13 +14,7 @@ import java.util.logging.Logger;
 /**
  * Handles de(serialization) for an instance of {@link Vote} (not {@link Game})
  */
-public class VoteSerializer implements TypeSerializer<Vote> {
-
-    private final Logger logger;
-
-    public VoteSerializer(Logger logger) {
-        this.logger = logger;
-    }
+public record VoteSerializer(Logger logger) implements TypeSerializer<Vote> {
 
     @Override
     public Vote deserialize(Type type, ConfigurationNode node) throws SerializationException {

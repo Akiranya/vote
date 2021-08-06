@@ -8,14 +8,7 @@ import java.util.stream.Stream;
 /**
  * Provides useful methods to get the statistics from the instance of {@link Game}.
  */
-public class GameStatsImpl implements GameStats {
-
-    // The instance of Votes from which the statistics is generated
-    private final Game votes;
-
-    public GameStatsImpl(Game votes) {
-        this.votes = votes;
-    }
+public record GameStatsImpl(Game votes) implements GameStats {
 
     @Override
     public Stream<Work> missed(UUID rater) {
