@@ -63,7 +63,7 @@ public class OptionView implements GuiView {
         MenuPopulator optionPopulator = VOTE_OPTION_SCHEME.newPopulator(gui);
 
         final MetadataMap metadataMap = Metadata.provideForPlayer(gui.getPlayer());
-        final Optional<Work> work = metadataMap.get(ListingView.selectedKey);
+        final Optional<Work> work = metadataMap.get(ListingGui.SELECTED_WORK_KEY);
 
         // this should never execute
         if (work.isEmpty()) return;
@@ -116,7 +116,7 @@ public class OptionView implements GuiView {
                 .lore(plugin.message(gui.getPlayer(), "gui.vote-options.back.lore2"))
                 .build(() -> {
                     // remove the metadata
-                    metadataMap.remove(ListingView.selectedKey);
+                    metadataMap.remove(ListingGui.SELECTED_WORK_KEY);
                     // update content before going back to the listing
                     listingView.updateListing();
                     // then switch back to the listing view to show updated content

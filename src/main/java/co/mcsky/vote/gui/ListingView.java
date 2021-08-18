@@ -14,7 +14,6 @@ import me.lucko.helper.menu.paginated.PageInfo;
 import me.lucko.helper.menu.scheme.MenuScheme;
 import me.lucko.helper.menu.scheme.StandardSchemeMappings;
 import me.lucko.helper.metadata.Metadata;
-import me.lucko.helper.metadata.MetadataKey;
 import me.lucko.helper.metadata.MetadataMap;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;
@@ -31,9 +30,6 @@ import java.util.function.Predicate;
 import static co.mcsky.vote.VoteMain.plugin;
 
 public class ListingView extends PaginatedView {
-
-    // metadata key for selected work
-    public static final MetadataKey<Work> selectedKey = MetadataKey.create("selected-work", Work.class);
 
     // menu schemes
     private static final MenuScheme POSTER = new MenuScheme()
@@ -83,9 +79,8 @@ public class ListingView extends PaginatedView {
                         .transform(item -> SkullCache.INSTANCE.itemWithUuid(item, work.getOwner()))
                         .build(() -> {
                             // use metadata to record which work the rater is looking at
-                            final MetadataKey<Work> key = MetadataKey.create("selected-work", Work.class);
                             final MetadataMap metadataMap = Metadata.provideForPlayer(gui.getPlayer());
-                            metadataMap.put(key, work);
+                            metadataMap.put(ListingGui.SELECTED_WORK_KEY, work);
 
                             this.gui.switchView(new OptionView(this.gui, this));
                         })).toList();
