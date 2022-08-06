@@ -11,3 +11,71 @@ voteSettings:
     done: true
     # 建筑比赛为「已结束」状态
     ended: true
+
+gui:
+  # 面板通用物品
+  base:
+    exit:
+      material: PAPER
+      customdata: 10057
+      name: '&c返回'
+      lore: [ ]
+    prevPage:
+      name: '上一页'
+      lore: [ ]
+    nextPage:
+      name: '下一页'
+      lore: [ ]
+  # 作品列表(主菜单)
+  listing:
+    title: '上古时代·建筑比赛评分面板'
+    items:
+      poster:
+        name: '&7欢迎来到 &b建筑比赛作品概览'
+        lore:
+          - ''
+          - '&d请客观的对选手作品进行投票'
+      player:
+        name: '&b&l{player}'
+        lore:
+          - ''
+          - ' &7是否已完工 &8: {done}'
+          - ' &7是否已评分 &8: {done}'
+          - ''
+          - '&7→ 点击 进行评分'
+      submit:
+        name: '&e提交评分'
+        lore:
+          - ''
+          - '&c&l温馨提示'
+          - ' &7评分完毕后不要忘记点击此按钮'
+          - ' &7来检查你的评分是否符合条件哦'
+          - ''
+          - '&7→ 点击 提交所有评分'
+  # 评分选项(点击作品后打开)
+  options:
+    items:
+      head:
+        name: '您正在给 {player} 评分'
+        lore:
+          - ''
+          - '&d请客观的对选手作品进行投票'
+      teleport:
+        name: '&b&l传送到作品'
+        lore:
+          - ''
+          - '→&7点击 传送到作品所在地皮'
+      like:
+        name: '&a&l喜欢该作品'
+        lore:
+          - ''
+          - '&7你欣赏这个作品,并投出你的赞成票'
+          - ''
+          - '&7→ 点击 为Ta投票'
+      dislike:
+        name: '&4&l不喜欢该作品'
+        lore:
+          - ''
+          - '&7你对此不做评价,放弃给此作品评分'
+          - ''
+          - '&7→ 点击 放弃投票'

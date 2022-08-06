@@ -1,5 +1,5 @@
 name: PlotVote
-main: co.mcsky.vote.VoteMain
+main: co.mcsky.comment.VoteMain
 version: ${version}
 api-version: 1.19
 author: Nailm
