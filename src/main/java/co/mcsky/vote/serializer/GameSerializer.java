@@ -3,6 +3,7 @@ package co.mcsky.vote.serializer;
 import co.mcsky.vote.object.Game;
 import co.mcsky.vote.object.Vote;
 import co.mcsky.vote.object.Work;
+import me.lucko.helper.utils.Log;
 import me.lucko.helper.utils.Players;
 import org.bukkit.OfflinePlayer;
 import org.checkerframework.checker.nullness.qual.Nullable;
@@ -12,34 +13,33 @@ import org.spongepowered.configurate.serialize.TypeSerializer;
 
 import java.lang.reflect.Type;
 import java.util.*;
-import java.util.logging.Logger;
 
 /**
  * Handles de(serialization) for an instance of {@link Game}
  */
-public record GameSerializer(Logger logger) implements TypeSerializer<Game> {
+public record GameSerializer() implements TypeSerializer<Game> {
 
     @Override
     public Game deserialize(Type type, ConfigurationNode node) throws SerializationException {
         String world = Objects.requireNonNull(node.node("world").getString(), "world");
 
         // Pull all works first. At this stage, all works have no votes
-        Game votes = new Game(world);
+        Game game = new Game(world);
 
         // Then for each work, we add votes from the file to the work
         ConfigurationNode worksNode = node.node("works");
         for (Map.Entry<Object, ? extends ConfigurationNode> workNode : worksNode.childrenMap().entrySet()) {
             UUID workUuid = UUID.fromString(workNode.getKey().toString());
-            if (votes.getWork(workUuid).isPresent()) {
-                Work work = votes.getWork(workUuid).get();
+            if (game.getWork(workUuid).isPresent()) {
+                Work work = game.getWork(workUuid).get();
                 workNode.getValue().node("raters").getList(Vote.class, List.of()).forEach(work::vote);
             } else {
                 // Log the data alignment issue
-                logger.warning("UUID is presented in file but not in plot database: " + workUuid.toString());
+                Log.warn("UUID is presented in file but not in plot database: " + workUuid.toString());
             }
         }
 
-        return votes;
+        return game;
     }
 
     @Override

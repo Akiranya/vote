@@ -1,88 +1,74 @@
 package co.mcsky.vote;
 
-import co.aikar.commands.PaperCommandManager;
 import co.mcsky.vote.file.GameFileHandlerPool;
 import co.mcsky.vote.object.GamePlots;
 import co.mcsky.vote.object.factory.PlotsFactory;
-import de.themoep.utils.lang.bukkit.LanguageManager;
 import me.lucko.helper.plugin.ExtendedJavaPlugin;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
+import me.lucko.helper.utils.Log;
 
-import java.util.Arrays;
-
-/**
- * The main class of this plugin.
- */
 public class VoteMain extends ExtendedJavaPlugin {
 
-    public static VoteMain plugin;
+    private static VoteMain p;
 
     public VoteConfig config;
-    public LanguageManager lang;
-    public PaperCommandManager commands;
+    public VoteMessages messages;
+    public VoteCommands commands;
 
     private GamePlots plots;
+
+    public static VoteMain inst() {
+        return p;
+    }
+
+    public static void debug(String message) {
+        if (VoteMain.config().getDebug()) {
+            Log.info("[DEBUG] " + message);
+        }
+    }
+
+    public static void debug(Throwable message) {
+        if (VoteMain.config().getDebug()) {
+            Log.info("[DEBUG] " + message.getMessage());
+        }
+    }
+
+    public static VoteMessages lang() {
+        return p.messages;
+    }
+
+    public static VoteConfig config() {
+        return p.config;
+    }
+
+    @Override
+    public void enable() {
+        p = this;
+
+        plots = PlotsFactory.create();
+        messages = new VoteMessages(this);
+        config = new VoteConfig(this);
+        config.loadDefaultConfig();
+        commands = new VoteCommands();
+        commands.register();
+        loadData();
+    }
 
     @Override
     public void disable() {
         GameFileHandlerPool.INSTANCE.saveAll();
     }
 
-    @Override
-    public void enable() {
-        plugin = this;
-        plots = PlotsFactory.create();
-
-        this.config = new VoteConfig();
-        this.config.load();
-        this.config.save();
-
+    public void loadData() {
         GameFileHandlerPool.INSTANCE.readAll();
-
-        loadLanguages();
-        registerCommands();
     }
 
     public GamePlots getPlots() {
         return plots;
     }
 
-    public void registerCommands() {
-        commands = new PaperCommandManager(this);
-        commands.registerCommand(new VoteCommands(commands));
-    }
-
-    public void loadLanguages() {
-        this.lang = new LanguageManager(this, "languages", "zh");
-        this.lang.setPlaceholderPrefix("{");
-        this.lang.setPlaceholderSuffix("}");
-        this.lang.setProvider(sender -> {
-            if (sender instanceof Player) {
-                return ((Player) sender).locale().getLanguage();
-            }
-            return null;
-        });
-    }
-
-    /**
-     * Get a message from a language config for a certain sender
-     *
-     * @param sender       The sender to get the string for.
-     * @param key          The language key in the config
-     * @param replacements An option array for replacements. (2n)-th will be the placeholder, (2n+1)-th the value.
-     *                     Placeholders have to be surrounded by percentage signs: {placeholder}
-     * @return The string from the config which matches the sender's language (or the default one) with the replacements
-     * replaced (or an error message, never null)
-     */
-    public String message(CommandSender sender, String key, Object... replacements) {
-        if (replacements.length == 0) {
-            return lang.getConfig(sender).get(key);
-        } else {
-            return lang.getConfig(sender).get(key, Arrays.stream(replacements)
-                    .map(Object::toString)
-                    .toArray(String[]::new));
-        }
+    public void reload() {
+        messages = new VoteMessages(this);
+        config.loadDefaultConfig();
     }
 
 }

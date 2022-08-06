@@ -10,7 +10,7 @@ public class PlotFactory {
         if (plot instanceof Plot) {
             return new PlotSquaredPlot((Plot) plot);
         }
-        // if... (adds new condition for additional API as needed)
+        // (adds new condition for additional API as needed)
 
         throw new IllegalStateException();
     }

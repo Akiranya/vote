@@ -13,7 +13,7 @@ import java.util.function.Consumer;
 /**
  * Represents all entire votes for all building games.
  * <p>
- * "pool-design" is used because there are more than one building games.
+ * We use "pool-design" because there are more than one building games.
  */
 public enum GamePool implements Terminable, Iterable<Game> {
 
@@ -44,12 +44,15 @@ public enum GamePool implements Terminable, Iterable<Game> {
     }
 
     /**
-     * Registers a entire vote for the given world. This changes {@link GamePool#currentWorldName} to the specified one,
-     * which changes the instance obtained from {@link #get()}. Registering the same world multiple times does not
-     * overwrite anything. To delete/overwrite an existing instance, use {@link #unregister(String)} instead.
+     * Registers an entire vote for the given world. This changes {@link
+     * GamePool#currentWorldName} to the specified one, which changes the
+     * instance obtained from {@link #getOrNull()}. Registering the same world
+     * multiple times does not overwrite anything. To delete/overwrite an
+     * existing instance, use {@link #unregister(String)} instead.
      *
      * @param worldName the name of plot world
-     * @return true, if the world is registered successfully, otherwise false to indicate it already registered
+     * @return true, if the world is registered successfully, otherwise false to
+     * indicate it already registered
      */
     public boolean register(String worldName) {
         currentWorldName = worldName;
@@ -64,7 +67,8 @@ public enum GamePool implements Terminable, Iterable<Game> {
      * Warning: this deletes the whole game for the given world in the memory.
      *
      * @param worldName the world to be unregistered
-     * @return true, if the world is unregistered successfully, otherwise false to indicate it already unregistered
+     * @return true, if the world is unregistered successfully, otherwise false
+     * to indicate it already unregistered
      */
     public boolean unregister(String worldName) {
         try {
@@ -97,7 +101,7 @@ public enum GamePool implements Terminable, Iterable<Game> {
      * @return the current {@link Game} instance
      */
     @Nullable
-    public Game get() {
+    public Game getOrNull() {
         return gameMap.get(currentWorldName);
     }
 
@@ -110,7 +114,8 @@ public enum GamePool implements Terminable, Iterable<Game> {
     }
 
     /**
-     * @return true, if there is at least one instance of {@link Game} registered, otherwise false
+     * @return true, if there is at least one instance of {@link Game}
+     * registered, otherwise false
      */
     public boolean containsAny() {
         return gameMap.keySet().stream().findAny().isPresent();

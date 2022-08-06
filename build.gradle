@@ -2,85 +2,54 @@ plugins {
     id 'java-library'
 }
 
+java {
+    toolchain.languageVersion.set(JavaLanguageVersion.of(17))
+}
+
 ext.pluginNameUpper = "VotePlugin"
-ext.majorVersion = 5
-ext.minorVersion = 25
-ext.minecraftVersion = "1.17.1"
-sourceCompatibility = JavaVersion.VERSION_16
-targetCompatibility = JavaVersion.VERSION_16
+ext.majorVersion = 6
+ext.minorVersion = 0
+ext.minecraftVersion = "1.19"
 
-// Version used for distribution.
-group 'co.mcsky'
-archivesBaseName = "${pluginNameUpper}-mc$minecraftVersion"
+group = 'co.mcsky'
 version = "$majorVersion.$minorVersion".toString()
+archivesBaseName = "${pluginNameUpper}-mc$minecraftVersion"
 
-// source file modification (modify version string)
-processResources {
-    filesMatching("**/plugin.yml") {
-        expand 'version': project.version
-    }
+repositories {
+    mavenLocal()
+    mavenCentral()
+    maven { url = 'https://papermc.io/repo/repository/maven-public/' }
+    maven { url = 'https://repo.minebench.de/' }
+    maven { url = 'https://repo.lucko.me' }
+    maven { url = "https://maven.enginehub.org/repo/" }
+    maven { url = "https://oss.sonatype.org/content/repositories/snapshots/" }
+}
+
+dependencies {
+    // Unit test
+    testImplementation('org.junit.jupiter:junit-jupiter-api:5.9.0')
+    testRuntimeOnly('org.junit.jupiter:junit-jupiter-engine:5.9.0')
+
+    // API
+    compileOnly('io.papermc.paper:paper-api:1.19-R0.1-SNAPSHOT')
+    compileOnly('co.mcsky:MewCore:5.9')
+    compileOnly('me.lucko:helper:5.6.10')
+    compileOnly("dev.jorel:commandapi-core:8.4.1")
+
+
+    // PlotSquared
+    implementation(platform("com.intellectualsites.bom:bom-1.18.x:1.12"))
+    compileOnly('com.plotsquared:PlotSquared-Core:6.9.3')
+    compileOnly('com.plotsquared:PlotSquared-Bukkit:6.9.3') { transitive = false }
 }
 
 compileJava {
     options.encoding = 'UTF-8'
 }
 
-repositories {
-    mavenCentral()
-
-    // spigot
-    maven { url = 'https://hub.spigotmc.org/nexus/content/repositories/snapshots/' }
-    // paper
-    maven { url = 'https://papermc.io/repo/repository/maven-public/' }
-    // lang
-    maven { url = 'https://repo.minebench.de/' }
-    // commands
-    maven { url = 'https://repo.aikar.co/content/groups/aikar/' }
-    // helper
-    maven { url = 'https://repo.lucko.me' }
-    // worldedit
-    maven { url = 'https://maven.enginehub.org/repo/' }
-    // plotsquared
-    maven { url = "https://maven.enginehub.org/repo/" }
-    maven { url = "https://oss.sonatype.org/content/repositories/snapshots/" }
-    maven { url = "https://mvn.intellectualsites.com/content/groups/public/" }
-    // moecore
-    maven { url = 'https://jitpack.io' }
-
-}
-
-dependencies {
-    testImplementation('org.junit.jupiter:junit-jupiter-api:5.6.0')
-    testRuntimeOnly('org.junit.jupiter:junit-jupiter-engine')
-
-    compileOnly('io.papermc.paper:paper-api:1.17.1-R0.1-SNAPSHOT')
-
-    compileOnly('me.lucko:helper:5.6.8')
-    compileOnly('me.lucko:helper-sql:1.3.2')
-    compileOnly('me.lucko:helper-profiles:1.2.0')
-
-    // Config framework
-    compileOnly('org.spongepowered:configurate-core:4.1.1')
-    compileOnly('org.spongepowered:configurate-yaml:4.1.1')
-
-    // I18n framework
-    compileOnly('de.themoep.utils:lang-bukkit:1.3-SNAPSHOT')
-
-    // Command framework
-    compileOnly('co.aikar:acf-paper:0.5.0-SNAPSHOT')
-
-    // PlotSquared Core API
-    compileOnly("com.plotsquared:PlotSquared-Core:6.0.8-SNAPSHOT")
-    // PlotSquared Bukkit API
-    compileOnly("com.plotsquared:PlotSquared-Bukkit:6.0.8-SNAPSHOT") { transitive = false }
-
-    // Mojang API to access to skins
-    compileOnly('com.mojang:authlib:1.5.25')
-
-    // MoeCore
-    compileOnly('com.github.Akiranya:MoeCore:0.3')
-}
-
-test {
-    useJUnitPlatform()
+// source file modification (modify version string)
+processResources {
+    filesMatching("**/plugin.yml") {
+        expand 'version': project.version
+    }
 }

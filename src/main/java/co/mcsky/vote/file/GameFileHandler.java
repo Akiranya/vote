@@ -1,6 +1,6 @@
 package co.mcsky.vote.file;
 
-import co.mcsky.moecore.config.YamlConfigFactory;
+import co.mcsky.mewcore.config.YamlConfigFactory;
 import co.mcsky.vote.object.Game;
 import co.mcsky.vote.object.Vote;
 import co.mcsky.vote.serializer.GameSerializer;
@@ -13,8 +13,6 @@ import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 
 import java.io.File;
 import java.nio.file.Path;
-
-import static co.mcsky.vote.VoteMain.plugin;
 
 /**
  * Each instance of {@link GameFileHandler} handles an instance of {@link Game}).
@@ -33,8 +31,8 @@ public class GameFileHandler extends FileStorageHandler<Game> {
         super(fileName, FILE_EXTENSION, dataFolder);
 
         TypeSerializerCollection serializers = YamlConfigFactory.typeSerializers().childBuilder()
-                .register(Game.class, new GameSerializer(plugin.getLogger()))
-                .register(Vote.class, new VoteSerializer(plugin.getLogger()))
+                .register(Game.class, new GameSerializer())
+                .register(Vote.class, new VoteSerializer())
                 .build();
         loader = YamlConfigurationLoader.builder()
                 .file(new File(dataFolder, fileName + FILE_EXTENSION))

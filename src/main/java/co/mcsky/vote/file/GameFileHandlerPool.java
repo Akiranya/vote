@@ -1,26 +1,26 @@
 package co.mcsky.vote.file;
 
+import co.mcsky.vote.VoteMain;
 import co.mcsky.vote.object.Game;
 import co.mcsky.vote.object.GamePool;
 import com.google.common.io.Files;
+import me.lucko.helper.utils.Log;
 
 import java.io.File;
-import java.util.*;
-
-import static co.mcsky.vote.VoteMain.plugin;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Manages all instances of {@link GameFileHandler}.
  * <p>
  * Operation on this instance should reflect on the backed {@link GamePool}.
  */
-@SuppressWarnings("UnstableApiUsage")
 public enum GameFileHandlerPool {
 
     // singleton
     INSTANCE;
 
-    private static final File DATA_FOLDER = new File(plugin.getDataFolder(), "saves");
+    private static final File DATA_FOLDER = new File(VoteMain.inst().getDataFolder(), "saves");
     private static final String FILE_EXTENSION = ".yml";
 
     // key is world name
@@ -49,7 +49,7 @@ public enum GameFileHandlerPool {
         if (files != null) {
             for (int i = files.length - 1; i >= 0; i--) {
                 String filename = files[i].getName();
-                plugin.getLogger().info("Loading file " + filename);
+                Log.info("Loading file " + filename);
                 read(filename);
             }
         }

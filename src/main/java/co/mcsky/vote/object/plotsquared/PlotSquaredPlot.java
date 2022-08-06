@@ -20,11 +20,7 @@ public class PlotSquaredPlot implements GamePlot {
 
     @Override
     public void teleport(Player player) {
-        this.plot.teleportPlayer(
-                PlotPlayer.from(player),
-                TeleportCause.PLUGIN,
-                b -> player.sendMessage(VoteMain.plugin.message(player, "gui-message.teleport-to-plot", "player", getOwnerName()))
-        );
+        this.plot.teleportPlayer(PlotPlayer.from(player), TeleportCause.PLUGIN, success -> player.sendMessage(VoteMain.lang().get(player, "gui-message.teleport-to-plot", "player", getOwnerName())));
     }
 
     @Override

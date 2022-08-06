@@ -9,26 +9,22 @@ import com.plotsquared.core.events.PlotDeleteEvent;
 import com.plotsquared.core.player.PlotPlayer;
 import com.plotsquared.core.plot.Plot;
 import me.lucko.helper.terminable.Terminable;
+import me.lucko.helper.utils.Log;
 
 import java.util.Optional;
 import java.util.UUID;
-import java.util.logging.Logger;
-
-import static co.mcsky.vote.VoteMain.plugin;
 
 /**
- * The {@link WorkUpdater} must associate with an instance of {@link Game} (one-to-one relationship).
+ * The {@link WorkUpdater} must associate with an instance of {@link Game}
+ * (one-to-one relationship).
  */
-@SuppressWarnings("UnstableApiUsage")
 public class WorkUpdater implements Terminable {
 
     private final Game game;
-    private final Logger logger;
     private final PlotAPI plotApi;
 
     public WorkUpdater(Game game) {
         this.game = game;
-        this.logger = plugin.getLogger();
         this.plotApi = new PlotAPI();
         this.plotApi.registerListener(this);
     }
@@ -46,7 +42,7 @@ public class WorkUpdater implements Terminable {
         if (plot.canClaim(plotPlayer) && validateWorld(plot.getWorldName())) {
             UUID workOwner = plotPlayer.getUUID();
             this.game.createEntry(workOwner, PlotFactory.of(plot));
-            logger.info("[VoteUpdater] created : " + plotPlayer.getName());
+            Log.info("[VoteUpdater] created : " + plotPlayer.getName());
         }
     }
 
@@ -56,7 +52,7 @@ public class WorkUpdater implements Terminable {
         if (validateWorld(event.getWorld())) {
             Optional.ofNullable(event.getPlot().getOwnerAbs()).ifPresent(workOwner -> {
                 this.game.deleteEntry(workOwner);
-                logger.info("[VoteUpdater] removed : " + event.getPlotId().toString());
+                Log.info("[VoteUpdater] removed : " + event.getPlotId().toString());
             });
         }
     }

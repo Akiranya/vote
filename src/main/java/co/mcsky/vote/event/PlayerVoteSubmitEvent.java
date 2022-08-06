@@ -7,8 +7,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.player.PlayerEvent;
+import org.jetbrains.annotations.NotNull;
 
-@SuppressWarnings("NullableProblems")
 public class PlayerVoteSubmitEvent extends PlayerEvent implements Cancellable {
 
     private static final HandlerList handlers = new HandlerList();
@@ -25,6 +25,10 @@ public class PlayerVoteSubmitEvent extends PlayerEvent implements Cancellable {
         this.votes = votes;
     }
 
+    public static HandlerList getHandlerList() {
+        return handlers;
+    }
+
     public Work getWork() {
         return work;
     }
@@ -37,10 +41,7 @@ public class PlayerVoteSubmitEvent extends PlayerEvent implements Cancellable {
         return votes;
     }
 
-    public static HandlerList getHandlerList() {
-        return handlers;
-    }
-
+    @NotNull
     @Override
     public HandlerList getHandlers() {
         return handlers;

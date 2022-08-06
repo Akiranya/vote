@@ -9,12 +9,11 @@ import org.spongepowered.configurate.serialize.TypeSerializer;
 
 import java.lang.reflect.Type;
 import java.util.UUID;
-import java.util.logging.Logger;
 
 /**
  * Handles de(serialization) for an instance of {@link Vote} (not {@link Game})
  */
-public record VoteSerializer(Logger logger) implements TypeSerializer<Vote> {
+public record VoteSerializer() implements TypeSerializer<Vote> {
 
     @Override
     public Vote deserialize(Type type, ConfigurationNode node) throws SerializationException {

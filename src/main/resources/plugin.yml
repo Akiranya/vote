@@ -1,7 +1,6 @@
-name: VotePlugin
+name: PlotVote
 main: co.mcsky.vote.VoteMain
 version: ${version}
-api-version: 1.17
+api-version: 1.19
 author: Nailm
-website: https://mimaru.me
-depend: [ helper, MoeCore, PlotSquared ]
+depend: [ helper, MewCore, PlotSquared ]
