@@ -31,9 +31,6 @@ import java.util.function.Predicate;
 
 public class ListingView extends PaginatedView {
 
-    // metadata key for selected work
-    public static final MetadataKey<Work> selectedKey = MetadataKey.create("selected-work", Work.class);
-
     // menu schemes
     private static final MenuScheme POSTER = new MenuScheme()
             .mask("000010000");
@@ -48,7 +45,7 @@ public class ListingView extends PaginatedView {
     private final Player player;
     // the backed instance
     private final Game game;
-    // currently applied filter
+    // applied filter
     private Predicate<Work> filter;
 
     public ListingView(SeamlessGui gui, Game game) {

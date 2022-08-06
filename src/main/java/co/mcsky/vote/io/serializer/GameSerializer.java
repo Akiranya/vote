@@ -1,4 +1,4 @@
-package co.mcsky.vote.serializer;
+package co.mcsky.vote.io.serializer;
 
 import co.mcsky.vote.object.Game;
 import co.mcsky.vote.object.Vote;
@@ -17,7 +17,7 @@ import java.util.*;
 /**
  * Handles de(serialization) for an instance of {@link Game}
  */
-public record GameSerializer() implements TypeSerializer<Game> {
+public class GameSerializer implements TypeSerializer<Game> {
 
     @Override
     public Game deserialize(Type type, ConfigurationNode node) throws SerializationException {
@@ -35,7 +35,7 @@ public record GameSerializer() implements TypeSerializer<Game> {
                 workNode.getValue().node("raters").getList(Vote.class, List.of()).forEach(work::vote);
             } else {
                 // Log the data alignment issue
-                Log.warn("UUID is presented in file but not in plot database: " + workUuid.toString());
+                Log.warn("UUID is presented in file but not in plot database: " + workUuid);
             }
         }
 

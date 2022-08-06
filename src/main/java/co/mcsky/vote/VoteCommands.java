@@ -1,8 +1,8 @@
 package co.mcsky.vote;
 
 import co.mcsky.mewcore.skull.SkullCache;
-import co.mcsky.vote.file.GameFileHandlerPool;
 import co.mcsky.vote.gui.ListingGui;
+import co.mcsky.vote.io.GameFileHandlerPool;
 import co.mcsky.vote.object.Game;
 import co.mcsky.vote.object.GamePool;
 import co.mcsky.vote.object.Vote;
@@ -33,7 +33,7 @@ public class VoteCommands {
 
     public void register() {
         // command: votes
-        new CommandAPICommand("votes")
+        final CommandAPICommand rootCmd = new CommandAPICommand("votes")
                 .executesPlayer((player, args) -> {
                     if (GamePool.INSTANCE.containsAny()) {
                         new ListingGui(player, GamePool.INSTANCE.getOrNull()).open();
@@ -43,7 +43,7 @@ public class VoteCommands {
                 });
 
         // command: votes toggle open
-        new CommandAPICommand("toggle")
+        final CommandAPICommand toggleCmd = new CommandAPICommand("toggle")
                 .withPermission(PERM_ADMIN)
                 .withArguments(new MultiLiteralArgument("open"))
                 .executes((sender, args) -> {
@@ -58,7 +58,7 @@ public class VoteCommands {
                 });
 
         // command: votes reload
-        new CommandAPICommand("reload")
+        final CommandAPICommand reloadCmd = new CommandAPICommand("reload")
                 .withPermission(PERM_ADMIN)
                 .executes((sender, args) -> {
                     VoteMain.inst().reload();
@@ -66,7 +66,7 @@ public class VoteCommands {
                 });
 
         // command: votes pull <world>
-        new CommandAPICommand("pull")
+        final CommandAPICommand pullCmd = new CommandAPICommand("pull")
                 .withPermission(PERM_ADMIN)
                 .withArguments(new StringArgument("world").replaceSuggestions(
                         ArgumentSuggestions.strings(getPlotWorldCompletions())
@@ -85,7 +85,7 @@ public class VoteCommands {
                 });
 
         // command: votes purge <world>
-        new CommandAPICommand("purge")
+        final CommandAPICommand purgeCmd = new CommandAPICommand("purge")
                 .withPermission(PERM_ADMIN)
                 .withArguments(new StringArgument("world").replaceSuggestions(
                         ArgumentSuggestions.strings(getPlotWorldCompletions())
@@ -104,7 +104,7 @@ public class VoteCommands {
                 });
 
         // command: votes cache clear
-        new CommandAPICommand("cache")
+        final CommandAPICommand cacheCmd = new CommandAPICommand("cache")
                 .withPermission(PERM_ADMIN)
                 .withArguments(new MultiLiteralArgument("clear"))
                 .executes((sender, args) -> {
@@ -113,7 +113,7 @@ public class VoteCommands {
                 });
 
         // command: votes data <load|save>
-        new CommandAPICommand("data")
+        final CommandAPICommand dataCmd = new CommandAPICommand("data")
                 .withPermission(PERM_ADMIN)
                 .withArguments(new MultiLiteralArgument("load", "save"))
                 .executes((sender, args) -> {
@@ -134,7 +134,7 @@ public class VoteCommands {
         final String lineSeparator = System.lineSeparator();
 
         // command: votes stats
-        new CommandAPICommand("stats")
+        final CommandAPICommand statsCmd = new CommandAPICommand("stats")
                 .withPermission(PERM_HOST)
                 .executes((sender, args) -> {
                     Promise.supplyingAsync(() -> {
@@ -175,9 +175,7 @@ public class VoteCommands {
 
         // command: votes stats work <player>
         // show detailed ratings of a work
-        new CommandAPICommand("stats")
-                .withPermission(PERM_HOST)
-                .withArguments(new MultiLiteralArgument("work"))
+        final CommandAPICommand workCmd = new CommandAPICommand("work")
                 .withArguments(new OfflinePlayerArgument("player").replaceSuggestions(ArgumentSuggestions.stringsAsync(info -> {
                     final var game = GamePool.INSTANCE.getOrNull();
                     if (game == null) {
@@ -213,9 +211,7 @@ public class VoteCommands {
 
         // command: votes stats rate <player>
         // show detailed ratings of a rater
-        new CommandAPICommand("stats")
-                .withPermission(PERM_HOST)
-                .withArguments(new MultiLiteralArgument("rate"))
+        final CommandAPICommand rateCmd = new CommandAPICommand("rate")
                 .withArguments(new OfflinePlayerArgument("player").replaceSuggestions(ArgumentSuggestions.stringsAsync(info -> {
                     final var game = GamePool.INSTANCE.getOrNull();
                     if (game == null) {
@@ -243,6 +239,19 @@ public class VoteCommands {
                                + lineSeparator;
                     }).thenAcceptSync(sender::sendMessage);
                 });
+
+        // combine and register command
+        rootCmd.withSubcommands(
+                        toggleCmd,
+                        reloadCmd,
+                        pullCmd,
+                        purgeCmd,
+                        cacheCmd,
+                        dataCmd,
+                        statsCmd.withSubcommands(
+                                workCmd,
+                                rateCmd))
+                .register();
     }
 
     @NotNull

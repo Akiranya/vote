@@ -21,12 +21,12 @@ public final class VoteConfig {
         return p.getConfig().getBoolean("debug");
     }
 
-    public boolean isAllowVoteWhenUndone() {
-        return p.getConfig().getBoolean("isAllowVoteWhenUndone");
+    public boolean getVoteConditionDone() {
+        return p.getConfig().getBoolean("voteSettings.conditions.done");
     }
 
-    public boolean isAllowVoteWhenNotEnded() {
-        return p.getConfig().getBoolean("isAllowVoteWhenNotEnded");
+    public boolean getVoteConditionEnded() {
+        return p.getConfig().getBoolean("voteSettings.conditions.ended");
     }
 
 }

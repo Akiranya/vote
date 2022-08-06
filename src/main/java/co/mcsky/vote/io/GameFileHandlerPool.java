@@ -1,4 +1,4 @@
-package co.mcsky.vote.file;
+package co.mcsky.vote.io;
 
 import co.mcsky.vote.VoteMain;
 import co.mcsky.vote.object.Game;
@@ -15,9 +15,9 @@ import java.util.Map;
  * <p>
  * Operation on this instance should reflect on the backed {@link GamePool}.
  */
+@SuppressWarnings("UnstableApiUsage")
 public enum GameFileHandlerPool {
 
-    // singleton
     INSTANCE;
 
     private static final File DATA_FOLDER = new File(VoteMain.inst().getDataFolder(), "saves");
@@ -49,7 +49,7 @@ public enum GameFileHandlerPool {
         if (files != null) {
             for (int i = files.length - 1; i >= 0; i--) {
                 String filename = files[i].getName();
-                Log.info("Loading file " + filename);
+                Log.info("Loading file: " + filename);
                 read(filename);
             }
         }

@@ -3,4 +3,4 @@ main: co.mcsky.vote.VoteMain
 version: ${version}
 api-version: 1.19
 author: Nailm
-depend: [ helper, MewCore, PlotSquared ]
+depend: [ helper, MewCore, CommandAPI, PlotSquared ]

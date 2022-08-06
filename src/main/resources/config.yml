@@ -1,0 +1,13 @@
+# 在控台显示更多信息
+debug: true
+
+# 投票的相关设置
+voteSettings:
+  # 玩家可以开始投票的先决条件
+  # true  = 必须满足该条件
+  # false = 无须满足该条件
+  conditions:
+    # 作品为「完成」状态
+    done: true
+    # 建筑比赛为「已结束」状态
+    ended: true

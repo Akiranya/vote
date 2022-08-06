@@ -1,6 +1,6 @@
 package co.mcsky.vote;
 
-import co.mcsky.vote.file.GameFileHandlerPool;
+import co.mcsky.vote.io.GameFileHandlerPool;
 import co.mcsky.vote.object.GamePlots;
 import co.mcsky.vote.object.factory.PlotsFactory;
 import me.lucko.helper.plugin.ExtendedJavaPlugin;

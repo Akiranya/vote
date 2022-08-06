@@ -1,10 +1,10 @@
-package co.mcsky.vote.file;
+package co.mcsky.vote.io;
 
 import co.mcsky.mewcore.config.YamlConfigFactory;
+import co.mcsky.vote.io.serializer.GameSerializer;
+import co.mcsky.vote.io.serializer.VoteSerializer;
 import co.mcsky.vote.object.Game;
 import co.mcsky.vote.object.Vote;
-import co.mcsky.vote.serializer.GameSerializer;
-import co.mcsky.vote.serializer.VoteSerializer;
 import me.lucko.helper.serialize.FileStorageHandler;
 import org.spongepowered.configurate.CommentedConfigurationNode;
 import org.spongepowered.configurate.ConfigurateException;
@@ -13,9 +13,11 @@ import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 
 import java.io.File;
 import java.nio.file.Path;
+import java.util.Objects;
 
 /**
- * Each instance of {@link GameFileHandler} handles an instance of {@link Game}).
+ * Each instance of {@link GameFileHandler} handles an instance of {@link
+ * Game}).
  */
 public class GameFileHandler extends FileStorageHandler<Game> {
 
@@ -25,7 +27,8 @@ public class GameFileHandler extends FileStorageHandler<Game> {
     private CommentedConfigurationNode root;
 
     /**
-     * @param fileName should be the name of the plot world, without file extension
+     * @param fileName should be the name of the plot world, without file
+     *                 extension
      */
     public GameFileHandler(String fileName, File dataFolder) {
         super(fileName, FILE_EXTENSION, dataFolder);
@@ -44,7 +47,7 @@ public class GameFileHandler extends FileStorageHandler<Game> {
     @Override
     protected Game readFromFile(Path path) {
         try {
-            return (root = loader.load()).get(Game.class);
+            return Objects.requireNonNull((root = loader.load()).get(Game.class));
         } catch (ConfigurateException e) {
             e.printStackTrace();
             return null;

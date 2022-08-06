@@ -1,4 +1,4 @@
-package co.mcsky.vote.serializer;
+package co.mcsky.vote.io.serializer;
 
 import co.mcsky.vote.object.Game;
 import co.mcsky.vote.object.Vote;
@@ -13,7 +13,7 @@ import java.util.UUID;
 /**
  * Handles de(serialization) for an instance of {@link Vote} (not {@link Game})
  */
-public record VoteSerializer() implements TypeSerializer<Vote> {
+public class VoteSerializer implements TypeSerializer<Vote> {
 
     @Override
     public Vote deserialize(Type type, ConfigurationNode node) throws SerializationException {

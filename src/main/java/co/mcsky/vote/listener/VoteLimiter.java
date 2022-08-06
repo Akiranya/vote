@@ -22,7 +22,7 @@ public record VoteLimiter(Game game) implements TerminableModule {
         // Stop voting if the vote system is not ready yet
         Events.subscribe(PlayerVoteSubmitEvent.class)
                 .filter(e -> game.getWorld().equalsIgnoreCase(e.getVotes().getWorld()))
-                .filter(e -> !VoteMain.config().isAllowVoteWhenNotEnded())
+                .filter(e -> VoteMain.config().getVoteConditionEnded())
                 .filter(e -> !game.isReady())
                 .handler(e -> {
                     e.setCancelled(true);
@@ -34,7 +34,7 @@ public record VoteLimiter(Game game) implements TerminableModule {
         Events.subscribe(PlayerVoteSubmitEvent.class)
                 .filter(EventFilters.ignoreCancelled())
                 .filter(e -> game.getWorld().equalsIgnoreCase(e.getVotes().getWorld()))
-                .filter(e -> !VoteMain.config().isAllowVoteWhenUndone())
+                .filter(e -> VoteMain.config().getVoteConditionDone())
                 .filter(e -> !e.getWork().isDone())
                 .handler(e -> {
                     e.setCancelled(true);
