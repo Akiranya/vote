@@ -24,11 +24,11 @@ public final class Config {
     }
 
     public boolean getVoteConditionDone() {
-        return p.getConfig().getBoolean("voteSettings.conditions.done");
+        return p.getConfig().getBoolean("comments.conditions.done");
     }
 
     public boolean getVoteConditionEnded() {
-        return p.getConfig().getBoolean("voteSettings.conditions.ended");
+        return p.getConfig().getBoolean("comments.conditions.ended");
     }
 
     public ConfigurationSection getGuiBase() {
