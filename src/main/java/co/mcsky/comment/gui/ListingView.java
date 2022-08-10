@@ -73,8 +73,8 @@ public class ListingView extends PaginatedView {
                     List<String> lore = Main.config().getGuiListing()
                             .getStringList("items.player.lore").stream()
                             .map(line -> line
-                                    .replaceFirst("\\{done}", work.isDone() ? Main.lang().get(player, "misc.done") : Main.lang().get(player, "misc.undone"))
-                                    .replaceFirst("\\{done}", work.hasVoted(player.getUniqueId()) ? Main.lang().get(player, "misc.done") : Main.lang().get(player, "misc.undone")))
+                                    .replace("{artworkStatus}", work.isDone() ? Main.lang().get(player, "misc.done") : Main.lang().get(player, "misc.undone"))
+                                    .replace("{commentStatus}", work.hasVoted(player.getUniqueId()) ? Main.lang().get(player, "misc.done") : Main.lang().get(player, "misc.undone")))
                             .toList();
                     return ItemStackBuilder.of(Material.PLAYER_HEAD)
                             .name(name)

@@ -39,8 +39,8 @@ gui:
         name: '&b&l{player}'
         lore:
           - ''
-          - ' &7是否已完工 &8: {done}'
-          - ' &7是否已评分 &8: {done}'
+          - ' &7是否已完工 &8: {artworkStatus}'
+          - ' &7是否已评分 &8: {commentStatus}'
           - ''
           - '&7→ 点击 进行评分'
       submit:
