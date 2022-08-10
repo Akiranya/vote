@@ -1,8 +1,8 @@
 package co.mcsky.comment.object;
 
 import co.mcsky.comment.Main;
-import co.mcsky.comment.listener.CommentLimiter;
 import co.mcsky.comment.listener.ArtworkUpdater;
+import co.mcsky.comment.listener.CommentLimiter;
 import com.google.common.base.Preconditions;
 import me.lucko.helper.terminable.Terminable;
 import me.lucko.helper.terminable.composite.CompositeTerminable;
@@ -10,9 +10,9 @@ import me.lucko.helper.terminable.composite.CompositeTerminable;
 import java.util.*;
 
 /**
- * Represents an entire comment for a building game. The design is that each
- * instance of this class manages a distinct plot world. That is, there is a
- * one-to-one relationship between an instance of this class and a plot world.
+ * Represents all the comments for an entire building game. The design is, each
+ * instance manages a distinct plot world. That is, there is a one-to-one
+ * relationship between an instance of this class and a plot world.
  */
 public class Game implements Terminable {
 
@@ -89,10 +89,10 @@ public class Game implements Terminable {
      * Votes the specified work, with given owner of the comment and whether the
      * comment is marked as absent.
      *
-     * @param owner the owner of the work you comment for
-     * @param comment  the comment for this work
+     * @param owner   the owner of the work you comment for
+     * @param comment the comment for this work
      */
-    public void comment(UUID owner, Comment comment) {
+    synchronized public void comment(UUID owner, Comment comment) {
         Preconditions.checkArgument(workMap.containsKey(owner), "null work entry");
         workMap.get(owner).comment(comment);
     }
