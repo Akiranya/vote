@@ -1,16 +1,15 @@
 package co.mcsky.comment.gui;
 
+import co.mcsky.comment.Main;
+import co.mcsky.comment.event.PlayerCommentDoneEvent;
+import co.mcsky.comment.object.Artwork;
+import co.mcsky.comment.object.Game;
 import co.mcsky.mewcore.gui.PaginatedView;
 import co.mcsky.mewcore.gui.SeamlessGui;
 import co.mcsky.mewcore.skull.SkinFetchCompleteEvent;
 import co.mcsky.mewcore.skull.SkullCache;
-import co.mcsky.comment.Main;
-import co.mcsky.comment.event.PlayerCommentDoneEvent;
-import co.mcsky.comment.object.Game;
-import co.mcsky.comment.object.Artwork;
 import me.lucko.helper.Events;
 import me.lucko.helper.item.ItemStackBuilder;
-import me.lucko.helper.menu.Item;
 import me.lucko.helper.menu.paginated.PageInfo;
 import me.lucko.helper.menu.scheme.MenuScheme;
 import me.lucko.helper.menu.scheme.StandardSchemeMappings;
@@ -63,31 +62,28 @@ public class ListingView extends PaginatedView {
     }
 
     public void updateContent() {
-        List<Item> content = game.getWorks()
+        super.updateContent(game.getWorks()
                 .stream()
                 .filter(filter)
-                .map(work -> {
-                    String name = Main.config().getGuiListing()
-                            .getString("items.player.name", work.getOwnerName())
-                            .replace("{player}", work.getOwnerName());
-                    List<String> lore = Main.config().getGuiListing()
-                            .getStringList("items.player.lore").stream()
-                            .map(line -> line
-                                    .replace("{artworkStatus}", work.isDone() ? Main.lang().get(player, "misc.done") : Main.lang().get(player, "misc.undone"))
-                                    .replace("{commentStatus}", work.hasVoted(player.getUniqueId()) ? Main.lang().get(player, "misc.done") : Main.lang().get(player, "misc.undone")))
-                            .toList();
-                    return ItemStackBuilder.of(Material.PLAYER_HEAD)
-                            .name(name)
-                            .lore(lore)
-                            .transform(item -> SkullCache.INSTANCE.itemWithUuid(item, work.getOwner()))
-                            .build(() -> {
-                                // use metadata to store the work which the reviewer is looking at
-                                MetadataMap metadataMap = Metadata.provideForPlayer(gui.getPlayer());
-                                metadataMap.put(ListingGui.SELECTED_ARTWORK_KEY, work);
-                                gui.switchView(new OptionView(gui, this));
-                            });
-                }).toList();
-        super.updateContent(content);
+                .map(work -> ItemStackBuilder.of(Material.PLAYER_HEAD)
+                        .name(Main.config().getGuiListing()
+                                .getString("items.player.name", work.getOwnerName())
+                                .replace("{player}", work.getOwnerName()))
+                        .lore(Main.config().getGuiListing()
+                                .getStringList("items.player.lore").stream()
+                                .map(line -> line
+                                        .replace("{artworkStatus}", work.isDone() ? Main.lang().get(player, "misc.done") : Main.lang().get(player, "misc.undone"))
+                                        .replace("{commentStatus}", work.hasVoted(player.getUniqueId()) ? Main.lang().get(player, "misc.done") : Main.lang().get(player, "misc.undone")))
+                                .toList())
+                        .transform(item -> SkullCache.INSTANCE.itemWithUuid(item, work.getOwner()))
+                        .build(() -> {
+                            // use metadata to store the work which the reviewer is looking at
+                            MetadataMap metadataMap = Metadata.provideForPlayer(gui.getPlayer());
+                            metadataMap.put(ListingGui.SELECTED_ARTWORK_KEY, work);
+                            gui.switchView(new OptionView(gui, this));
+                        }))
+                .toList()
+        );
     }
 
     private void updateListing(Predicate<Artwork> predicate) {
