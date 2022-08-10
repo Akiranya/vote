@@ -43,20 +43,6 @@ public class Commands {
                     }
                 });
 
-        // command: votes toggle open
-        final CommandAPICommand toggleCmd = new CommandAPICommand("toggle")
-                .withPermission(PERM_ADMIN)
-                .withArguments(new MultiLiteralArgument("open"))
-                .executes((sender, args) -> {
-                    final Game game = GamePool.INSTANCE.getOrNull();
-                    if (game == null) {
-                        sender.sendMessage(Main.lang().get(sender, "chat.comment-system-not-available"));
-                        return;
-                    }
-                    game.setOpenVote(!game.isOpenVote());
-                    sender.sendMessage(Main.lang().get(sender, "chat.mark-comment-system", "state", game.isOpenVote() ? Main.lang().get(sender, "misc.enabled") : Main.lang().get(sender, "misc.disabled")));
-                });
-
         // command: votes reload
         final CommandAPICommand reloadCmd = new CommandAPICommand("reload")
                 .withPermission(PERM_ADMIN)
@@ -127,6 +113,20 @@ public class Commands {
                             sender.sendMessage(Main.lang().get(sender, "chat.saved-all"));
                         }
                     }
+                });
+
+        // command: votes toggle open
+        final CommandAPICommand toggleCmd = new CommandAPICommand("toggle")
+                .withPermission(PERM_HOST)
+                .withArguments(new MultiLiteralArgument("open"))
+                .executes((sender, args) -> {
+                    final Game game = GamePool.INSTANCE.getOrNull();
+                    if (game == null) {
+                        sender.sendMessage(Main.lang().get(sender, "chat.comment-system-not-available"));
+                        return;
+                    }
+                    game.setOpenVote(!game.isOpenVote());
+                    sender.sendMessage(Main.lang().get(sender, "chat.mark-comment-system", "state", game.isOpenVote() ? Main.lang().get(sender, "misc.enabled") : Main.lang().get(sender, "misc.disabled")));
                 });
 
         final String title = ChatColor.translateAlternateColorCodes('&', "&8=-=-=-=-=-=-= &6Overview&8 =-=-=-=-=-=-=");
