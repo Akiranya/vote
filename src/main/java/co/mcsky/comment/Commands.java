@@ -55,7 +55,7 @@ public class Commands {
         final CommandAPICommand pullCmd = new CommandAPICommand("pull")
                 .withPermission(PERM_ADMIN)
                 .withArguments(new StringArgument("world").replaceSuggestions(
-                        ArgumentSuggestions.strings(getPlotWorldCompletions())
+                        ArgumentSuggestions.stringsAsync(info -> CompletableFuture.supplyAsync(this::getPlotWorldCompletions))
                 ))
                 .executes((sender, args) -> {
                     final World world = Bukkit.getWorld((String) args[0]);
@@ -74,7 +74,7 @@ public class Commands {
         final CommandAPICommand purgeCmd = new CommandAPICommand("purge")
                 .withPermission(PERM_ADMIN)
                 .withArguments(new StringArgument("world").replaceSuggestions(
-                        ArgumentSuggestions.strings(getPlotWorldCompletions())
+                        ArgumentSuggestions.stringsAsync(info -> CompletableFuture.supplyAsync(this::getPlotWorldCompletions))
                 ))
                 .executes((sender, args) -> {
                     final World world = Bukkit.getWorld((String) args[0]);
