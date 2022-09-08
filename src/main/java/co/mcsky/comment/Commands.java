@@ -129,7 +129,6 @@ public class Commands {
                     sender.sendMessage(Main.lang().get(sender, "chat.mark-comment-system", "state", game.isOpenVote() ? Main.lang().get(sender, "misc.enabled") : Main.lang().get(sender, "misc.disabled")));
                 });
 
-        final String title = ChatColor.translateAlternateColorCodes('&', "&8=-=-=-=-=-=-= &6Overview&8 =-=-=-=-=-=-=");
         final String listSeparator = ChatColor.translateAlternateColorCodes('&', "&8,&r ");
         final String lineSeparator = System.lineSeparator();
 
@@ -148,12 +147,12 @@ public class Commands {
                         var validReviewers = stats.getValidReviewers().stream().map(MainUtil::getPlayerName).collect(joining);
 
                         var builder = new StringBuilder()
-                                .append(title).append(lineSeparator)
+                                .append(lineSeparator)
                                 .append(Main.lang().get(sender, "chat.invalid-reviewer-list", "count", String.valueOf(invalidReviewersCount), "list", invalidReviewers)).append(lineSeparator)
                                 .append(Main.lang().get(sender, "chat.valid-reviewer-list", "count", String.valueOf(validReviewersCount), "list", validReviewers)).append(lineSeparator);
 
                         // show details of work ratings
-                        builder.append(title).append(lineSeparator);
+                        builder.append(lineSeparator);
                         GamePool.INSTANCE.getOrNull().getWorks().forEach(work -> {
                             var uuid = work.getOwner();
                             var redVotesCount = stats.ofRedVotes(uuid).size();
@@ -200,7 +199,7 @@ public class Commands {
                         var redReviewers = stats.ofRedVotes(workOwner).stream()
                                 .map(Comment::getReviewerName)
                                 .collect(joining);
-                        return title + lineSeparator +
+                        return lineSeparator +
                                Main.lang().get(sender, "chat.green-reviewer-list", "count", String.valueOf(greenReviewersCount), "list", greenReviewers)
                                + lineSeparator +
                                Main.lang().get(sender, "chat.red-reviewer-list", "count", String.valueOf(redReviewersCount), "list", redReviewers)
@@ -232,7 +231,7 @@ public class Commands {
                         var joining = Collectors.joining(listSeparator);
                         var greenWorks = stats.ofGreenWorks(reviewerUuid).stream().map(Artwork::getOwnerName).collect(joining);
                         var redWorks = stats.ofRedWorks(reviewerUuid).stream().map(Artwork::getOwnerName).collect(joining);
-                        return title + lineSeparator +
+                        return lineSeparator +
                                Main.lang().get(sender, "chat.green-work-list", "count", String.valueOf(greenWorksCount), "list", greenWorks)
                                + lineSeparator +
                                Main.lang().get(sender, "chat.red-work-list", "count", String.valueOf(redWorksCount), "list", redWorks)
