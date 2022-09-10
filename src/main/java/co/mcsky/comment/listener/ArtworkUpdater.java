@@ -11,7 +11,6 @@ import com.plotsquared.core.plot.Plot;
 import me.lucko.helper.terminable.Terminable;
 import me.lucko.helper.utils.Log;
 
-import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -41,7 +40,7 @@ public final class ArtworkUpdater implements Terminable {
         // Check claimable and validate the world
         if (plot.canClaim(plotPlayer) && validateWorld(plot.getWorldName())) {
             UUID workOwner = plotPlayer.getUUID();
-            this.game.createEntry(workOwner, PlotFactory.of(plot));
+            game.createEntry(workOwner, PlotFactory.of(plot));
             Log.info("[VoteUpdater] created : " + plotPlayer.getName());
         }
     }
@@ -50,19 +49,20 @@ public final class ArtworkUpdater implements Terminable {
     @Subscribe
     public void onPlotDelete(PlotDeleteEvent event) {
         if (validateWorld(event.getWorld())) {
-            Optional.ofNullable(event.getPlot().getOwnerAbs()).ifPresent(workOwner -> {
-                this.game.deleteEntry(workOwner);
-                Log.info("[VoteUpdater] removed : " + event.getPlotId().toString());
-            });
+            var owner = event.getPlot().getOwnerAbs();
+            if (owner != null) {
+                game.deleteEntry(owner);
+                Log.info("Artwork removed: " + event.getPlotId().toString());
+            }
         }
     }
 
     private boolean validateWorld(String plotWorld) {
-        return this.game.getWorld().equalsIgnoreCase(plotWorld);
+        return game.getWorld().equalsIgnoreCase(plotWorld);
     }
 
     @Override
     public void close() {
-        this.plotApi.getPlotSquared().getEventDispatcher().unregisterListener(this);
+        plotApi.getPlotSquared().getEventDispatcher().unregisterListener(this);
     }
 }
