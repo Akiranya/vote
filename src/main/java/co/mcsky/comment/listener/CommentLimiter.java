@@ -49,6 +49,7 @@ public final class CommentLimiter implements TerminableModule {
 
         // Stop use 'done' button if the game is not ended
         Events.subscribe(PlayerCommentDoneEvent.class)
+                .filter(EventFilters.ignoreCancelled())
                 .filter(e -> game.getWorld().equalsIgnoreCase(e.getVotes().getWorld()))
                 .filter(e -> !game.isOpenVote())
                 .handler(e -> {
